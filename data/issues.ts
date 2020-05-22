@@ -6,6 +6,7 @@ export interface IssueDef {
   title: string;
   intro: string;
   summary: string;
+  draft?: boolean;
   links: { id: string; title: string; link: string; summary: string }[];
 }
 
@@ -403,7 +404,7 @@ export const issues: Issue[] = issueDefs.map((i) => {
     link: `/issue/${i.id}`,
     image:
       i.links && i.links.length
-        ? `/images/issues/${i.id}/${i.links[0].id}.jpg`
+        ? `images/issues/${i.id}/${i.links[0].id}.jpg`
         : null,
     date: i.date || new Date(),
   };
