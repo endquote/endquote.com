@@ -17,7 +17,9 @@
     "@types/clone": "0.1.30",
     "@types/node": "14.0.4",
     "@types/react": "16.9.35",
+    "bootstrap": "4.5.0",
     "prettier": "2.0.5",
+    "sass": "1.26.5",
     "typescript": "3.9.3"
   }
 }

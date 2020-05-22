@@ -1,0 +1,113 @@
+/* https://fonts.googleapis.com/css?family=Titillium+Web:400,600,700&display=block */
+
+@font-face {
+  font-family: "Titillium Web";
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: local("Titillium Web Regular"), local("TitilliumWeb-Regular"),
+    url(/fonts/TitilliumWeb-Regular.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
+    U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Titillium Web";
+  font-style: normal;
+  font-weight: 600;
+  font-display: block;
+  src: local("Titillium Web SemiBold"), local("TitilliumWeb-SemiBold"),
+    url(/fonts/TitilliumWeb-SemiBold.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
+    U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Titillium Web";
+  font-style: normal;
+  font-weight: 700;
+  font-display: block;
+  src: local("Titillium Web Bold"), local("TitilliumWeb-Bold"),
+    url(/fonts/TitilliumWeb-Bold.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
+    U+FEFF, U+FFFD;
+}
+
+body {
+  font-family: "Titillium Web", sans-serif;
+  background-color: black;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 600;
+}
+
+a {
+  color: inherit;
+}
+
+.content {
+  line-height: 1.7;
+}
+
+.content a {
+  text-decoration: underline;
+}
+
+footer a,
+footer a:hover {
+  color: white;
+}
+
+@media print {
+  header,
+  footer {
+    display: none;
+  }
+}
+
+ul {
+  padding-left: 1em;
+}
+
+.ol-control button {
+  background-color: rgba(0, 0, 0, 0.4) !important;
+}
+
+.card-link {
+  text-decoration: none !important;
+}
+
+img.emoji {
+  height: 1.2em;
+  width: 1.2em;
+  margin: 0 0.45em 0 0.1em;
+  vertical-align: -0.2em;
+}
+
+svg {
+  user-select: none;
+  cursor: default;
+  overflow: visible;
+}
+
+figcaption {
+  text-align: center;
+}
+
+/* disabled bootstrap buttons still have pointer cursors for some reason */
+button.disabled {
+  cursor: default;
+}
+
+.carousel-caption {
+  color: #212529;
+}
