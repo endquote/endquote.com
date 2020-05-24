@@ -1,10 +1,11 @@
 import Head from "next/head";
 import Router from "next/router";
-import { FunctionComponent, ReactNode, useEffect } from "react";
+import { FC, ReactNode, useEffect } from "react";
 import { BASE_HREF, DEV } from "../data/constants";
 import { trackPageView } from "../utils/tracking";
+import Footer from "./Footer";
 
-interface LayoutProps {
+interface Props {
   title: string;
   active: string;
   strings: any;
@@ -15,7 +16,7 @@ interface LayoutProps {
   blockSearch: boolean;
 }
 
-export const Layout: FunctionComponent<LayoutProps> = ({
+export const Layout: FC<Props> = ({
   title = "",
   active = null,
   strings = {},
@@ -170,7 +171,7 @@ export const Layout: FunctionComponent<LayoutProps> = ({
         <div className="container content">{children}</div>
       </div>
 
-      {/* <Footer nosubscribe={nosubscribe} strings={strings} /> */}
+      <Footer nosubscribe={nosubscribe} strings={strings} />
       {matomo()}
     </>
   );
