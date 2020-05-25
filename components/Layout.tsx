@@ -7,20 +7,20 @@ import { trackPageView } from "../utils/tracking";
 import { Footer } from "./Footer";
 import { Header } from "./Header";
 
-type Props = {
+export type LayoutProps = {
   title: string;
   active?: string;
   strings: any;
   children: ReactNode;
-  nosubscribe: boolean;
-  description: string;
-  image: string;
-  blockSearch: boolean;
+  nosubscribe?: boolean;
+  description?: string;
+  image?: string;
+  blockSearch?: boolean;
 };
 
-export const Layout: FC<Props> = ({
-  title = "",
-  active = undefined,
+export const Layout: FC<LayoutProps> = ({
+  title,
+  active,
   strings = {},
   children,
   nosubscribe = false,

@@ -2,10 +2,10 @@ import { GetStaticProps } from "next";
 import { FC } from "react";
 import { Col, Row } from "react-bootstrap";
 import { ProjectGrid } from "../components/ProjectGrid";
+import { Video } from "../components/Video";
 import { Project } from "../data/projects";
 import { htmlToReact } from "../utils/htmlToReact";
 import css from "./work.module.scss";
-import { Video } from "../components/Video";
 
 type Props = {
   director: Project[];
