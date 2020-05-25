@@ -394,7 +394,7 @@ const issueDefs: IssueDef[] = [
 export interface Issue extends IssueDef {
   href: string;
   link: string;
-  image: string;
+  image: string | null;
 }
 
 export const issues: Issue[] = issueDefs.map((i) => {
@@ -416,11 +416,11 @@ issues.sort((a, b) => {
 
 export const index = issues.map((i) => {
   i = clone(i);
-  i.links = i.intro = null;
+  delete i.links;
+  delete i.intro;
   return i;
 });
 
-export function query(id) {
-  id = parseInt(id);
+export function query(id: number): Issue | undefined {
   return issues.find((i) => i.id === id);
 }

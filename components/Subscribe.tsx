@@ -1,5 +1,5 @@
 import fetch from "isomorphic-unfetch";
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, FormEvent, useEffect, useRef, useState } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import {
   SUBSCRIBE_API,
@@ -13,7 +13,7 @@ type Props = {
 };
 
 export const Subscribe: FC<Props> = ({ strings, invert = false }) => {
-  const email = useRef<HTMLInputElement>();
+  const email = useRef<HTMLInputElement>(null!);
 
   const submitStates = [strings.prompt, strings.success, strings.fail];
   const [submitState, setSubmitState] = useState(0);
@@ -25,7 +25,7 @@ export const Subscribe: FC<Props> = ({ strings, invert = false }) => {
   }, [submitState, email.current]);
 
   // https://sendy.co/api
-  async function onSubmit(event) {
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     event.stopPropagation();
 
@@ -74,7 +74,6 @@ export const Subscribe: FC<Props> = ({ strings, invert = false }) => {
             variant={invert ? "outline-light" : "outline-dark"}
             type="submit"
             className={`btn w-100`}
-            onClick={onSubmit}
           >
             {strings.submit}
           </Button>

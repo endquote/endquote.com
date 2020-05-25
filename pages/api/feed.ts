@@ -138,7 +138,7 @@ class Feeds {
       title: "Josh Santangelo",
       home_page_url: BASE_HREF,
       feed_url: `${BASE_HREF}/feed.json`,
-      items: [].concat(Feeds.issues().items).concat(Feeds.posts().items),
+      items: Feeds.issues().items.concat(Feeds.posts().items),
     });
   }
 
@@ -150,10 +150,10 @@ class Feeds {
       title: "Josh Santangelo",
       home_page_url: BASE_HREF,
       feed_url: `${BASE_HREF}/feed.json`,
-      items: []
-        .concat(Feeds.projects().items)
-        .concat(Feeds.issues().items)
-        .concat(Feeds.posts().items),
+      items: Feeds.projects().items.concat(
+        Feeds.issues().items,
+        Feeds.posts().items
+      ),
     });
   }
 }
@@ -168,10 +168,20 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
     }
   }
 
-  if (!Feeds[type]) {
+  let feed: Feed;
+  if (type === "all") {
+    feed = Feeds.all();
+  } else if (type === "content") {
+    feed = Feeds.content();
+  } else if (type === "posts") {
+    feed = Feeds.posts();
+  } else if (type === "issues") {
+    feed = Feeds.issues();
+  } else if (type === "projects") {
+    feed = Feeds.projects();
+  } else {
     return res.status(404).end();
   }
 
-  const feed: Feed = Feeds[type]();
   return res.status(200).json(feed);
 };

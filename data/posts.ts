@@ -45,6 +45,6 @@ posts.sort((a, b) => {
   return b.date.getTime() - a.date.getTime();
 });
 
-export function query(id) {
+export function query(id: string): Post | undefined {
   return posts.find((p) => p.id === id);
 }

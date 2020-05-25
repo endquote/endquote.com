@@ -9,7 +9,7 @@ import { Header } from "./Header";
 
 type Props = {
   title: string;
-  active: string;
+  active?: string;
   strings: any;
   children: ReactNode;
   nosubscribe: boolean;
@@ -20,7 +20,7 @@ type Props = {
 
 export const Layout: FC<Props> = ({
   title = "",
-  active = null,
+  active = undefined,
   strings = {},
   children,
   nosubscribe = false,
@@ -169,7 +169,7 @@ export const Layout: FC<Props> = ({
     <>
       {head()}
       <div className="bg-white pb-3">
-        <Header active={active} strings={strings} />
+        <Header active={active} />
         <Container className="content">{children}</Container>
       </div>
 

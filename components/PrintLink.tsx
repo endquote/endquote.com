@@ -1,7 +1,14 @@
 import Link from "next/link";
+import { FC, ReactNode } from "react";
 import { PROD_HREF } from "../data/constants";
 
-export function PrintLink({ href = "", hrefAs = "", children }) {
+type Props = {
+  href: string;
+  hrefAs: string;
+  children: ReactNode;
+};
+
+export const PrintLink: FC<Props> = ({ href = "", hrefAs = "", children }) => {
   return (
     <>
       <Link href={href} as={hrefAs}>
@@ -17,4 +24,4 @@ export function PrintLink({ href = "", hrefAs = "", children }) {
       </a>
     </>
   );
-}
+};

@@ -3,11 +3,10 @@ import { FC } from "react";
 import { Container, Nav, Navbar } from "react-bootstrap";
 
 type Props = {
-  strings: any;
   active?: string;
 };
 
-export const Header: FC<Props> = ({ strings, active }) => {
+export const Header: FC<Props> = ({ active }) => {
   return (
     <Container>
       <header>

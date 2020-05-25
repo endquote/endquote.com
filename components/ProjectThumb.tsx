@@ -1,4 +1,3 @@
-import classNames from "classnames";
 import Link from "next/link";
 import { FC, SyntheticEvent, useEffect, useRef, useState } from "react";
 import { Project } from "../data/projects";
@@ -9,8 +8,8 @@ type Props = {
 };
 
 export const ProjectThumb: FC<Props> = ({ project }) => {
-  const img = useRef<HTMLImageElement>();
-  const container = useRef<HTMLDivElement>();
+  const img = useRef<HTMLImageElement>(null!);
+  const container = useRef<HTMLDivElement>(null!);
 
   const [loaded, setLoaded] = useState(false);
 
@@ -24,7 +23,7 @@ export const ProjectThumb: FC<Props> = ({ project }) => {
 
   return (
     <div
-      className={classNames("my-3", css.thumb, loaded ? null : css.loading)}
+      className={`my-3 ${css.thumb} ${loaded ? null : css.loading}`}
       ref={container}
     >
       <Link href="/project/[id]" as={`/project/${project.id}`}>
@@ -35,7 +34,7 @@ export const ProjectThumb: FC<Props> = ({ project }) => {
               loading="lazy"
               onLoad={imageLoaded}
               src={`/images/projects/${project.id}/350.jpg`}
-              className={classNames("w-100", css.rounded)}
+              className={`w-100 ${css.rounded}`}
               srcSet={[
                 `/images/projects/${project.id}/640.jpg 640w`,
                 `/images/projects/${project.id}/510.jpg 510w`,
@@ -50,12 +49,8 @@ export const ProjectThumb: FC<Props> = ({ project }) => {
               ].join(",")}
             />
           </div>
-          <div
-            className={classNames("position-absolute", "m-2", css.container)}
-          >
-            <div
-              className={classNames("position-absolute", "w-100", css.contents)}
-            >
+          <div className={`position-absolute m-2 ${css.container}`}>
+            <div className={`position-absolute w-100 ${css.contents}`}>
               <div className="px-3">
                 <h4 className="text-center">{project.title}</h4>
                 <div className="text-center">{project.subtitle}</div>

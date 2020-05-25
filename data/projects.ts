@@ -5,7 +5,7 @@ export interface Project {
   engineer: boolean;
   experimental: boolean;
   date: Date;
-  skip: number;
+  skip?: number;
   subtitle: string;
   technologies: string;
   client: string;
@@ -143,7 +143,7 @@ export const projects: Project[] = [
     engineer: false,
     experimental: false,
     date: new Date("2017-08-01T00:00:00.000Z"),
-    skip: null,
+    skip: 0,
     subtitle: "physical guest tracking across digital exhibits",
     technologies:
       'Node.js, JavaScript, Unity, C#, <a href="https://quuppa.com">Quuppa BLE</a>',
@@ -161,7 +161,7 @@ export const projects: Project[] = [
     engineer: false,
     experimental: false,
     date: new Date("2016-12-01T00:00:00.000Z"),
-    skip: null,
+    skip: 0,
     subtitle: "headset-free augmented reality",
     technologies:
       "Unity, C#, RabbitMQ, depth cameras, DSLR cameras, speech-to-text APIs",
@@ -345,7 +345,7 @@ export const projects: Project[] = [
     engineer: true,
     experimental: true,
     date: new Date("2018-08-01T00:00:00.000Z"),
-    skip: null,
+    skip: 0,
     subtitle: "technology-agnostic tracking of guest interactions",
     technologies:
       'Node.js, JavaScript, MongoDB, Redis, vue.js, <a href="https://www.zebra.com/us/en/products/location-technologies/ultra-wideband.html">Zebra UWB</a>, <a href="https://quuppa.com">Quuppa BLE</a>',
@@ -380,7 +380,7 @@ export const projects: Project[] = [
     engineer: true,
     experimental: false,
     date: new Date("2015-03-01T00:00:00.000Z"),
-    skip: null,
+    skip: 0,
     subtitle: "application monitoring and performance management",
     technologies: "Node.js, JavaScript",
     client: '<a href="https://stimulant.com/ampm/">Stimulant</a>',
@@ -411,7 +411,7 @@ export const projects: Project[] = [
     engineer: true,
     experimental: false,
     date: new Date("2016-06-01T00:00:00.000Z"),
-    skip: null,
+    skip: 0,
     subtitle: "automate control of hardware and software",
     technologies: "Node.js, JavaScript",
     client: '<a href="http://stimulant.com/">Stimulant</a>',
@@ -564,7 +564,7 @@ export const projects: Project[] = [
   },
 ];
 
-function trim(p) {
+function trim(p: Project) {
   return { id: p.id, title: p.title, subtitle: p.subtitle };
 }
 
@@ -594,6 +594,6 @@ export const featured = {
   engineer: engineerFeatured,
 };
 
-export function query(id) {
+export function query(id: string): Project | undefined {
   return projects.find((p) => p.id === id);
 }

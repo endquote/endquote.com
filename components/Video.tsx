@@ -1,6 +1,6 @@
-import hls from "hls.js/dist/hls.light";
-import { useEffect, useRef, useState, FC } from "react";
 import PlayIcon from "@fortawesome/fontawesome-free/svgs/regular/play-circle.svg";
+import hls from "hls.js/dist/hls.light";
+import { FC, useEffect, useRef, useState } from "react";
 import { BASE_HLS, DEV } from "../data/constants";
 import { trackComponentEvent } from "../utils/tracking";
 import css from "./Video.module.scss";
@@ -26,18 +26,18 @@ export const Video: FC<Props> = ({
   poster,
   audio = false,
 }) => {
-  const video = useRef<HTMLVideoElement>();
+  const video = useRef<HTMLVideoElement>(null!);
 
   const hlsUrl = `${BASE_HLS}/${hlsPath}/playlist.m3u8`;
 
-  const [hlsPlayer, setHlsPlayer] = useState(null);
+  const [hlsPlayer, setHlsPlayer] = useState<Hls>();
   const [tracked, setTracked] = useState(false);
   const [attached, setAttached] = useState(false);
   const [playing, setIsPlaying] = useState(false);
 
   // Initialize the HLS player.
   useEffect(() => {
-    if (!hlsPlayer) {
+    if (hlsPlayer === undefined) {
       return;
     }
 
@@ -112,7 +112,7 @@ export const Video: FC<Props> = ({
 
     if (hlsPlayer) {
       // End HLS player
-      setHlsPlayer(null);
+      setHlsPlayer(undefined);
     }
 
     // Return to poster frame
