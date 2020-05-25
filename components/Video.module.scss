@@ -1,0 +1,28 @@
+.playContainer {
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  opacity: 1;
+  transition: opacity 300ms ease-out;
+}
+
+.playing {
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 300ms ease-in;
+}
+
+.play {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.play svg {
+  filter: drop-shadow(0px 0px 4px black);
+}
+
+.rounded {
+  border-radius: 0.5rem !important;
+  background-color: black;
+}

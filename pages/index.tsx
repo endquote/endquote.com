@@ -5,6 +5,7 @@ import { ProjectGrid } from "../components/ProjectGrid";
 import { Project } from "../data/projects";
 import { htmlToReact } from "../utils/htmlToReact";
 import css from "./work.module.scss";
+import { Video } from "../components/Video";
 
 type Props = {
   director: Project[];
@@ -24,13 +25,12 @@ export const Work: FC<Props> = ({
           <p className={css.headline}>{htmlToReact(strings.about)}</p>
         </Col>
         <Col lg={8} md={12} sm={12}>
-          {/* <Video
+          <Video
             hlsPath="stimulant-reel-2017-16x9"
             poster="/images/stimulant-reel-2017-16x9.jpg"
             autoPlay={true}
-            loop={true}
             skip={0}
-          /> */}
+          />
         </Col>
       </Row>
       <Row className="mt-5">
