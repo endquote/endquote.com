@@ -1,6 +1,7 @@
 import { GetStaticProps } from "next";
 import { FC } from "react";
 import { Col, Row } from "react-bootstrap";
+import { ProjectGrid } from "../components/ProjectGrid";
 import { Project } from "../data/projects";
 import { htmlToReact } from "../utils/htmlToReact";
 
@@ -18,7 +19,7 @@ export const Director: FC<Props> = ({ projects = [], strings = {} }) => {
           <p className="mb-0">{htmlToReact(strings.copy)}</p>
         </Col>
       </Row>
-      {/* <ProjectGrid projects={projects} /> */}
+      <ProjectGrid projects={projects} />
     </>
   );
 };

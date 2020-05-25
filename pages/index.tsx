@@ -1,16 +1,22 @@
 import { GetStaticProps } from "next";
 import { FC } from "react";
 import { Col, Row } from "react-bootstrap";
+import { ProjectGrid } from "../components/ProjectGrid";
 import { Project } from "../data/projects";
 import { htmlToReact } from "../utils/htmlToReact";
 import css from "./work.module.scss";
 
 type Props = {
-  projects: Project[];
+  director: Project[];
+  engineer: Project[];
   strings: any;
 };
 
-export const Work: FC<Props> = ({ projects = [], strings = {} }) => {
+export const Work: FC<Props> = ({
+  director = [],
+  engineer = [],
+  strings = {},
+}) => {
   return (
     <>
       <Row>
@@ -34,7 +40,7 @@ export const Work: FC<Props> = ({ projects = [], strings = {} }) => {
           </p>
         </Col>
       </Row>
-      {/* <ProjectGrid projects={director} className="pb-5" /> */}
+      <ProjectGrid projects={director} />
       <Row className="mt-5">
         <Col>
           <p className={`mb-0 ${css.category}`}>
@@ -42,7 +48,7 @@ export const Work: FC<Props> = ({ projects = [], strings = {} }) => {
           </p>
         </Col>
       </Row>
-      {/* <ProjectGrid projects={engineer} /> */}
+      <ProjectGrid projects={engineer} />
     </>
   );
 };
