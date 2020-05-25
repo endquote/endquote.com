@@ -2,7 +2,7 @@ import clone from "clone";
 
 export interface IssueDef {
   id: number;
-  date: Date;
+  date: string;
   title: string;
   intro: string;
   summary: string;
@@ -13,7 +13,7 @@ export interface IssueDef {
 const issueDefs: IssueDef[] = [
   {
     id: 1,
-    date: new Date("2019-11-07T00:00:00.000Z"),
+    date: "2019-11-07T00:00:00.000Z",
     title: "Creative Tech #1: The Robot Takeover",
     intro:
       'Welcome to the first issue of the Creative Technology newsletter, which you signed up for at <a href="https://endquote.com/">endquote.com</a>, or you got signed up for because you\'ve been in touch with Josh Santangelo recently. This issue features three different projects that use robot arms, which is pure coincidence and not a marketing tie-in to the new Terminator movie.',
@@ -123,7 +123,7 @@ const issueDefs: IssueDef[] = [
   },
   {
     id: 2,
-    date: new Date("2019-12-10T00:00:00.000Z"),
+    date: "2019-12-10T00:00:00.000Z",
     title: "Creative Tech #2: Reality Reproduction",
     intro:
       'This batch of inspiration is being prepared from the exit row of flight AA2421 as I transition from the 75-and-analog world of Miami Art Week back to the 57-and-digital kingdom of San Francisco. The trip wasn\'t very "creative tech", so I\'m posting some of my favorite artwork from Miami <a href="https://www.instagram.com/endquote/">on Instagram</a>. For the newsletter we have some new photogrammetry projects, a killer device to for glasses-free 3D, and a couple of longer reads to settle into during your holiday break.',
@@ -192,7 +192,7 @@ const issueDefs: IssueDef[] = [
   },
   {
     id: 3,
-    date: new Date("2020-01-15T00:00:00.000Z"),
+    date: "2020-01-15T00:00:00.000Z",
     title: "Creative Tech #3: Making Music with Cameras",
     intro:
       "Happy new year from San Francisco. I hope you're all rested and inspired to make amazing things in 2020. This time the list is a bit shorter and more experimental, with a couple of projects that use computer vision to create music and sound.",
@@ -231,7 +231,7 @@ const issueDefs: IssueDef[] = [
   },
   {
     id: 4,
-    date: new Date("2020-02-18T00:00:00.000Z"),
+    date: "2020-02-18T00:00:00.000Z",
     title: "Creative Tech #4: AR Inevitable?",
     intro:
       'It seems too soon to be publishing a fourth issue, yet here we are. Please <a href="http://endquote.com/issue/4">tell a friend</a>, <a href="mailto:josh@endquote.com">write in</a> to suggest a link, or point out the typo I left in just for you to find. This time around there\'s a cluster of augmented reality projects which seem like a peek into our inevitable future.',
@@ -292,7 +292,7 @@ const issueDefs: IssueDef[] = [
   },
   {
     id: 5,
-    date: new Date("2020-03-24T00:00:00.000Z"),
+    date: "2020-03-24T00:00:00.000Z",
     title: "Creative Tech #5: Can We Talk About Something Else?",
     intro:
       'From my quarantine to yours, a new collection of creative tech links to keep you distracted while working from home. You\'re not likely to see much work like this in person for a while, but if you want it to still exist when "normal" returns, consider supporting the arts where you can. Here in SF, <a href="https://grayarea.org/an-urgent-call-to-save-gray-area-cultural-community-from-closing/">Gray Area could certainly use a hand</a>.',
@@ -338,7 +338,7 @@ const issueDefs: IssueDef[] = [
   },
   {
     id: 6,
-    date: new Date("2020-04-22T00:00:00.000Z"),
+    date: "2020-04-22T00:00:00.000Z",
     title: "Creative Tech #6: What Day Is It Again?",
     intro:
       "If you're feeling like home is a little too immersive these days, take a break from Animal Crossing and get inspired by these projects that have carried on in the midst of these strange times.",
@@ -397,22 +397,22 @@ export interface Issue extends IssueDef {
   image: string | null;
 }
 
-export const issues: Issue[] = issueDefs.map((i) => {
-  return {
-    ...i,
-    href: "/issue/[id]",
-    link: `/issue/${i.id}`,
-    image:
-      i.links && i.links.length
-        ? `images/issues/${i.id}/${i.links[0].id}.jpg`
-        : null,
-    date: i.date || new Date(),
-  };
-});
-
-issues.sort((a, b) => {
-  return b.date.getTime() - a.date.getTime();
-});
+export const issues: Issue[] = issueDefs
+  .map((i) => {
+    return {
+      ...i,
+      href: "/issue/[id]",
+      link: `/issue/${i.id}`,
+      image:
+        i.links && i.links.length
+          ? `images/issues/${i.id}/${i.links[0].id}.jpg`
+          : null,
+      date: i.date || new Date().toUTCString(),
+    };
+  })
+  .sort((a, b) => {
+    return new Date(b.date).getTime() - new Date(a.date).getTime();
+  });
 
 export const index = issues.map((i) => {
   i = clone(i);

@@ -2,8 +2,8 @@ export interface Role {
   company?: string;
   title: string;
   location: string;
-  start: Date;
-  end?: Date;
+  start: string;
+  end?: string;
   role: string;
   accomplishments: string[];
 }
@@ -22,7 +22,7 @@ export const experience: Role[] = [
     company: '<a href="https://www.playstation.com/en-us/">PlayStation</a>',
     title: "Senior Manager, Design Technology",
     location: "San Francisco, CA",
-    start: new Date("2020-05-01T00:00:00.000Z"),
+    start: "2020-05-01T00:00:00.000Z",
     role:
       "Building teams, tools, and processes that help the UX group at PlayStation push the boundaries of play.",
     accomplishments: [],
@@ -32,8 +32,8 @@ export const experience: Role[] = [
       '<a href="https://vimeo.com/obscuradigital">Obscura Digital</a> (acquired by <a href="https://www.msg.com/obscura-digital">Madison Square Garden</a>)',
     title: "Director of Systems",
     location: "San Francisco, CA",
-    start: new Date("2018-07-01T00:00:00.000Z"),
-    end: new Date("2019-09-20T00:00:00.000Z"),
+    start: "2018-07-01T00:00:00.000Z",
+    end: "2019-09-20T00:00:00.000Z",
     role:
       'Led a distributed team that designed and implemented hardware platforms behind large-scale immersive experiences for agency clients and <a href="https://www.msgsphere.com">MSG Sphere</a>.',
     accomplishments: [
@@ -47,8 +47,8 @@ export const experience: Role[] = [
     company: '<a href="https://stimulant.com/">Stimulant</a>',
     title: "Technical Director",
     location: "San Francisco, CA",
-    start: new Date("2010-04-01T00:00:00.000Z"),
-    end: new Date("2018-04-01T00:00:00.000Z"),
+    start: "2010-04-01T00:00:00.000Z",
+    end: "2018-04-01T00:00:00.000Z",
     role:
       "Managed all technical disciplines of a digital agency across multiple offices, including software development, systems engineering, QA, deployment, and support. Deployed projects in the US, Europe, Asia, and Middle East.",
     accomplishments: [
@@ -63,8 +63,8 @@ export const experience: Role[] = [
   {
     title: "Lead Engineer",
     location: "Seattle, WA",
-    start: new Date("2008-04-01T00:00:00.000Z"),
-    end: new Date("2010-04-01T00:00:00.000Z"),
+    start: "2008-04-01T00:00:00.000Z",
+    end: "2010-04-01T00:00:00.000Z",
     role:
       'Co-founded a digital agency focused on emerging multi-user natural interaction paradigms. Implemented <a href="/engineer">novel user interfaces</a> using emerging hardware and software technologies.',
     accomplishments: [
@@ -76,8 +76,8 @@ export const experience: Role[] = [
     company: '<a href="https://microsoft.com">Microsoft</a>',
     title: "Lead Engineer",
     location: "Redmond, WA",
-    start: new Date("2006-05-01T00:00:00.000Z"),
-    end: new Date("2007-05-01T00:00:00.000Z"),
+    start: "2006-05-01T00:00:00.000Z",
+    end: "2007-05-01T00:00:00.000Z",
     role:
       'Architected and implemented <a href="/project/surface_launch">high-polish demo applications</a> for the not-yet-announced <a href="https://en.wikipedia.org/wiki/Microsoft_PixelSense">Microsoft Surface touch table</a> as a contractor.',
     accomplishments: [
@@ -92,8 +92,8 @@ export const additional: Role[] = [
     company: '<a href="https://endquote.com">Endquote</a>',
     title: "Owner, Software Engineer",
     location: "Seattle, WA",
-    start: new Date("2005-09-01T00:00:00.000Z"),
-    end: new Date("2008-04-01T00:00:00.000Z"),
+    start: "2005-09-01T00:00:00.000Z",
+    end: "2008-04-01T00:00:00.000Z",
     role:
       "Worked as a freelance developer for digital agencies, leading front-end development of interactive web projects.",
     accomplishments: [
@@ -106,8 +106,8 @@ export const additional: Role[] = [
     company: '<a href="https://smashingideas.com">Smashing Ideas</a>',
     title: "Software Engineer",
     location: "Seattle, WA",
-    start: new Date("2003-01-01T00:00:00.000Z"),
-    end: new Date("2005-10-01T00:00:00.000Z"),
+    start: "2003-01-01T00:00:00.000Z",
+    end: "2005-10-01T00:00:00.000Z",
     role:
       "Led the engineering of web-based interactive and gaming projects for clients such as Adobe, Disney, Nintendo, and Nickelodeon.",
     accomplishments: [],
@@ -116,8 +116,8 @@ export const additional: Role[] = [
     company: "Saltmine",
     title: "Software Engineer",
     location: "Seattle, WA",
-    start: new Date("1999-01-01T00:00:00.000Z"),
-    end: new Date("2003-01-01T00:00:00.000Z"),
+    start: "1999-01-01T00:00:00.000Z",
+    end: "2003-01-01T00:00:00.000Z",
     role:
       "Led the development of web projects for clients such as Microsoft, Seattle's Best Coffee, Washington Mutual, and AT&T that pushed the boundaries of the web at the time.",
     accomplishments: [],
@@ -126,8 +126,8 @@ export const additional: Role[] = [
     company: '<a href="https://real.com">Real Networks</a>',
     title: "Intern, Web Developer",
     location: "Seattle, WA",
-    start: new Date("1998-06-01T00:00:00.000Z"),
-    end: new Date("1998-08-30T00:00:00.000Z"),
+    start: "1998-06-01T00:00:00.000Z",
+    end: "1998-08-30T00:00:00.000Z",
     role:
       "Built marketing content for the high-traffic real.com site using the limited capabilities of early-generation browsers.",
     accomplishments: [],
@@ -139,8 +139,8 @@ export const education: Role[] = [
     company: "Art Institute of Seattle",
     title: "AA in Multimedia",
     location: "Seattle, WA",
-    start: new Date("1997-06-01T00:00:00.000Z"),
-    end: new Date("1999-01-01T00:00:00.000Z"),
+    start: "1997-06-01T00:00:00.000Z",
+    end: "1999-01-01T00:00:00.000Z",
     role:
       '"Multimedia" was defined literally in this program to include painting, drawing, lighting, video and audio production, typography, graphic design, and computer programming.',
     accomplishments: [],
@@ -151,7 +151,7 @@ export interface Volunteer {
   entity: string;
   link: string;
   location: string;
-  list: { date: Date; role: string }[];
+  list: { date: string; role: string }[];
 }
 
 export const volunteering: Volunteer[] = [
@@ -161,12 +161,12 @@ export const volunteering: Volunteer[] = [
     location: "San Francisco, CA",
     list: [
       {
-        date: new Date("2018-03-01T00:00:00.000Z"),
+        date: "2018-03-01T00:00:00.000Z",
         role:
           'Recruited and managed volunteers for various art+tech events, from small workshops to one-night events to a <a href="https://festival.codame.com">multi-day festival and conference</a>',
       },
       {
-        date: new Date("2016-11-01T00:00:00.000Z"),
+        date: "2016-11-01T00:00:00.000Z",
         role:
           'Assisted in various roles at the "<a href="https://www.facebook.com/events/172984059815354/">Artificial Experiences</a>" event',
       },
@@ -178,7 +178,7 @@ export const volunteering: Volunteer[] = [
     location: "San Francisco, CA",
     list: [
       {
-        date: new Date("2017-03-01T00:00:00.000Z"),
+        date: "2017-03-01T00:00:00.000Z",
         role: `Produced "<a href="/project/meta_mirror">Meta Mirror</a>", a projection piece at the "Luminary" event`,
       },
     ],
@@ -189,7 +189,7 @@ export const volunteering: Volunteer[] = [
     location: "San Francisco, CA",
     list: [
       {
-        date: new Date("2016-04-01T00:00:00.000Z"),
+        date: "2016-04-01T00:00:00.000Z",
         role:
           'Assisted in various roles at the <a href="http://gafest2016.wpengine.com/">2016 Gray Area Festival</a>',
       },
@@ -199,7 +199,7 @@ export const volunteering: Volunteer[] = [
 
 export interface Honor {
   title: string;
-  date: Date;
+  date: string;
   entity: string;
   description: string;
 }
@@ -207,34 +207,34 @@ export interface Honor {
 export const honors: Honor[] = [
   {
     title: "Feature, Communication Arts Design Annual 2016",
-    date: new Date("2016-08-01T00:00:00.000Z"),
+    date: "2016-08-01T00:00:00.000Z",
     entity: "Communication Arts",
     description:
       'Stimulant was chosen as the subject for <a href="http://www.commarts.com/features/stimulant">an in-depth feature in Communication Arts</a>, an honor given to a single agency each year.',
   },
   {
     title: "Seattle Interactive Conference Session",
-    date: new Date("2014-10-01T00:00:00.000Z"),
+    date: "2014-10-01T00:00:00.000Z",
     entity: "Seattle Interactive Conference",
     description: `Participated in a panel discussion with other designers and developers of the <a href="/project/db_cube">Microsoft Cube</a> installation which was exhibited at the conference.`,
   },
   {
     title: "MIX 11 Session",
-    date: new Date("2011-04-01T00:00:00.000Z"),
+    date: "2011-04-01T00:00:00.000Z",
     entity: "Microsoft",
     description:
       "Participated in a panel discussion at the Microsoft MIX conference on the future of natural user interfaces.",
   },
   {
     title: "Microsoft Surface MVP",
-    date: new Date("2011-01-01T00:00:00.000Z"),
+    date: "2011-01-01T00:00:00.000Z",
     entity: "Microsoft",
     description:
       'Included in the <a href="https://mvp.microsoft.com/">Microsoft MVP program</a> under the Surface discipline, first awarded in 2011 and renewed in 2012 and 2013.',
   },
   {
     title: "US Patent 8775973B2",
-    date: new Date(2011),
+    date: new Date(2011).toUTCString(),
     entity: "Microsoft",
     description: `Issued for the <a href="http://www.google.com/patents/US8775973B2">image browsing interface</a> in <a href="/project/bing">the Bing application</a> that Stimulant developed for the Microsoft Surface table.`,
   },
@@ -242,7 +242,7 @@ export const honors: Honor[] = [
 
 export interface Award {
   project: string;
-  list: { title: string; date: Date; entity: string }[];
+  list: { title: string; date: string; entity: string }[];
 }
 
 export const awards: Award[] = [
@@ -251,19 +251,19 @@ export const awards: Award[] = [
     list: [
       {
         title: "Design Award (Merit)",
-        date: new Date(2017),
+        date: new Date(2017).toUTCString(),
         entity: "How Interactive",
       },
       {
         title:
           '<a href="https://www.horizoninteractiveawards.com/kiosk-awards/2016/">Interactive Award, Gold</a>',
-        date: new Date(2016),
+        date: new Date(2016).toUTCString(),
         entity: "Horizon Interactive Awards",
       },
       {
         title:
           '<a href="https://thefwa.com/cases/skyspace-la-immersive-experiences">The FWA of the Day</a>',
-        date: new Date(2016),
+        date: new Date(2016).toUTCString(),
         entity: "The FWA",
       },
     ],
@@ -274,7 +274,7 @@ export const awards: Award[] = [
       {
         title:
           '<a href="http://www.teaconnect.org/Thea-Awards/Past-Awards/index.cfm?id=6301&redirect=y">Thea Awards for Outstanding Achievement</a>',
-        date: new Date(2015),
+        date: new Date(2015).toUTCString(),
         entity: "Themed Entertainment Association",
       },
     ],
@@ -284,7 +284,7 @@ export const awards: Award[] = [
     list: [
       {
         title: "Merit Award",
-        date: new Date(2013),
+        date: new Date(2013).toUTCString(),
         entity: "How Interactive Design Awards",
       },
     ],
@@ -294,7 +294,7 @@ export const awards: Award[] = [
     list: [
       {
         title: "Best Museum Environment (Gold)",
-        date: new Date(2013),
+        date: new Date(2013).toUTCString(),
         entity: "Event Design Awards",
       },
     ],
@@ -304,13 +304,13 @@ export const awards: Award[] = [
     list: [
       {
         title: "Merit Award",
-        date: new Date(2013),
+        date: new Date(2013).toUTCString(),
         entity: "How Interactive Design Awards",
       },
       {
         title:
           '<a href="http://awards.ixda.org/entry/2012/looploop/">Winner "Best in Category, Expressing" and "Best in Show"</a>',
-        date: new Date(2012),
+        date: new Date(2012).toUTCString(),
         entity: "IxDA Interaction Awards",
       },
     ],
@@ -320,27 +320,27 @@ export const awards: Award[] = [
     list: [
       {
         title: "Best Tradeshow Exhibit (Gold)",
-        date: new Date(2013),
+        date: new Date(2013).toUTCString(),
         entity: "Event Marketer Ex Awards",
       },
       {
         title: "Best Use of Technology (Gold)",
-        date: new Date(2013),
+        date: new Date(2013).toUTCString(),
         entity: "Event Design Awards",
       },
       {
         title: "Merit Award",
-        date: new Date(2013),
+        date: new Date(2013).toUTCString(),
         entity: "How Interactive Design Awards",
       },
       {
         title: "Experiential Exhibits (Gold)",
-        date: new Date(2012),
+        date: new Date(2012).toUTCString(),
         entity: "Exhibit Design Awards",
       },
       {
         title: "Best Use of a Single Technology (Silver)",
-        date: new Date(2012),
+        date: new Date(2012).toUTCString(),
         entity: "Event Technology Awards",
       },
     ],
