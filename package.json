@@ -11,9 +11,11 @@
     "@fortawesome/fontawesome-free": "5.13.0",
     "bootstrap": "4.5.0",
     "clone": "2.1.2",
+    "html-to-react": "1.4.3",
     "isomorphic-unfetch": "3.0.0",
     "next": "9.4.2",
     "react": "16.13.1",
+    "react-bootstrap": "1.0.1",
     "react-dom": "16.13.1"
   },
   "devDependencies": {

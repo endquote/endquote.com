@@ -1,15 +1,16 @@
 import fetch from "isomorphic-unfetch";
 import { FC, useEffect, useRef, useState } from "react";
+import { Button, Col, Form, Row } from "react-bootstrap";
 import {
   SUBSCRIBE_API,
   SUBSCRIBE_APIKEY,
   SUBSCRIBE_LIST,
 } from "../data/constants";
 
-interface Props {
+type Props = {
   strings: any;
   invert: boolean;
-}
+};
 
 export const Subscribe: FC<Props> = ({ strings, invert = false }) => {
   const email = useRef<HTMLInputElement>();
@@ -53,11 +54,12 @@ export const Subscribe: FC<Props> = ({ strings, invert = false }) => {
   }
 
   return (
-    <form onSubmit={onSubmit} method="POST" action={SUBSCRIBE_API}>
-      <input type="hidden" name="list" value={SUBSCRIBE_LIST} />
-      <div className="row">
-        <div className={`col col-sm-12 col-md-8 col-lg-8 pb-3`}>
-          <input
+    <Form onSubmit={onSubmit} method="POST" action={SUBSCRIBE_API}>
+      <Form.Control type="hidden" name="list" value={SUBSCRIBE_LIST} />
+      <Row>
+        <Col sm={12} md={8} lg={8} className={`pb-3`}>
+          <Form.Control
+            type="email"
             ref={email}
             name="email"
             className={`form-control ${
@@ -66,19 +68,18 @@ export const Subscribe: FC<Props> = ({ strings, invert = false }) => {
             autoComplete="email"
             placeholder={submitStates[submitState]}
           />
-        </div>
-        <div className={`col col-sm-12 col-md-4 col-lg-4`}>
-          <button
+        </Col>
+        <Col sm={12} md={4} lg={4}>
+          <Button
+            variant={invert ? "outline-light" : "outline-dark"}
             type="submit"
-            className={`btn w-100 ${
-              invert ? "btn-outline-light" : "btn-outline-dark"
-            }`}
+            className={`btn w-100`}
             onClick={onSubmit}
           >
             {strings.submit}
-          </button>
-        </div>
-      </div>
-    </form>
+          </Button>
+        </Col>
+      </Row>
+    </Form>
   );
 };

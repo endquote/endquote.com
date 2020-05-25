@@ -1,11 +1,13 @@
 import Head from "next/head";
 import Router from "next/router";
 import { FC, ReactNode, useEffect } from "react";
+import { Container } from "react-bootstrap";
 import { BASE_HREF, DEV } from "../data/constants";
 import { trackPageView } from "../utils/tracking";
-import Footer from "./Footer";
+import { Footer } from "./Footer";
+import { Header } from "./Header";
 
-interface Props {
+type Props = {
   title: string;
   active: string;
   strings: any;
@@ -14,7 +16,7 @@ interface Props {
   description: string;
   image: string;
   blockSearch: boolean;
-}
+};
 
 export const Layout: FC<Props> = ({
   title = "",
@@ -167,8 +169,8 @@ export const Layout: FC<Props> = ({
     <>
       {head()}
       <div className="bg-white pb-3">
-        {/* <Header active={active} strings={strings} /> */}
-        <div className="container content">{children}</div>
+        <Header active={active} strings={strings} />
+        <Container className="content">{children}</Container>
       </div>
 
       <Footer nosubscribe={nosubscribe} strings={strings} />
