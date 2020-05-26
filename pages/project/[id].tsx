@@ -1,7 +1,6 @@
 import { GetStaticPaths, GetStaticProps } from "next";
 import { FC } from "react";
 import { Col, Row } from "react-bootstrap";
-import { LayoutProps } from "../../components/Layout";
 import { ProjectImage } from "../../components/ProjectImage";
 import { Video } from "../../components/Video";
 import { Project } from "../../data/projects";
@@ -9,7 +8,8 @@ import { htmlToReact } from "../../utils/htmlToReact";
 
 type Props = {
   project: Project;
-} & LayoutProps;
+  strings: any;
+};
 
 export const ProjectPage: FC<Props> = ({ project, strings }) => {
   const video = (

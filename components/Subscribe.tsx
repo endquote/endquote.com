@@ -9,7 +9,7 @@ import {
 
 type Props = {
   strings: any;
-  invert: boolean;
+  invert?: boolean;
 };
 
 export const Subscribe: FC<Props> = ({ strings, invert = false }) => {

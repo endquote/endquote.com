@@ -1,18 +1,26 @@
 import clone from "clone";
+import { ContentItem } from "../components/ContentCard";
 
-export interface IssueDef {
-  id: number;
+interface IssueDef {
+  id: string;
   date: string;
   title: string;
   intro: string;
   summary: string;
   draft?: boolean;
-  links: { id: string; title: string; link: string; summary: string }[];
+  links: IssueLinkDef[];
+}
+
+interface IssueLinkDef {
+  id: string;
+  title: string;
+  link: string;
+  summary: string;
 }
 
 const issueDefs: IssueDef[] = [
   {
-    id: 1,
+    id: "1",
     date: "2019-11-07T00:00:00.000Z",
     title: "Creative Tech #1: The Robot Takeover",
     intro:
@@ -122,7 +130,7 @@ const issueDefs: IssueDef[] = [
     ],
   },
   {
-    id: 2,
+    id: "2",
     date: "2019-12-10T00:00:00.000Z",
     title: "Creative Tech #2: Reality Reproduction",
     intro:
@@ -191,7 +199,7 @@ const issueDefs: IssueDef[] = [
     ],
   },
   {
-    id: 3,
+    id: "3",
     date: "2020-01-15T00:00:00.000Z",
     title: "Creative Tech #3: Making Music with Cameras",
     intro:
@@ -230,7 +238,7 @@ const issueDefs: IssueDef[] = [
     ],
   },
   {
-    id: 4,
+    id: "4",
     date: "2020-02-18T00:00:00.000Z",
     title: "Creative Tech #4: AR Inevitable?",
     intro:
@@ -291,7 +299,7 @@ const issueDefs: IssueDef[] = [
     ],
   },
   {
-    id: 5,
+    id: "5",
     date: "2020-03-24T00:00:00.000Z",
     title: "Creative Tech #5: Can We Talk About Something Else?",
     intro:
@@ -337,7 +345,7 @@ const issueDefs: IssueDef[] = [
     ],
   },
   {
-    id: 6,
+    id: "6",
     date: "2020-04-22T00:00:00.000Z",
     title: "Creative Tech #6: What Day Is It Again?",
     intro:
@@ -391,10 +399,11 @@ const issueDefs: IssueDef[] = [
   },
 ];
 
-export interface Issue extends IssueDef {
-  href: string;
-  link: string;
-  image: string | null;
+export interface Issue extends ContentItem {
+  date: string;
+  draft?: boolean;
+  intro: string;
+  links: ContentItem[];
 }
 
 export const issues: Issue[] = issueDefs
@@ -406,12 +415,18 @@ export const issues: Issue[] = issueDefs
       image:
         i.links && i.links.length
           ? `images/issues/${i.id}/${i.links[0].id}.jpg`
-          : null,
+          : "",
       date: i.date || new Date().toUTCString(),
+      links: i.links.map((l) => {
+        return {
+          ...l,
+          image: `/images/issues/${i.id}/${l.id}.jpg`,
+        };
+      }),
     };
   })
   .sort((a, b) => {
-    return new Date(b.date).getTime() - new Date(a.date).getTime();
+    return Date.parse(b.date) - Date.parse(a.date);
   });
 
 export const index = issues.map((i) => {
@@ -421,6 +436,6 @@ export const index = issues.map((i) => {
   return i;
 });
 
-export function query(id: number): Issue | undefined {
+export function query(id: string): Issue | undefined {
   return issues.find((i) => i.id === id);
 }

@@ -1,3 +1,5 @@
+import { ContentItem } from "../components/ContentCard";
+
 interface PostDef {
   id: string;
   title: string;
@@ -25,10 +27,9 @@ const postDefs: PostDef[] = [
   },
 ];
 
-export interface Post extends PostDef {
-  href: string;
-  link: string;
-  image: string;
+export interface Post extends ContentItem {
+  draft?: boolean;
+  date: string;
 }
 
 export const posts: Post[] = postDefs
@@ -42,7 +43,7 @@ export const posts: Post[] = postDefs
     };
   })
   .sort((a, b) => {
-    return new Date(b.date).getTime() - new Date(a.date).getTime();
+    return Date.parse(b.date) - Date.parse(a.date);
   });
 
 export function query(id: string): Post | undefined {
