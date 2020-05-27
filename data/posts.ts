@@ -39,7 +39,7 @@ export const posts: Post[] = postDefs
       href: "/post/[id]",
       link: `/post/${p.id}`,
       image: `/posts/${p.id}/image.jpg`,
-      date: p.date || new Date().toUTCString(),
+      date: p.date || new Date().toISOString(),
     };
   })
   .sort((a, b) => {

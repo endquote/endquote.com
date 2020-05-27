@@ -1,0 +1,22 @@
+/* shrink email only on the ipad breakpoint */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .email {
+    font-size: 1rem;
+  }
+}
+
+@media screen {
+  .webLink {
+    display: none;
+  }
+}
+
+@media print {
+  .headline {
+    font-size: 1.4rem;
+  }
+}
+
+.noline {
+  text-decoration: none !important;
+}

@@ -416,7 +416,7 @@ export const issues: Issue[] = issueDefs
         i.links && i.links.length
           ? `images/issues/${i.id}/${i.links[0].id}.jpg`
           : "",
-      date: i.date || new Date().toUTCString(),
+      date: i.date || new Date().toISOString(),
       links: i.links.map((l) => {
         return {
           ...l,

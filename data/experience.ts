@@ -4,11 +4,11 @@ export interface Role {
   location: string;
   start: string;
   end?: string;
-  role: string;
+  desc: string;
   accomplishments: string[];
 }
 
-export const skills: string[] = [
+const skills: string[] = [
   "recruiting and management of engineering employees, contractors, and vendors",
   "front-end and behind-the-scenes software development with a modern web stack",
   "project concepting, scoping and estimation",
@@ -17,13 +17,13 @@ export const skills: string[] = [
   "design and implementation of QA and CI/CD processes",
 ];
 
-export const experience: Role[] = [
+const roles: Role[] = [
   {
     company: '<a href="https://www.playstation.com/en-us/">PlayStation</a>',
     title: "Senior Manager, Design Technology",
     location: "San Francisco, CA",
     start: "2020-05-01T00:00:00.000Z",
-    role:
+    desc:
       "Building teams, tools, and processes that help the UX group at PlayStation push the boundaries of play.",
     accomplishments: [],
   },
@@ -34,7 +34,7 @@ export const experience: Role[] = [
     location: "San Francisco, CA",
     start: "2018-07-01T00:00:00.000Z",
     end: "2019-09-20T00:00:00.000Z",
-    role:
+    desc:
       'Led a distributed team that designed and implemented hardware platforms behind large-scale immersive experiences for agency clients and <a href="https://www.msgsphere.com">MSG Sphere</a>.',
     accomplishments: [
       "Directed the production of playback systems for high-resolution video content using projection, LED, and traditional displays.",
@@ -49,7 +49,7 @@ export const experience: Role[] = [
     location: "San Francisco, CA",
     start: "2010-04-01T00:00:00.000Z",
     end: "2018-04-01T00:00:00.000Z",
-    role:
+    desc:
       "Managed all technical disciplines of a digital agency across multiple offices, including software development, systems engineering, QA, deployment, and support. Deployed projects in the US, Europe, Asia, and Middle East.",
     accomplishments: [
       "Recruited engineering staff, freelancers, and vendors, converging a broad set of capabilities to apply to client projects.",
@@ -65,7 +65,7 @@ export const experience: Role[] = [
     location: "Seattle, WA",
     start: "2008-04-01T00:00:00.000Z",
     end: "2010-04-01T00:00:00.000Z",
-    role:
+    desc:
       'Co-founded a digital agency focused on emerging multi-user natural interaction paradigms. Implemented <a href="/engineer">novel user interfaces</a> using emerging hardware and software technologies.',
     accomplishments: [
       'Architected and implemented production applications for Microsoft like <a href="/project/bing">Bing for Surface</a>, <a href="/project/local_impact_map">Local Impact Map</a>, and <a href="/project/tuva">Project Tuva</a>.',
@@ -78,7 +78,7 @@ export const experience: Role[] = [
     location: "Redmond, WA",
     start: "2006-05-01T00:00:00.000Z",
     end: "2007-05-01T00:00:00.000Z",
-    role:
+    desc:
       'Architected and implemented <a href="/project/surface_launch">high-polish demo applications</a> for the not-yet-announced <a href="https://en.wikipedia.org/wiki/Microsoft_PixelSense">Microsoft Surface touch table</a> as a contractor.',
     accomplishments: [
       "Embedded with the design team to translate static design comps into fluid, functioning software.",
@@ -87,14 +87,14 @@ export const experience: Role[] = [
   },
 ];
 
-export const additional: Role[] = [
+const additional: Role[] = [
   {
     company: '<a href="https://endquote.com">Endquote</a>',
     title: "Owner, Software Engineer",
     location: "Seattle, WA",
     start: "2005-09-01T00:00:00.000Z",
     end: "2008-04-01T00:00:00.000Z",
-    role:
+    desc:
       "Worked as a freelance developer for digital agencies, leading front-end development of interactive web projects.",
     accomplishments: [
       'Implemented projects with agencies like <a href="https://www.possible.com">POSSIBLE</a>, <a href="http://secondstory.com">Second Story</a>, and <a href="http://www.bwco.info">Belle & Wissell</a>.',
@@ -108,7 +108,7 @@ export const additional: Role[] = [
     location: "Seattle, WA",
     start: "2003-01-01T00:00:00.000Z",
     end: "2005-10-01T00:00:00.000Z",
-    role:
+    desc:
       "Led the engineering of web-based interactive and gaming projects for clients such as Adobe, Disney, Nintendo, and Nickelodeon.",
     accomplishments: [],
   },
@@ -118,7 +118,7 @@ export const additional: Role[] = [
     location: "Seattle, WA",
     start: "1999-01-01T00:00:00.000Z",
     end: "2003-01-01T00:00:00.000Z",
-    role:
+    desc:
       "Led the development of web projects for clients such as Microsoft, Seattle's Best Coffee, Washington Mutual, and AT&T that pushed the boundaries of the web at the time.",
     accomplishments: [],
   },
@@ -128,20 +128,20 @@ export const additional: Role[] = [
     location: "Seattle, WA",
     start: "1998-06-01T00:00:00.000Z",
     end: "1998-08-30T00:00:00.000Z",
-    role:
+    desc:
       "Built marketing content for the high-traffic real.com site using the limited capabilities of early-generation browsers.",
     accomplishments: [],
   },
 ];
 
-export const education: Role[] = [
+const education: Role[] = [
   {
     company: "Art Institute of Seattle",
     title: "AA in Multimedia",
     location: "Seattle, WA",
     start: "1997-06-01T00:00:00.000Z",
     end: "1999-01-01T00:00:00.000Z",
-    role:
+    desc:
       '"Multimedia" was defined literally in this program to include painting, drawing, lighting, video and audio production, typography, graphic design, and computer programming.',
     accomplishments: [],
   },
@@ -151,51 +151,43 @@ export interface Volunteer {
   entity: string;
   link: string;
   location: string;
-  list: { date: string; role: string }[];
+  date: string;
+  role: string;
 }
 
-export const volunteering: Volunteer[] = [
+const volunteering: Volunteer[] = [
   {
     entity: "CODAME",
     link: "http://codame.com",
     location: "San Francisco, CA",
-    list: [
-      {
-        date: "2018-03-01T00:00:00.000Z",
-        role:
-          'Recruited and managed volunteers for various art+tech events, from small workshops to one-night events to a <a href="https://festival.codame.com">multi-day festival and conference</a>',
-      },
-      {
-        date: "2016-11-01T00:00:00.000Z",
-        role:
-          'Assisted in various roles at the "<a href="https://www.facebook.com/events/172984059815354/">Artificial Experiences</a>" event',
-      },
-    ],
+    date: "2018-03-01T00:00:00.000Z",
+    role:
+      'Recruited and managed volunteers for various art+tech events, from small workshops to one-night events to a <a href="https://festival.codame.com">multi-day festival and conference</a>',
+  },
+  {
+    entity: "CODAME",
+    link: "http://codame.com",
+    location: "San Francisco, CA",
+    date: "2016-11-01T00:00:00.000Z",
+    role:
+      'Assisted in various roles at the "<a href="https://www.facebook.com/events/172984059815354/">Artificial Experiences</a>" event',
   },
   {
     entity: "Future Fires",
     link: "http://www.futurefires.com",
     location: "San Francisco, CA",
-    list: [
-      {
-        date: "2017-03-01T00:00:00.000Z",
-        role: `Produced "<a href="/project/meta_mirror">Meta Mirror</a>", a projection piece at the "Luminary" event`,
-      },
-    ],
+    date: "2017-03-01T00:00:00.000Z",
+    role: `Produced "<a href="/project/meta_mirror">Meta Mirror</a>", a projection piece at the "Luminary" event`,
   },
   {
     entity: "Gray Area Foundation For The Arts",
     link: "http://grayarea.org",
     location: "San Francisco, CA",
-    list: [
-      {
-        date: "2016-04-01T00:00:00.000Z",
-        role:
-          'Assisted in various roles at the <a href="http://gafest2016.wpengine.com/">2016 Gray Area Festival</a>',
-      },
-    ],
+    date: "2016-04-01T00:00:00.000Z",
+    role:
+      'Assisted in various roles at the <a href="http://gafest2016.wpengine.com/">2016 Gray Area Festival</a>',
   },
-];
+].sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
 
 export interface Honor {
   title: string;
@@ -204,7 +196,7 @@ export interface Honor {
   description: string;
 }
 
-export const honors: Honor[] = [
+const honors: Honor[] = [
   {
     title: "Feature, Communication Arts Design Annual 2016",
     date: "2016-08-01T00:00:00.000Z",
@@ -234,115 +226,120 @@ export const honors: Honor[] = [
   },
   {
     title: "US Patent 8775973B2",
-    date: new Date(2011).toUTCString(),
+    date: new Date(2011, 0).toISOString(),
     entity: "Microsoft",
     description: `Issued for the <a href="http://www.google.com/patents/US8775973B2">image browsing interface</a> in <a href="/project/bing">the Bing application</a> that Stimulant developed for the Microsoft Surface table.`,
   },
-];
+].sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
 
 export interface Award {
+  title: string;
+  date: string;
+  entity: string;
   project: string;
-  list: { title: string; date: string; entity: string }[];
 }
 
-export const awards: Award[] = [
+const awards: Award[] = [
   {
     project: "skyspace",
-    list: [
-      {
-        title: "Design Award (Merit)",
-        date: new Date(2017).toUTCString(),
-        entity: "How Interactive",
-      },
-      {
-        title:
-          '<a href="https://www.horizoninteractiveawards.com/kiosk-awards/2016/">Interactive Award, Gold</a>',
-        date: new Date(2016).toUTCString(),
-        entity: "Horizon Interactive Awards",
-      },
-      {
-        title:
-          '<a href="https://thefwa.com/cases/skyspace-la-immersive-experiences">The FWA of the Day</a>',
-        date: new Date(2016).toUTCString(),
-        entity: "The FWA",
-      },
-    ],
+    title: "Design Award (Merit)",
+    date: new Date(2017, 0).toISOString(),
+    entity: "How Interactive",
+  },
+  {
+    project: "skyspace",
+    title:
+      '<a href="https://www.horizoninteractiveawards.com/kiosk-awards/2016/">Interactive Award, Gold</a>',
+    date: new Date(2016, 0).toISOString(),
+    entity: "Horizon Interactive Awards",
+  },
+  {
+    project: "skyspace",
+    title:
+      '<a href="https://thefwa.com/cases/skyspace-la-immersive-experiences">The FWA of the Day</a>',
+    date: new Date(2016, 0).toISOString(),
+    entity: "The FWA",
   },
   {
     project: "one_world_observatory",
-    list: [
-      {
-        title:
-          '<a href="http://www.teaconnect.org/Thea-Awards/Past-Awards/index.cfm?id=6301&redirect=y">Thea Awards for Outstanding Achievement</a>',
-        date: new Date(2015).toUTCString(),
-        entity: "Themed Entertainment Association",
-      },
-    ],
+    title:
+      '<a href="http://www.teaconnect.org/Thea-Awards/Past-Awards/index.cfm?id=6301&redirect=y">Thea Awards for Outstanding Achievement</a>',
+    date: new Date(2015, 0).toISOString(),
+    entity: "Themed Entertainment Association",
   },
   {
+    title: "Merit Award",
     project: "bing",
-    list: [
-      {
-        title: "Merit Award",
-        date: new Date(2013).toUTCString(),
-        entity: "How Interactive Design Awards",
-      },
-    ],
+    date: new Date(2013, 0).toISOString(),
+    entity: "How Interactive Design Awards",
   },
   {
     project: "ultrabook",
-    list: [
-      {
-        title: "Best Museum Environment (Gold)",
-        date: new Date(2013).toUTCString(),
-        entity: "Event Design Awards",
-      },
-    ],
+    title: "Best Museum Environment (Gold)",
+    date: new Date(2013, 0).toISOString(),
+    entity: "Event Design Awards",
   },
   {
     project: "looploop",
-    list: [
-      {
-        title: "Merit Award",
-        date: new Date(2013).toUTCString(),
-        entity: "How Interactive Design Awards",
-      },
-      {
-        title:
-          '<a href="http://awards.ixda.org/entry/2012/looploop/">Winner "Best in Category, Expressing" and "Best in Show"</a>',
-        date: new Date(2012).toUTCString(),
-        entity: "IxDA Interaction Awards",
-      },
-    ],
+    title: "Merit Award",
+    date: new Date(2013, 0).toISOString(),
+    entity: "How Interactive Design Awards",
+  },
+  {
+    project: "looploop",
+    title:
+      '<a href="http://awards.ixda.org/entry/2012/looploop/">Winner "Best in Category, Expressing" and "Best in Show"</a>',
+    date: new Date(2012, 0).toISOString(),
+    entity: "IxDA Interaction Awards",
   },
   {
     project: "intel_ces",
-    list: [
-      {
-        title: "Best Tradeshow Exhibit (Gold)",
-        date: new Date(2013).toUTCString(),
-        entity: "Event Marketer Ex Awards",
-      },
-      {
-        title: "Best Use of Technology (Gold)",
-        date: new Date(2013).toUTCString(),
-        entity: "Event Design Awards",
-      },
-      {
-        title: "Merit Award",
-        date: new Date(2013).toUTCString(),
-        entity: "How Interactive Design Awards",
-      },
-      {
-        title: "Experiential Exhibits (Gold)",
-        date: new Date(2012).toUTCString(),
-        entity: "Exhibit Design Awards",
-      },
-      {
-        title: "Best Use of a Single Technology (Silver)",
-        date: new Date(2012).toUTCString(),
-        entity: "Event Technology Awards",
-      },
-    ],
+    title: "Best Tradeshow Exhibit (Gold)",
+    date: new Date(2013, 0).toISOString(),
+    entity: "Event Marketer Ex Awards",
   },
-];
+  {
+    project: "intel_ces",
+    title: "Best Use of Technology (Gold)",
+    date: new Date(2013, 0).toISOString(),
+    entity: "Event Design Awards",
+  },
+  {
+    project: "intel_ces",
+    title: "Merit Award",
+    date: new Date(2013, 0).toISOString(),
+    entity: "How Interactive Design Awards",
+  },
+  {
+    project: "intel_ces",
+    title: "Experiential Exhibits (Gold)",
+    date: new Date(2012, 0).toISOString(),
+    entity: "Exhibit Design Awards",
+  },
+  {
+    project: "intel_ces",
+    title: "Best Use of a Single Technology (Silver)",
+    date: new Date(2012, 0).toISOString(),
+    entity: "Event Technology Awards",
+  },
+].sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
+
+export interface Experience {
+  skills: string[];
+  roles: Role[];
+  additional: Role[];
+  education: Role[];
+  volunteering: Volunteer[];
+  honors: Honor[];
+  awards: Award[];
+}
+
+export const experience: Experience = {
+  skills,
+  roles,
+  additional,
+  education,
+  volunteering,
+  honors,
+  awards,
+};
