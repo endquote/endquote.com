@@ -1,0 +1,29 @@
+.popup {
+  width: 300px;
+  background-color: white;
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid black;
+  box-shadow: 4px 4px 3px 0px rgba(0, 0, 0, 0.2);
+  line-height: 1.2;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 150ms ease-in;
+}
+
+.shown {
+  opacity: 1;
+  pointer-events: all;
+  transition: opacity 150ms ease-out;
+}
+
+.mapContainer {
+  height: 600px;
+}
+
+/* Medium devices (tablets, less than 992px) */
+@media (max-width: 991.98px) {
+  .mapContainer {
+    height: 300px;
+  }
+}

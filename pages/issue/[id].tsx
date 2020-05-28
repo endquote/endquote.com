@@ -8,14 +8,12 @@ import { Issue } from "../../data/issues";
 import { htmlToReact } from "../../utils/htmlToReact";
 
 type Props = {
-  image?: string;
   issue: Issue;
   strings: any;
   subscribeStrings: any;
 };
 
 export const IssuePage: FC<Props> = ({
-  image = "",
   issue,
   strings = {},
   subscribeStrings = {},
