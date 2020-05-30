@@ -1,0 +1,279 @@
+.quad,
+.anim .number {
+  animation-iteration-count: 1;
+  animation-timing-function: ease;
+  animation-duration: 6s;
+}
+
+.tile {
+  text-align: center;
+  font-family: sans-serif;
+  user-select: none;
+  cursor: default;
+  border: solid black;
+  background-color: white;
+}
+
+.anim {
+  pointer-events: none;
+  margin-right: -50%;
+  z-index: 99;
+  opacity: 0;
+}
+
+.playing .anim {
+  opacity: 1;
+}
+
+/* the top-right quad appears at 25% */
+@keyframes quad1 {
+  3% {
+    opacity: 0;
+    animation-timing-function: steps(1);
+  }
+  25% {
+    opacity: 1;
+    animation-timing-function: steps(1);
+  }
+}
+
+.playing .quad1 {
+  animation-name: quad1;
+}
+
+/* the bottom-left quad appears at 75% */
+@keyframes quad2 {
+  3% {
+    opacity: 0;
+    animation-timing-function: steps(1);
+  }
+  75% {
+    opacity: 1;
+    animation-timing-function: steps(1);
+  }
+}
+
+.playing .quad2 {
+  animation-name: quad2;
+}
+
+/* the bottom-right quad appears at 50% */
+@keyframes quad3 {
+  3% {
+    opacity: 0;
+    animation-timing-function: steps(1);
+  }
+  50% {
+    opacity: 1;
+    animation-timing-function: steps(1);
+  }
+}
+
+.playing .quad3 {
+  animation-name: quad3;
+}
+
+/* SERIES 0 - ROTATE */
+
+@keyframes anim0-quad {
+  0% {
+    transform: none;
+  }
+  25% {
+    transform: translateX(100%) rotateZ(90deg);
+  }
+  50% {
+    transform: translateX(100%) rotateZ(90deg) translateX(100%) rotateZ(90deg);
+  }
+  75% {
+    transform: translateX(100%) rotateZ(90deg) translateX(100%) rotateZ(90deg)
+      translateX(100%) rotateZ(90deg);
+  }
+  100% {
+    transform: translateX(100%) rotateZ(90deg) translateX(100%) rotateZ(90deg)
+      translateX(100%) rotateZ(90deg) translateX(100%) rotateZ(90deg);
+  }
+}
+
+.series0.playing .anim {
+  animation-name: anim0-quad;
+}
+
+@keyframes anim0-number {
+  0% {
+    transform: translateZ(200px);
+  }
+  25% {
+    transform: translateZ(200px) rotateZ(-90deg);
+  }
+  50% {
+    transform: translateZ(200px) rotateZ(-90deg) rotateZ(-90deg);
+  }
+  75% {
+    transform: translateZ(200px) rotateZ(-90deg) rotateZ(-90deg) rotateZ(-90deg);
+  }
+  100% {
+    transform: translateZ(200px) rotateZ(-90deg) rotateZ(-90deg) rotateZ(-90deg)
+      rotateZ(-90deg);
+  }
+}
+
+.series0.playing .anim .number {
+  animation-name: anim0-number;
+}
+
+/* SERIES 1 - MIRROR */
+
+@keyframes anim1-quad {
+  0% {
+    transform: none;
+  }
+  25% {
+    transform: translateX(100%) rotateY(180deg);
+  }
+  50% {
+    transform: translateX(100%) rotateY(180deg) translateY(100%) rotateX(180deg);
+  }
+  75% {
+    transform: translateX(100%) rotateY(180deg) translateY(100%) rotateX(180deg)
+      translateX(100%) rotateY(180deg);
+  }
+  100% {
+    transform: translateX(100%) rotateY(180deg) translateY(100%) rotateX(180deg)
+      translateX(100%) rotateY(180deg) translateY(100%) rotateX(180deg);
+  }
+}
+
+.series1.playing .anim {
+  animation-name: anim1-quad;
+}
+
+@keyframes anim1-number {
+  0% {
+    transform: translateZ(200px);
+  }
+  25% {
+    transform: translateZ(200px) rotateY(-180deg);
+  }
+  50% {
+    transform: translateZ(200px) rotateY(-180deg) rotateX(-180deg);
+  }
+  75% {
+    transform: translateZ(200px) rotateY(-180deg) rotateX(-180deg)
+      rotateY(-180deg);
+  }
+  100% {
+    transform: translateZ(200px) rotateY(-180deg) rotateX(-180deg)
+      rotateY(-180deg) rotateX(-180deg);
+  }
+}
+
+.series1.playing .anim .number {
+  animation-name: anim1-number;
+}
+
+/* SERIES 2 - CROSS-MIRROR */
+
+@keyframes anim2-quad {
+  0% {
+    transform: none;
+  }
+  25% {
+    transform: translateX(100%) rotate3d(1, 1, 0, 180deg);
+  }
+  50% {
+    transform: translateX(100%) rotate3d(1, 1, 0, 180deg) translateX(100%)
+      rotate3d(0, 0, 1, 90deg);
+  }
+  75% {
+    transform: translateX(100%) rotate3d(1, 1, 0, 180deg) translateX(100%)
+      rotate3d(0, 0, 1, 90deg) translateX(-100%) rotate3d(-1, 1, 0, 180deg);
+  }
+  100% {
+    transform: translateX(100%) rotate3d(1, 1, 0, 180deg) translateX(100%)
+      rotate3d(0, 0, 1, 90deg) translateX(-100%) rotate3d(-1, 1, 0, 180deg)
+      translateX(-100%) rotate3d(0, 0, 1, -90deg);
+  }
+}
+
+.series2.playing .anim {
+  animation-name: anim2-quad;
+}
+
+@keyframes anim2-number {
+  0% {
+    transform: translateZ(200px);
+  }
+  25% {
+    transform: translateZ(200px) rotate3d(-1, -1, 0, -180deg);
+  }
+  50% {
+    transform: translateZ(200px) rotate3d(-1, -1, 0, -180deg)
+      rotate3d(0, 0, -1, -90deg);
+  }
+  75% {
+    transform: translateZ(200px) rotate3d(-1, -1, 0, -180deg)
+      rotate3d(0, 0, -1, -90deg) rotate3d(1, 1, 0, -180deg);
+  }
+  100% {
+    transform: translateZ(200px) rotate3d(-1, -1, 0, -180deg)
+      rotate3d(0, 0, -1, -90deg) rotate3d(1, 1, 0, -180deg)
+      rotate3d(0, 0, 1, 90deg);
+  }
+}
+
+.series2.playing .anim .number {
+  animation-name: anim2-number;
+}
+
+/* SERIES 3 - CROSS-REVERSE */
+
+@keyframes anim3-quad {
+  0% {
+    transform: none;
+  }
+  25% {
+    transform: translateX(100%) rotateX(180deg);
+  }
+  50% {
+    transform: translateX(100%) rotateX(180deg) translateY(-100%)
+      rotate3d(0, 0, 1, 180deg);
+  }
+  75% {
+    transform: translateX(100%) rotateX(180deg) translateY(-100%)
+      rotate3d(0, 0, 1, 180deg) translateX(100%) rotateX(180deg);
+  }
+  100% {
+    transform: translateX(100%) rotateX(180deg) translateY(-100%)
+      rotate3d(0, 0, 1, 180deg) translateX(100%) rotateX(180deg)
+      translateY(100%) rotate3d(0, 0, 1, 180deg);
+  }
+}
+
+.series3.playing .anim {
+  animation-name: anim3-quad;
+}
+
+@keyframes anim3-number {
+  0% {
+    transform: translateZ(200px);
+  }
+  25% {
+    transform: translateZ(200px) rotateX(-180deg);
+  }
+  50% {
+    transform: translateZ(200px) rotateX(-180deg) rotate3d(0, 0, -1, -180deg);
+  }
+  75% {
+    transform: translateZ(200px) rotateX(-180deg) rotate3d(0, 0, -1, -180deg)
+      rotateX(-180deg);
+  }
+  100% {
+    transform: translateZ(200px) rotateX(-180deg) rotate3d(0, 0, -1, -180deg)
+      rotateX(-180deg) rotate3d(0, 0, 1, -180deg);
+  }
+}
+
+.series3.playing .anim .number {
+  animation-name: anim3-number;
+}

@@ -1,0 +1,27 @@
+.method :global(.m) {
+  display: none;
+}
+
+.m0b :global(.m0b) {
+  display: block;
+}
+
+.m1b :global(.m1b) {
+  display: block;
+}
+
+.m0c :global(.m0c) {
+  display: block;
+}
+
+.m1c :global(.m1c) {
+  display: block;
+}
+
+.m2b :global(.m2b) {
+  display: block;
+}
+
+.m2c :global(.m2c) {
+  display: block;
+}
