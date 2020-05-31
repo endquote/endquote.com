@@ -1,6 +1,6 @@
 import { default as HtmlToReact } from "html-to-react";
 import Link from "next/link";
-import React from "react";
+import React, { ReactNode } from "react";
 import { PrintLink } from "../components/PrintLink";
 
 // https://github.com/aknuds1/html-to-react
@@ -17,7 +17,7 @@ const processingInstructions = [
   {
     // Turn <a> links into <Link> links
     // replaceChildren: true,
-    shouldProcessNode: function (node) {
+    shouldProcessNode: function (node: any): boolean {
       return (
         node.type === "tag" &&
         node.name === "a" &&
@@ -26,7 +26,11 @@ const processingInstructions = [
       );
     },
 
-    processNode: function (node, children, index) {
+    processNode: function (
+      node: any,
+      children: ReactNode[],
+      index: number
+    ): JSX.Element {
       const href = node.attribs.href.toLowerCase();
       if (href.match(/^\/project\/([^\/+])/)) {
         return (
@@ -51,14 +55,17 @@ const processingInstructions = [
   },
   {
     // Anything else
-    shouldProcessNode: function (node) {
+    shouldProcessNode: function (node: any): boolean {
       return true;
     },
     processNode: processNodeDefinitions.processDefaultNode,
   },
 ];
 
-export function htmlToReact(htmlInput) {
+export function htmlToReact(htmlInput?: string): JSX.Element {
+  if (!htmlInput) {
+    return <></>;
+  }
   return htmlToReactParser.parseWithInstructions(
     htmlInput,
     isValidNode,

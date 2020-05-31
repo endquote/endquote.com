@@ -80,7 +80,7 @@ class Feeds {
           title: project.title,
           content_html: project.description,
           image: `${BASE_HREF}/images/projects/${project.id}/640.jpg`,
-          date_published: project.date,
+          date_published: new Date(project.date),
         };
       }),
     });
@@ -95,14 +95,14 @@ class Feeds {
       home_page_url: `${BASE_HREF}/news`,
       feed_url: `${BASE_HREF}/issue/feed`,
       items: clone(issues)
-        .filter((i) => DEV || (!i.draft && i.date.getTime() < Date.now()))
+        .filter((i) => DEV || (!i.draft && Date.parse(i.date) < Date.now()))
         .map((issue) => {
           return {
             url: `${BASE_HREF}/issue/${issue.id}`,
             title: issue.title,
             content_html: issue.intro,
             image: `${BASE_HREF}/${issue.image}`,
-            date_published: issue.date,
+            date_published: new Date(issue.date),
           };
         }),
     });
@@ -117,13 +117,13 @@ class Feeds {
       home_page_url: `${BASE_HREF}/posts`,
       feed_url: `${BASE_HREF}/post/feed.json`,
       items: clone(posts)
-        .filter((p) => DEV || (!p.draft && p.date.getTime() < Date.now()))
+        .filter((p) => DEV || (!p.draft && Date.parse(p.date) < Date.now()))
         .map((post) => {
           return {
             url: `${BASE_HREF}/post/${post.id}`,
             title: post.title,
             image: `${BASE_HREF}/images/post/${post.id}.jpg`,
-            date_published: post.date,
+            date_published: new Date(post.date),
             content_html: post.summary,
           };
         }),
