@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { Col, Row } from "react-bootstrap";
-import { ContentCard, ContentItem } from "./ContentCard";
+import { ContentItem } from "../data/posts";
+import { ContentCard } from "./ContentCard";
 
 type Props = {
   items: Array<ContentItem>;

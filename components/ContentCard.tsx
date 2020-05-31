@@ -2,17 +2,9 @@ import classNames from "classnames";
 import Link from "next/link";
 import { FC, SyntheticEvent, useEffect, useRef, useState } from "react";
 import { Card } from "react-bootstrap";
+import { ContentItem } from "../data/posts";
 import { htmlToReact } from "../utils/htmlToReact";
 import css from "./ContentCard.module.scss";
-
-export type ContentItem = {
-  id: string;
-  title: string;
-  link: string;
-  image: string;
-  href?: string;
-  summary: string;
-};
 
 type Props = {
   item: ContentItem;

@@ -1,5 +1,5 @@
 import clone from "clone";
-import { ContentItem } from "../components/ContentCard";
+import { ContentItem } from "./posts";
 
 interface IssueDef {
   id: string;

@@ -1,4 +1,11 @@
-import { ContentItem } from "../components/ContentCard";
+export type ContentItem = {
+  id: string;
+  title: string;
+  link: string;
+  image: string;
+  href?: string;
+  summary: string;
+};
 
 interface PostDef {
   id: string;
