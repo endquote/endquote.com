@@ -9,17 +9,16 @@ import "../styles/bootstrap.scss";
 import "../styles/global.scss";
 
 export default function Endquote({ Component, pageProps }: AppProps) {
-  const strings = { subscribe: subscribeStrings, footer: footerStrings };
-
-  const content = pageProps.error ? (
-    <Error statusCode={pageProps.error} />
-  ) : (
-    <Component {...pageProps} />
-  );
-
   return (
-    <Layout {...pageProps} strings={strings}>
-      {content}
+    <Layout
+      {...pageProps}
+      strings={{ subscribe: subscribeStrings, footer: footerStrings }}
+    >
+      {pageProps.error ? (
+        <Error statusCode={pageProps.error} />
+      ) : (
+        <Component {...pageProps} />
+      )}
     </Layout>
   );
 }
