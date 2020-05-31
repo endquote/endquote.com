@@ -2,8 +2,8 @@
 export function trackEvent(
   category: string,
   action: string,
-  name: string,
-  value: number
+  name?: string,
+  value?: number
 ): void {
   // @ts-ignore
   const _paq = window._paq || [];
@@ -12,7 +12,7 @@ export function trackEvent(
 }
 
 // https://developer.matomo.org/guides/spa-tracking
-export function trackPageView(url: string): void {
+export function trackPageView(url?: string): void {
   // @ts-ignore
   const _paq = window._paq || [];
   console.log("trackPageView", url || "");
@@ -26,8 +26,8 @@ export function trackPageView(url: string): void {
 export function trackComponentEvent(
   filename: string,
   action: string,
-  name: string,
-  value: number
+  name?: string,
+  value?: number
 ): void {
   filename = filename.replace(/^components\//, "");
   filename = filename.replace(/^public\/posts\//, "");
