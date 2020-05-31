@@ -6,7 +6,8 @@
     "**/out": true,
     "**/vendor": true,
     "**/composer.*": true,
-    "**/tiles": true
+    "**/tiles": true,
+    "**/data/*.js": true
   },
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {

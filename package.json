@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
+    "dev": "yarn data && next dev",
+    "build": "yarn data && next build",
+    "start": "yarn data && next start",
+    "data": "tsc --module commonjs --target es5 --outdir data --esModuleInterop data/*.ts"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "5.13.0",
