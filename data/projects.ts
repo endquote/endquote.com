@@ -5,13 +5,14 @@ export interface Project {
   engineer: boolean;
   experimental: boolean;
   date: string;
-  skip?: number;
   subtitle: string;
   technologies: string;
   client: string;
   description: string;
   role: string;
+  skip?: number;
   audio?: boolean;
+  video?: boolean;
 }
 
 export const projects: Project[] = [
@@ -23,6 +24,7 @@ export const projects: Project[] = [
     experimental: false,
     date: "2017-07-01T00:00:00.000Z",
     skip: 20,
+    video: true,
     subtitle: "touch screens, LED effects, 3D microsite, CMS",
     technologies:
       "Node.js, JavaScript, WebGL, Chromium, openFrameworks, C++, third-party CMS",
@@ -41,6 +43,7 @@ export const projects: Project[] = [
     experimental: false,
     date: "2016-04-01T00:00:00.000Z",
     skip: 5,
+    video: true,
     subtitle: "five years, ten exhibits",
     technologies:
       "Unity, Silverlight, C#, Cinder, C++, Node.js, JavaScript, depth cameras",
@@ -59,6 +62,7 @@ export const projects: Project[] = [
     experimental: false,
     date: "2016-06-01T00:00:00.000Z",
     skip: 7,
+    video: true,
     subtitle: "360° projection, motion tracking, responsive lighting",
     technologies:
       "openFrameworks, C++, Node.js, JavaScript, WebGL, depth cameras",
@@ -77,6 +81,7 @@ export const projects: Project[] = [
     experimental: true,
     date: "2014-11-01T00:00:00.000Z",
     skip: 13,
+    video: true,
     subtitle: "audio-reactive dance installation",
     technologies: "Cinder, C++, depth cameras",
     client:
@@ -94,6 +99,7 @@ export const projects: Project[] = [
     experimental: false,
     date: "2014-03-01T00:00:00.000Z",
     skip: 16,
+    video: true,
     subtitle: "digital mirror to inspire innovation",
     technologies: "Cinder, C++, depth cameras",
     client:
@@ -110,6 +116,7 @@ export const projects: Project[] = [
     experimental: false,
     date: "2015-06-01T00:00:00.000Z",
     skip: 6,
+    video: true,
     subtitle: "ticket sales mapped on a large projection",
     technologies: "Cinder, C++, Node.js, JavaScript",
     client:
@@ -127,6 +134,7 @@ export const projects: Project[] = [
     experimental: false,
     date: "2015-09-01T00:00:00.000Z",
     skip: 17,
+    video: true,
     subtitle: "news and information in many form factors",
     technologies: "JavaScript",
     client:
@@ -144,6 +152,7 @@ export const projects: Project[] = [
     experimental: false,
     date: "2017-08-01T00:00:00.000Z",
     skip: 0,
+    video: true,
     subtitle: "physical guest tracking across digital exhibits",
     technologies:
       'Node.js, JavaScript, Unity, C#, <a href="https://quuppa.com">Quuppa BLE</a>',
@@ -162,6 +171,7 @@ export const projects: Project[] = [
     experimental: false,
     date: "2016-12-01T00:00:00.000Z",
     skip: 0,
+    video: true,
     subtitle: "headset-free augmented reality",
     technologies:
       "Unity, C#, RabbitMQ, depth cameras, DSLR cameras, speech-to-text APIs",
@@ -180,6 +190,7 @@ export const projects: Project[] = [
     experimental: false,
     date: "2015-03-01T00:00:00.000Z",
     skip: 8,
+    video: true,
     subtitle: "teleport around the city from above",
     technologies: "JavaScript",
     client:
@@ -197,6 +208,7 @@ export const projects: Project[] = [
     experimental: false,
     date: "2015-11-01T00:00:00.000Z",
     skip: 8,
+    video: true,
     subtitle: "zoom into the city",
     technologies: "JavaScript",
     client:
@@ -214,6 +226,7 @@ export const projects: Project[] = [
     experimental: false,
     date: "2011-04-01T00:00:00.000Z",
     skip: 6,
+    video: true,
     subtitle: "multi-user image search and maps",
     technologies: "WPF, C#",
     client:
@@ -230,6 +243,7 @@ export const projects: Project[] = [
     experimental: false,
     date: "2013-11-01T00:00:00.000Z",
     skip: 5,
+    video: true,
     subtitle: "transparent display and projection mapping",
     technologies: "WPF, C#",
     client:
@@ -247,6 +261,7 @@ export const projects: Project[] = [
     audio: true,
     date: "2011-10-01T00:00:00.000Z",
     skip: 4,
+    video: true,
     subtitle: "making music with one-inch screens",
     technologies: "C#, Python",
     // dead link https://stimulant.com/portfolio-item/looploop-for-sifteo-cubes/
@@ -265,6 +280,7 @@ export const projects: Project[] = [
     experimental: false,
     date: "2013-02-01T00:00:00.000Z",
     skip: 5,
+    video: true,
     subtitle: "generative effects and company info",
     technologies: "Silverlight, C#",
     client:
@@ -282,6 +298,7 @@ export const projects: Project[] = [
     experimental: false,
     date: "2017-08-01T00:00:00.000Z",
     skip: 0,
+    video: true,
     subtitle: "in-home digital art display with a physical controller",
     technologies: "Node.js, JavaScript, Vue.js, MongoDB",
     client: "personal project",
@@ -297,6 +314,7 @@ export const projects: Project[] = [
     experimental: false,
     date: "2012-01-01T00:00:00.000Z",
     skip: 6,
+    video: true,
     subtitle: "object scanning and projection mapping",
     technologies: "WPF, C#, OpenCV, vvvv, Python",
     client:
@@ -314,6 +332,7 @@ export const projects: Project[] = [
     experimental: false,
     date: "2010-08-01T00:00:00.000Z",
     skip: 5,
+    video: true,
     subtitle: "multi-user tweets, photos, and news",
     technologies: "WPF, C#",
     client:
@@ -330,6 +349,7 @@ export const projects: Project[] = [
     experimental: false,
     date: "2011-09-01T00:00:00.000Z",
     skip: 4,
+    video: true,
     subtitle: "early GPU-powered web graphics",
     technologies: "JavaScript",
     client:
@@ -345,7 +365,6 @@ export const projects: Project[] = [
     engineer: true,
     experimental: true,
     date: "2018-08-01T00:00:00.000Z",
-    skip: 0,
     subtitle: "technology-agnostic tracking of guest interactions",
     technologies:
       'Node.js, JavaScript, MongoDB, Redis, vue.js, <a href="https://www.zebra.com/us/en/products/location-technologies/ultra-wideband.html">Zebra UWB</a>, <a href="https://quuppa.com">Quuppa BLE</a>',
@@ -363,6 +382,7 @@ export const projects: Project[] = [
     experimental: true,
     date: "2017-03-01T00:00:00.000Z",
     skip: 15,
+    video: true,
     subtitle: "distorted social media viewer for a festival",
     technologies:
       "Node.js, JavaScript, Canvas2D, private Instagram API, openFrameworks, C++",
@@ -380,7 +400,6 @@ export const projects: Project[] = [
     engineer: true,
     experimental: false,
     date: "2015-03-01T00:00:00.000Z",
-    skip: 0,
     subtitle: "application monitoring and performance management",
     technologies: "Node.js, JavaScript",
     client: '<a href="https://stimulant.com/ampm/">Stimulant</a>',
@@ -396,6 +415,7 @@ export const projects: Project[] = [
     experimental: false,
     date: "2010-06-01T00:00:00.000Z",
     skip: 25,
+    video: true,
     subtitle: "play music and compare devices",
     technologies: "WPF, C#",
     client:
@@ -411,7 +431,6 @@ export const projects: Project[] = [
     engineer: true,
     experimental: false,
     date: "2016-06-01T00:00:00.000Z",
-    skip: 0,
     subtitle: "automate control of hardware and software",
     technologies: "Node.js, JavaScript",
     client: '<a href="http://stimulant.com/">Stimulant</a>',
@@ -427,6 +446,7 @@ export const projects: Project[] = [
     experimental: false,
     date: "2013-09-01T00:00:00.000Z",
     skip: 6,
+    video: true,
     subtitle: "reactive visuals, social media, and show times",
     technologies: "JavaScript",
     client:
@@ -443,6 +463,7 @@ export const projects: Project[] = [
     experimental: true,
     date: "2010-03-01T00:00:00.000Z",
     skip: 7,
+    video: true,
     subtitle: "multi-user musical instrument",
     technologies: "WPF, C#",
     client: '<a href="http://stimulant.com/touchtones">Stimulant</a>',
@@ -458,6 +479,7 @@ export const projects: Project[] = [
     experimental: true,
     date: "2007-04-01T00:00:00.000Z",
     skip: 193,
+    video: true,
     subtitle: "multitouch before iPhone",
     technologies: "Flash, ActionScript",
     client: '<a href="https://microsoft.com">Microsoft</a>',
@@ -474,6 +496,7 @@ export const projects: Project[] = [
     experimental: false,
     date: "2009-07-01T00:00:00.000Z",
     skip: 4,
+    video: true,
     subtitle: "study tools for Feynman's lectures",
     technologies: "Silverlight, C#",
     client:
@@ -490,6 +513,7 @@ export const projects: Project[] = [
     experimental: false,
     date: "2010-07-01T00:00:00.000Z",
     skip: 5,
+    video: true,
     subtitle: "a zooming lens into a world map",
     technologies: "WPF, C#",
     client:
@@ -506,6 +530,7 @@ export const projects: Project[] = [
     experimental: false,
     date: "2010-02-01T00:00:00.000Z",
     skip: 10,
+    video: true,
     subtitle: "multi-application screen sharing",
     technologies: "WPF, C#",
     client:
@@ -522,6 +547,7 @@ export const projects: Project[] = [
     experimental: true,
     date: "2009-01-01T00:00:00.000Z",
     skip: 8,
+    video: true,
     subtitle: "synchronized mobile displays",
     technologies: "WPF, C#, JavaScript",
     client:
@@ -538,6 +564,7 @@ export const projects: Project[] = [
     experimental: true,
     date: "2008-10-01T00:00:00.000Z",
     skip: 8,
+    video: true,
     subtitle: "weird, tangible physics",
     technologies: "WPF, C#",
     client:
@@ -554,6 +581,7 @@ export const projects: Project[] = [
     experimental: false,
     date: "2009-06-01T00:00:00.000Z",
     skip: 5,
+    video: true,
     subtitle: "object recognition on the show floor",
     technologies: "WPF, C#",
     client:

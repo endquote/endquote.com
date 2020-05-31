@@ -54,7 +54,7 @@ export const ProjectPage: FC<Props> = ({ project, strings }) => {
         </Col>
       </Row>
       <Row className="py-3">
-        <Col>{project.skip === undefined ? image : video}</Col>
+        <Col>{project.video ? video : image}</Col>
       </Row>
     </>
   );
