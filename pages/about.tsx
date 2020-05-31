@@ -14,12 +14,12 @@ function RoleRow({ role, date = true }: { role: Role; date: boolean }) {
     <div className="mb-4">
       <h5>{htmlToReact(role.company)}</h5>
       <Row className="mb-1">
-        <Col xs="12" sm="6">
+        <Col xs={12} sm={6}>
           <strong>{htmlToReact(role.title)}</strong>
         </Col>
         <Col
-          xs="12"
-          sm="6"
+          xs={12}
+          sm={6}
           className={classNames("text-left", "text-sm-right")}
         >
           {role.location}
@@ -47,7 +47,7 @@ export const About: FC<Props> = ({ strings, exp }) => {
   return (
     <div className="content">
       <Row>
-        <Col sm="12" md="3" lg="3">
+        <Col sm={12} md={3} lg={3}>
           <h4 className={classNames(css.headline, "d-none d-print-block")}>
             Josh Santangelo
           </h4>
@@ -67,7 +67,7 @@ export const About: FC<Props> = ({ strings, exp }) => {
             </a>
           </h6>
         </Col>
-        <Col sm="12" md="9" lg="9">
+        <Col sm={12} md={9} lg={9}>
           <h4 className={css.headline}>{htmlToReact(strings.headline)}</h4>
           {strings.summary.map((s: string, i: number) => (
             <p key={i}>{htmlToReact(s)}</p>
@@ -75,21 +75,21 @@ export const About: FC<Props> = ({ strings, exp }) => {
         </Col>
       </Row>
       <Row className="mb-4">
-        <Col sm="12" md="3" lg="3">
+        <Col sm={12} md={3} lg={3}>
           <h5>
             <strong>{strings.skills}</strong>
           </h5>
         </Col>
-        <Col sm="12" md="9" lg="9">
+        <Col sm={12} md={9} lg={9}>
           <Row>
-            <Col sm="12" md="12" lg="6">
+            <Col sm={12} md={12} lg={6}>
               <ul className="mb-0">
                 {exp.skills.slice(0, 2).map((s, i) => (
                   <li key={i}>{s}</li>
                 ))}
               </ul>
             </Col>
-            <Col sm="12" md="12" lg="6">
+            <Col sm={12} md={12} lg={6}>
               <ul className="mb-0">
                 {exp.skills.slice(2).map((s, i) => (
                   <li key={i}>{s}</li>
@@ -102,10 +102,10 @@ export const About: FC<Props> = ({ strings, exp }) => {
 
       {exp.roles.map((r, i) => (
         <Row key={i}>
-          <Col sm="12" md="3" lg="3">
+          <Col sm={12} md={3} lg={3}>
             {i === 0 ? <h5>{strings.experience}</h5> : ""}
           </Col>
-          <Col sm="12" md="9" lg="9">
+          <Col sm={12} md={9} lg={9}>
             <RoleRow role={r} key={i} date={true} />
           </Col>
         </Row>
@@ -113,27 +113,27 @@ export const About: FC<Props> = ({ strings, exp }) => {
 
       {exp.additional.map((r, i) => (
         <Row key={i}>
-          <Col sm="12" md="3" lg="3">
+          <Col sm={12} md={3} lg={3}>
             {i === 0 ? <h5>{strings.additional}</h5> : ""}
           </Col>
-          <Col sm="12" md="9" lg="9">
+          <Col sm={12} md={9} lg={9}>
             <RoleRow role={r} key={i} date={false} />
           </Col>
         </Row>
       ))}
 
       <Row className="mb-3">
-        <Col sm="12" md="3" lg="3">
+        <Col sm={12} md={3} lg={3}>
           <h5>
             <strong>{strings.education}</strong>
           </h5>
         </Col>
-        <Col sm="12" md="9" lg="9">
+        <Col sm={12} md={9} lg={9}>
           {exp.education.map((r, i) => (
             <div key={i}>
               <h5>{htmlToReact(r.company)}</h5>
               <Row className="mb-1">
-                <Col xs="12" sm="6">
+                <Col xs={12} sm={6}>
                   <strong>{htmlToReact(r.title)}</strong>
                 </Col>
               </Row>
@@ -144,21 +144,21 @@ export const About: FC<Props> = ({ strings, exp }) => {
       </Row>
 
       <Row className="mb-3">
-        <Col sm="12" md="3" lg="3">
+        <Col sm={12} md={3} lg={3}>
           <h5>
             <strong>{strings.honors}</strong>
           </h5>
         </Col>
-        <Col sm="12" md="9" lg="9">
+        <Col sm={12} md={9} lg={9}>
           {exp.honors
             .sort((a, b) => Date.parse(a.date) - Date.parse(b.date))
             .map((h, i) => (
               <div key={i}>
                 <Row className="mb-1">
-                  <Col sm="12" lg="7">
+                  <Col sm={12} lg={7}>
                     <strong>{htmlToReact(h.title)}</strong>
                   </Col>
-                  <Col sm="12" lg="5" className="text-left text-lg-right">
+                  <Col sm={12} lg={5} className="text-left text-lg-right">
                     {h.entity}, {year(h.date)}
                   </Col>
                 </Row>
@@ -168,12 +168,12 @@ export const About: FC<Props> = ({ strings, exp }) => {
         </Col>
       </Row>
       <Row className="mb-3">
-        <Col sm="12" md="3" lg="3">
+        <Col sm={12} md={3} lg={3}>
           <h5>
             <strong>{strings.awards}</strong>
           </h5>
         </Col>
-        <Col sm="12" md="9" lg="9">
+        <Col sm={12} md={9} lg={9}>
           <ul>
             {exp.awards.map((a, i) => (
               <li key={i}>
@@ -191,12 +191,12 @@ export const About: FC<Props> = ({ strings, exp }) => {
         </Col>
       </Row>
       <Row>
-        <Col sm="12" md="3" lg="3">
+        <Col sm={12} md={3} lg={3}>
           <h5>
             <strong>{strings.volunteering}</strong>
           </h5>
         </Col>
-        <Col sm="12" md="9" lg="9">
+        <Col sm={12} md={9} lg={9}>
           <ul>
             {exp.volunteering.map((v, i) => (
               <li key={i}>

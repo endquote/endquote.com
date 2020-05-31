@@ -26,7 +26,7 @@ export const IssuePage: FC<Props> = ({
         </Col>
       </Row>
       <Row className="mb-3">
-        <Col sm="12" md="8" lg="6">
+        <Col sm={12} md={8} lg={6}>
           <p>{htmlToReact(strings.copy)}</p>
           <Subscribe strings={subscribeStrings} />
         </Col>

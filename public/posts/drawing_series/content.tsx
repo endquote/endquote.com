@@ -25,7 +25,7 @@ export const DrawingSeries: FC = () => {
 <p>Sol LeWitt is an artist that produced work beginning in 1960 who is best known for his series of "Wall Drawings". These consist of an artwork drawn directly on a wall and a certificate which includes instructions on how to produce the drawing. LeWitt designed the instructions and produced the certificates, but other draftspeople execute the instructions and create the work in physical space.</p>
 <p>There are a total of 1352 Wall Drawings, grouped into 24 series, each with a different style of instructions. These instructions are simple algorithms which are natural to explore with code. This page is an exploration of the "Drawing Series", which consists of 46 wall drawings, produced by a system LeWitt designed beginning in 1968.</p>
         </Col>
-        <Col lg="6" md="6" sm="12">
+        <Col lg={6} md={6} sm={12}>
           <Carousel
             controls={false}
             indicators={false}
