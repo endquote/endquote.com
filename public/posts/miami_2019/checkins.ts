@@ -1,4 +1,17 @@
-export const checkins = [
+import { Coordinate } from "ol/coordinate";
+
+export interface Checkin {
+  date: number;
+  id: string;
+  name: string;
+  location: Coordinate;
+  url: string;
+  category: string;
+  emoji: string;
+  description: string;
+}
+
+export const checkins: Checkin[] = [
   {
     date: 1575463958,
     id: "4b89fb5df964a5200d5a32e3",
@@ -202,7 +215,6 @@ export const checkins = [
     id: "55627667498e393793b30983",
     name: "Alter",
     location: [-80.1995555682985, 25.7997065098866],
-    description: "A progressive American restaurant",
     url: "http://www.altermiami.com",
     category: "restaurant",
     emoji: "🍽",
@@ -288,10 +300,6 @@ export const checkins = [
   },
 ];
 
-checkins.forEach((c) => {
-  c.day = new Date(c.date * 1000).getDay();
-});
-
-export function checkinDay(day) {
-  return checkins.filter((c) => c.day === day);
+export function checkinDay(day: number): Checkin[] {
+  return checkins.filter((c) => new Date(c.date * 1000).getDay() === day);
 }

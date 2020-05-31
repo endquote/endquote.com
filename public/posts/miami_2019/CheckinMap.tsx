@@ -1,29 +1,39 @@
 import classNames from "classnames";
-import { Map, View } from "ol";
-import Feature from "ol/Feature";
-import { Circle } from "ol/geom";
+import { Map, MapBrowserEvent, MapEvent, View } from "ol";
+import { Coordinate } from "ol/coordinate";
+import Feature, { FeatureLike } from "ol/Feature";
 import Point from "ol/geom/Point";
 import TileLayer from "ol/layer/Tile";
 import VectorLayer from "ol/layer/Vector";
 import Overlay from "ol/Overlay";
+import OverlayPositioning from "ol/OverlayPositioning";
 import { fromLonLat, toLonLat } from "ol/proj";
 import Stamen from "ol/source/Stamen";
 import VectorSource from "ol/source/Vector";
-import { Fill, Icon, Stroke, Style } from "ol/style";
+import { Icon, Style } from "ol/style";
 import Popper from "popper.js";
-import { useEffect, useRef, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import twemoji from "twemoji";
 import { DEV } from "../../../data/constants";
 import { htmlToReact } from "../../../utils/htmlToReact";
-import css from "./CheckinMap.module.css";
+import css from "./CheckinMap.module.scss";
+import { Checkin } from "./checkins";
 
-export default function CheckinMap({
+type Props = {
+  center: Coordinate;
+  zoom: number;
+  mobileCenter: Coordinate;
+  mobileZoom: number;
+  checkins: any[];
+};
+
+export const CheckinMap: FC<Props> = ({
   center = [-122.4194, 37.7749],
   zoom = 13,
   mobileCenter,
   mobileZoom,
   checkins = [],
-}) {
+}) => {
   // The top-level map object.
   const [map] = useState(
     new Map({
@@ -31,20 +41,20 @@ export default function CheckinMap({
     })
   );
 
-  const mapRef = useRef();
+  const mapRef = useRef<HTMLDivElement>(null!);
   useEffect(() => {
     map.setTarget(mapRef.current);
   }, [mapRef.current]);
 
   useEffect(() => {
     // On click, update the selection.
-    function onClick(e) {
+    function onClick(e: MapBrowserEvent) {
       setCurrentFeature(map.getFeaturesAtPixel(e.pixel)[0]);
     }
     map.on("click", onClick);
 
     // On move, update the mouse cursor.
-    function onPointerMove(e) {
+    function onPointerMove(e: MapBrowserEvent) {
       const pixel = map.getEventPixel(e.originalEvent);
       const hit = map.hasFeatureAtPixel(pixel);
       setCursor(hit ? "pointer" : "");
@@ -52,7 +62,7 @@ export default function CheckinMap({
     map.on("pointermove", onPointerMove);
 
     // Log the map origin in dev mode.
-    function onMoveEnd(e) {
+    function onMoveEnd(e: MapEvent) {
       const view = map.getView();
       console.log(toLonLat(view.getCenter()), view.getZoom());
     }
@@ -70,10 +80,13 @@ export default function CheckinMap({
 
   // The overlay which is used to position the popup.
   const [overlay] = useState(
-    new Overlay({ stopEvent: true, positioning: "center-center" })
+    new Overlay({
+      stopEvent: true,
+      positioning: OverlayPositioning.CENTER_CENTER,
+    })
   );
 
-  const overlayRef = useRef();
+  const overlayRef = useRef<HTMLDivElement>(null!);
   useEffect(() => {
     overlay.setElement(overlayRef.current);
   }, [overlayRef.current]);
@@ -103,18 +116,15 @@ export default function CheckinMap({
 
   // Create a layer for each checkin.
   useEffect(() => {
-    // The circle which goes around a marker.
-    const circle = new Circle({
-      fill: new Fill({ color: "rgba(255,255,255,1)" }),
-      stroke: new Stroke({ color: "rgba(0,0,0,1)", width: 1 }),
-      radius: 18,
-    });
-
     checkins.forEach((checkin) => {
       const geometry = new Point(fromLonLat(checkin.location));
       const feature = new Feature({ geometry, checkin });
-      const src = twemoji.parse(checkin.emoji).match(/src="([^"]+)"/)[1];
-      feature.setStyle(new Style({ image: new Icon({ src, scale: 0.5 }) }));
+      const match = twemoji.parse(checkin.emoji).match(/src="([^"]+)"/);
+      if (match) {
+        feature.setStyle(
+          new Style({ image: new Icon({ src: match[1], scale: 0.5 }) })
+        );
+      }
 
       // Seems like overkill to have a layer for each marker, but the text/circle
       // z-indexes were acting weird otherwise.
@@ -132,8 +142,8 @@ export default function CheckinMap({
   }, [checkins]);
 
   // The selected map feature.
-  const [currentFeature, setCurrentFeature] = useState(null);
-  const [lastCheckin, setLastCheckin] = useState({});
+  const [currentFeature, setCurrentFeature] = useState<FeatureLike>();
+  const [lastCheckin, setLastCheckin] = useState<Checkin>();
 
   useEffect(() => {
     if (!currentFeature) {
@@ -141,16 +151,19 @@ export default function CheckinMap({
     }
 
     setLastCheckin(currentFeature.get("checkin"));
+    // @ts-ignore getCoordinates() isn't in the types
     overlay.setPosition(currentFeature.getGeometry().getCoordinates());
-    popper.scheduleUpdate();
+    if (popper) {
+      popper.scheduleUpdate();
+    }
   }, [currentFeature]);
 
   // The mouse cursor used over the map.
   const [cursor, setCursor] = useState("");
 
   // The popper.js control, follows the position of the overlay.
-  const [popper, setPopper] = useState(null);
-  const popupRef = useRef();
+  const [popper, setPopper] = useState<Popper>();
+  const popupRef = useRef<HTMLDivElement>(null!);
   useEffect(() => {
     setPopper(
       new Popper(overlayRef.current, popupRef.current, {
@@ -164,7 +177,7 @@ export default function CheckinMap({
   }, [overlayRef.current, popupRef.current, mapRef.current]);
 
   useEffect(() => {
-    function onPostRender(e) {
+    function onPostRender(e: MapEvent) {
       if (popper) {
         popper.scheduleUpdate();
       }
@@ -186,17 +199,23 @@ export default function CheckinMap({
       <div ref={overlayRef}></div>
       <div
         ref={popupRef}
-        className={classNames(css.popup, currentFeature ? css.shown : "")}
+        className={classNames(css.popup, currentFeature && css.shown)}
       >
-        <h6>
-          <a href={lastCheckin.url} target="_blank">
-            {lastCheckin.name}
-          </a>
-        </h6>
-        <div className={lastCheckin.description ? null : "d-none"}>
-          {htmlToReact(lastCheckin.description)}
-        </div>
+        {lastCheckin && (
+          <>
+            <h6>
+              <a href={lastCheckin.url} target="_blank">
+                {lastCheckin.name}
+              </a>
+            </h6>
+            <div className={lastCheckin.description ? "" : "d-none"}>
+              {htmlToReact(lastCheckin.description)}
+            </div>
+          </>
+        )}
       </div>
     </>
   );
-}
+};
+
+export default CheckinMap;

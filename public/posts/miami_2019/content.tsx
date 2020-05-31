@@ -1,18 +1,19 @@
 import classNames from "classnames";
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import { FC } from "react";
 import { Col, Row } from "react-bootstrap";
 import twemoji from "twemoji";
 import css from "../../../pages/post/post.module.scss";
 import { htmlToReact } from "../../../utils/htmlToReact";
 import { checkinDay, checkins } from "./checkins";
-// import olCss from "./content.module.css";
+
 const CheckinMap = dynamic(() => import("./CheckinMap"), {
   ssr: false,
 });
 
-export default function Post() {
-  const shots = [];
+export const Post: FC = () => {
+  const shots: string[] = [];
   shots[3] =
     "https://untitledartfairs.com/miami-beach/program/special/v/deborah-oropallo-and-andy-rappaport";
   shots[4] = "https://www.artbasel.com/miami-beach";
@@ -20,7 +21,7 @@ export default function Post() {
   shots[6] =
     "https://gagosian.com/news/2019/11/09/extreme-present-exhibition-deitch-moore-building-miami/";
 
-  function dayList(day) {
+  function dayList(day: number): JSX.Element {
     return (
       <>
         <a href={shots[day]}>
@@ -89,4 +90,6 @@ export default function Post() {
       </Row>
     </>
   );
-}
+};
+
+export default Post;
