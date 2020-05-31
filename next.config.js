@@ -18,9 +18,8 @@ module.exports = withBundleAnalyzer({
       ],
     });
 
-    // Expose the __filename and __dirname in modules.
-    config.node = config.node || {};
-    config.node.__filename = true;
+    // Expose the __filename in modules.
+    config.node = { ...config.node, __filename: true };
 
     return config;
   },
