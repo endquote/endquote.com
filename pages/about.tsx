@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import { GetStaticProps } from "next";
 import { FC } from "react";
 import { Col, Row } from "react-bootstrap";
@@ -16,7 +17,11 @@ function RoleRow({ role, date = true }: { role: Role; date: boolean }) {
         <Col xs="12" sm="6">
           <strong>{htmlToReact(role.title)}</strong>
         </Col>
-        <Col xs="12" sm="6" className={`text-left text-sm-right`}>
+        <Col
+          xs="12"
+          sm="6"
+          className={classNames("text-left", "text-sm-right")}
+        >
           {role.location}
           <span className={!date ? "d-none" : ""}>
             , {year(role.start)}-{role.end ? year(role.end) : "present"}
@@ -43,7 +48,7 @@ export const About: FC<Props> = ({ strings, exp }) => {
     <div className="content">
       <Row>
         <Col sm="12" md="3" lg="3">
-          <h4 className={`${css.headline} d-none d-print-block`}>
+          <h4 className={classNames(css.headline, "d-none d-print-block")}>
             Josh Santangelo
           </h4>
           <h6 className={css.email}>
@@ -51,12 +56,12 @@ export const About: FC<Props> = ({ strings, exp }) => {
               josh@endquote.com
             </a>
           </h6>
-          <h6 className={`${css.email} ${css.webLink}`}>
+          <h6 className={classNames(css.email, css.webLink)}>
             <a className={css.noline} href="https://endquote.com">
               www.endquote.com
             </a>
           </h6>
-          <h6 className={`${css.email} ${css.webLink}`}>
+          <h6 className={classNames(css.email, css.webLink)}>
             <a className={css.noline} href="tel:+12062295674">
               +1 (206) 229-5674
             </a>

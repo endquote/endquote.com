@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import { GetStaticProps } from "next";
 import { FC } from "react";
 import { Col, Row } from "react-bootstrap";
@@ -35,7 +36,7 @@ export const Work: FC<Props> = ({
       </Row>
       <Row className="mt-5">
         <Col>
-          <p className={`mb-0 ${css.category}`}>
+          <p className={classNames("mb-0", css.category)}>
             {htmlToReact(strings.director)}
           </p>
         </Col>
@@ -43,7 +44,7 @@ export const Work: FC<Props> = ({
       <ProjectGrid projects={director} />
       <Row className="mt-5">
         <Col>
-          <p className={`mb-0 ${css.category}`}>
+          <p className={classNames("mb-0", css.category)}>
             {htmlToReact(strings.engineer)}
           </p>
         </Col>

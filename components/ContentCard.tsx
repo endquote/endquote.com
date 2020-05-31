@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import Link from "next/link";
 import { FC, SyntheticEvent, useEffect, useRef, useState } from "react";
 import { Card } from "react-bootstrap";
@@ -76,7 +77,9 @@ export const ContentCard: FC<Props> = ({ item }) => {
 
   return (
     <div ref={container}>
-      <Card className={`${css.thumb} ${loaded ? null : css.loading} h-100`}>
+      <Card
+        className={classNames(css.thumb, loaded ? null : css.loading, "h-100")}
+      >
         {imageLink(item)}
         <Card.Body>
           {titleLink(item)}

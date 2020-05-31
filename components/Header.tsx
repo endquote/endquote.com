@@ -15,7 +15,7 @@ export const Header: FC<Props> = ({ active }) => {
           variant="light"
           expand="lg"
           collapseOnSelect={true}
-          className={`px-0 py-3`}
+          className="px-0 py-3"
         >
           <Link href="/" passHref={true}>
             <Navbar.Brand>Josh Santangelo</Navbar.Brand>

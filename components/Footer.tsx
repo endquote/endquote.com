@@ -2,6 +2,7 @@ import Github from "@fortawesome/fontawesome-free/svgs/brands/github-square.svg"
 import Instagram from "@fortawesome/fontawesome-free/svgs/brands/instagram.svg";
 import LinkedIn from "@fortawesome/fontawesome-free/svgs/brands/linkedin.svg";
 import Twitter from "@fortawesome/fontawesome-free/svgs/brands/twitter-square.svg";
+import classNames from "classnames";
 import { FC } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import css from "./Footer.module.scss";
@@ -17,7 +18,7 @@ export const Footer: FC<Props> = ({ strings, nosubscribe = false }) => {
     <footer className="text-white mt-5">
       <Container>
         <Row>
-          <Col sm={12} md={6} lg={6} className={`mb-5`}>
+          <Col sm={12} md={6} lg={6} className="mb-5">
             <h5>{strings.contact}</h5>
             <p className="mb-2">
               <a className="email" href="mailto:josh@endquote.com">
@@ -67,7 +68,7 @@ export const Footer: FC<Props> = ({ strings, nosubscribe = false }) => {
             sm={12}
             md={6}
             lg={6}
-            className={`mb-5 ${nosubscribe ? "d-none" : ""}`}
+            className={classNames("mb-5", nosubscribe ? "d-none" : "")}
           >
             <h5>{strings.footer.subscribe}</h5>
             <Subscribe invert={true} strings={strings.subscribe} />

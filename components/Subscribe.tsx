@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import fetch from "isomorphic-unfetch";
 import { FC, FormEvent, useEffect, useRef, useState } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
@@ -57,14 +58,15 @@ export const Subscribe: FC<Props> = ({ strings, invert = false }) => {
     <Form onSubmit={onSubmit} method="POST" action={SUBSCRIBE_API}>
       <Form.Control type="hidden" name="list" value={SUBSCRIBE_LIST} />
       <Row>
-        <Col sm={12} md={8} lg={8} className={`pb-3`}>
+        <Col sm={12} md={8} lg={8} className="pb-3">
           <Form.Control
             type="email"
             ref={email}
             name="email"
-            className={`form-control ${
+            className={classNames(
+              "form-control",
               invert ? "border-white" : "border-dark"
-            }`}
+            )}
             autoComplete="email"
             placeholder={submitStates[submitState]}
           />
@@ -73,7 +75,7 @@ export const Subscribe: FC<Props> = ({ strings, invert = false }) => {
           <Button
             variant={invert ? "outline-light" : "outline-dark"}
             type="submit"
-            className={`btn w-100`}
+            className="btn w-100"
           >
             {strings.submit}
           </Button>

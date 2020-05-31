@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import { FC } from "react";
 import { Project } from "../data/projects";
 import css from "./ProjectImage.module.scss";
@@ -11,7 +12,7 @@ export const ProjectImage: FC<Props> = ({ project }) => {
     <div className="text-center">
       <img
         loading="lazy"
-        className={`${css.projectImage} w-100`}
+        className={classNames(css.projectImage, "w-100")}
         src={`/images/projects/${project.id}/640.jpg`}
       />
     </div>

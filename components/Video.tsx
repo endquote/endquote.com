@@ -1,4 +1,5 @@
 import PlayIcon from "@fortawesome/fontawesome-free/svgs/regular/play-circle.svg";
+import classNames from "classnames";
 import hls from "hls.js/dist/hls.light";
 import { FC, useEffect, useRef, useState } from "react";
 import { BASE_HLS, DEV } from "../data/constants";
@@ -129,7 +130,13 @@ export const Video: FC<Props> = ({
   }, [playing]);
 
   return (
-    <div className={`embed-responsive embed-responsive-16by9 ${css.rounded}`}>
+    <div
+      className={classNames(
+        "embed-responsive",
+        "embed-responsive-16by9",
+        css.rounded
+      )}
+    >
       <video
         muted={!audio}
         loop={autoPlay}
@@ -142,12 +149,21 @@ export const Video: FC<Props> = ({
         onEnded={onVideoEnded}
       />
       <div
-        className={`${css.playContainer} position-absolute ${
+        className={classNames(
+          css.playContainer,
+          "position-absolute",
           playing ? css.playing : null
-        }`}
+        )}
         onClick={onPlayBtnClick}
       >
-        <div className={`${css.play} position-absolute text-center w-100`}>
+        <div
+          className={classNames(
+            css.play,
+            "position-absolute",
+            "text-center",
+            "w-100"
+          )}
+        >
           <PlayIcon width="100" height="100" style={{ fill: "white" }} />
         </div>
       </div>
