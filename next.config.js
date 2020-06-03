@@ -1,9 +1,9 @@
+const { posts } = require("./data/posts.js");
+const { projects } = require("./data/projects.js");
+
 const withBundleAnalyzer = require("@next/bundle-analyzer")({
   enabled: process.env.ANALYZE === "true",
 });
-
-const { posts } = require("./data/posts.js");
-const { projects } = require("./data/projects.js");
 
 module.exports = withBundleAnalyzer({
   poweredByHeader: false,
