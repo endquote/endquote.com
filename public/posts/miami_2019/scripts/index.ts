@@ -1,14 +1,24 @@
 // Get recent checkins from Swarm and write it to a file.
 
-import url from "url";
+import clone from "clone";
+import fs from "fs";
 import path from "path";
 import request from "request-promise-native";
-import fs from "fs";
-import clone from "clone";
 
+// Lost your token? Here's how to get one:
+
+// Make .env, get SWARM_CLIENT_ID and SWARM_CLIENT_SECRET from here:
+// https://foursquare.com/developers/apps/LV4TILXRHDJJ5YZ1HJGA4GDLRSH3FCCOLIO33U2EGXAPZO5U/settings
+
+// Go to this URL:
 const authReq = `https://foursquare.com/oauth2/authenticate?client_id=${process.env.SWARM_CLIENT_ID}&response_type=code&redirect_uri=https%3A%2F%2Fendquote.com%2Fabout`;
-const tokenReq = `https://foursquare.com/oauth2/access_token?client_id=${process.env.SWARM_CLIENT_ID}&client_secret=${process.env.SWARM_CLIENT_SECRET}&grant_type=authorization_code&redirect_uri=https%3A%2F%2Fendquote.com%2Fabout&code=KHAWGKFP4ULO2AMNHAKMXZMUJSZBJFOKSKPOEIHU2OPPKTYS`;
-const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
+
+// Pull the code from the redirect, save it to .env in SWARM_OAUTH_CODE.
+
+// Then go to this URL:
+const tokenReq = `https://foursquare.com/oauth2/access_token?client_id=${process.env.SWARM_CLIENT_ID}&client_secret=${process.env.SWARM_CLIENT_SECRET}&grant_type=authorization_code&redirect_uri=https%3A%2F%2Fendquote.com%2Fabout&code=${process.env.SWARM_OAUTH_CODE}`;
+
+// Put the token in .env as SWARM_OAUTH_TOKEN.
 
 // Filter by some criteria.
 function filter(checkin) {
@@ -22,11 +32,13 @@ const auth = {
   v: "20180323",
 };
 
+// https://developer.foursquare.com/docs/api-reference/users/checkins/
 const getCheckins = {
   url: "https://api.foursquare.com/v2/users/self/checkins",
   qs: Object.assign(clone(auth), {
     limit: 250,
-    offset: 0,
+    afterTimestamp: Math.round(new Date(2019, 11, 4).getTime() / 1000),
+    beforeTimestamp: Math.round(new Date(2019, 11, 9).getTime() / 1000),
     sort: "newestfirst",
   }),
 };
@@ -34,8 +46,8 @@ const getCheckins = {
 async function run() {
   const body = await request(getCheckins);
   const items = JSON.parse(body).response.checkins.items;
-  const unique = [];
-  const details = [];
+  const unique: any[] = [];
+  const details: any[] = [];
 
   // Get the last page of checkins.
   items
@@ -54,7 +66,7 @@ async function run() {
       delete v.location.formattedAddress;
 
       // Remove any duplicate venues.
-      if (unique.findIndex((u) => u.id === v.id) === -1) {
+      if (unique.findIndex((u: any) => u.id === v.id) === -1) {
         unique.push(v);
 
         // Set up a request for venue details.
@@ -71,7 +83,7 @@ async function run() {
   const venueDetails = await Promise.all(details);
   venueDetails.forEach((d) => {
     const venue = JSON.parse(d).response.venue;
-    const checkin = unique.find((c) => c.id === venue.id);
+    const checkin = unique.find((c: any) => c.id === venue.id) as any;
     const category = venue.categories.find((c) => c.primary == true);
 
     // Add some props to the checkin.

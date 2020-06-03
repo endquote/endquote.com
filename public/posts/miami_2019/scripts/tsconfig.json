@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "isolatedModules": false,
+    "noEmit": false,
+    "noImplicitAny": false
+  },
+  "exclude": ["node_modules"],
+  "extends": "../../../../tsconfig.json",
+  "include": ["index.ts"]
+}
