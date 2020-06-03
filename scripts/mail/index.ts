@@ -1,6 +1,5 @@
 import fs from "fs";
 import Handlebars from "handlebars";
-import { inspect } from "util";
 import { issues, query } from "../../data/issues";
 
 // node index.ts [baseUrl] [issueId]
@@ -17,8 +16,6 @@ Handlebars.registerHelper("stylelink", (s) =>
 );
 
 const template = Handlebars.compile(html);
-
-console.log(inspect({ issue, baseUrl }));
 
 const out = template({ issue, baseUrl });
 
