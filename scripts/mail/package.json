@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "handlebars": "^4.7.6"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "run": "tsc --module commonjs --target es5 && node index.js"
+  }
+}
