@@ -1,0 +1,4 @@
+temp/
+zoomify/vendor
+zoomify/composer.*
+data/

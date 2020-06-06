@@ -1,0 +1,17 @@
+{
+  "main": "tiles.js",
+  "scripts": {
+    "build-data": "tsc --module commonjs --target es5",
+    "run-data": "node data.js",
+    "build-tiles": "node --max-old-space-size=4096 tiles.js",
+    "deploy-tiles": "rsync -v -a --delete --exclude \".DS_Store\" ../tiles/ endquote@endquote.com:sites/endquote.com/public/posts/drawing_series/tiles/"
+  },
+  "dependencies": {
+    "@svgdotjs/svg.js": "^3.0.16",
+    "fs-extra": "^9.0.1",
+    "recursive-readdir": "^2.2.2",
+    "svg2img": "^0.6.2",
+    "svgdom": "0.1.8",
+    "svgo": "^1.3.2"
+  }
+}
