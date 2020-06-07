@@ -10,6 +10,14 @@
       "runOptions": {
         "runOn": "folderOpen"
       }
+    },
+    {
+      "type": "npm",
+      "script": "build",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
     }
   ]
 }
