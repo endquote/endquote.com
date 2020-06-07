@@ -1,4 +1,5 @@
-tiles/**
+tiles/drawings/**
+tiles/map/**
 temp
 data/*.js
 data.js
