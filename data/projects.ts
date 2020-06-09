@@ -500,7 +500,7 @@ export const projects: Project[] = [
     subtitle: "study tools for Feynman's lectures",
     technologies: "Silverlight, C#",
     client:
-      '<a href="https://stimulant.com/tuva">Stimulant</a> for <a href="http://research.microsoft.com/tuva">Microsoft</a>',
+      '<a href="https://stimulant.com/">Stimulant</a> for <a href="http://research.microsoft.com/tuva">Microsoft</a>',
     description:
       "An interactive video experience which annotates lectures with images, links, and transcripts. Students can save their progress through the videos as well as take time-synced notes within the application. The project launched with Richard Feynman’s Messenger Series lectures, a cornerstone set of seven talks at Cornell University in 1964.",
     role: "I architected and implemented the application.",
