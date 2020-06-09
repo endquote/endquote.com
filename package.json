@@ -6,7 +6,7 @@
     "data": "tsc --module commonjs --target es5 --outdir data --esModuleInterop data/*.ts",
     "dev": "yarn data && next dev",
     "build": "yarn data && next build",
-    "start": "next start"
+    "start": "yarn build && node app.js"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "5.13.0",
