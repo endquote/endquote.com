@@ -10,7 +10,7 @@ const handle = app.getRequestHandler();
 app.prepare().then(() => {
   createServer((req, res) => {
     const parsedUrl = parse(req.url, true);
-    if (parsedUrl.protocol !== "https" && !DEV) {
+    if (parsedUrl.protocol !== "https:" && !DEV) {
       res.writeHead(301, { Location: `${PROD_HREF}${parsedUrl.href}` });
       res.end();
     } else {
