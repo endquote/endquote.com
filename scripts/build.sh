@@ -1,6 +1,9 @@
 #!/bin/bash
 yarn
 yarn build
-echo "PassengerNodejs $NVM_BIN/node" > .htaccess
+
+cp ./htaccess ./.htaccess
+echo "PassengerNodejs $NVM_BIN/node" >> .htaccess
+
 mkdir -p tmp
 touch tmp/restart.txt
