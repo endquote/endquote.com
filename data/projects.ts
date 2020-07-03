@@ -264,9 +264,8 @@ export const projects: Project[] = [
     video: true,
     subtitle: "making music with one-inch screens",
     technologies: "C#, Python",
-    // dead link https://stimulant.com/portfolio-item/looploop-for-sifteo-cubes/
     client:
-      '<a href="http://stimulant.com/">Stimulant</a> for <a href="https://en.wikipedia.org/wiki/Sifteo_Cubes">Sifteo</a>',
+      '<a href="https://stimulant.com/portfolio-item/looploop-for-sifteo-cubes/">Stimulant</a> for <a href="https://en.wikipedia.org/wiki/Sifteo_Cubes">Sifteo</a>',
     description:
       "An experimental music sequencer which used a collection of physical cubes, each with a one-inch, 128x128 screen, and the ability to sense its neighboring devices. One cube kept the master sequence, and the others were individual instruments. This was a launch app for the Sifteo platform.",
     role:
