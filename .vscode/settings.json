@@ -1,19 +1,19 @@
 {
-  "files.exclude": {
-    "**/assets": true,
-    "**/node_modules": true,
-    "**/.next": true,
-    "**/out": true,
-    "**/vendor": true,
-    "**/composer.*": true,
-    "**/tiles": true,
-    "**/data/*.js": true
-  },
-  "editor.formatOnSave": true,
-  "editor.codeActionsOnSave": {
-    // "source.organizeImports": true
-  },
   "[html]": {
     "editor.formatOnSave": false
-  }
+  },
+  "editor.codeActionsOnSave": {// "source.organizeImports": true
+  },
+  "editor.formatOnSave": true,
+  "files.exclude": {
+    "**/.next": true,
+    "**/assets": true,
+    "**/composer.*": true,
+    "**/data/*.js": true,
+    "**/node_modules": true,
+    "**/out": true,
+    "**/tiles": true,
+    "**/vendor": true
+  },
+  "npm.packageManager": "yarn"
 }
