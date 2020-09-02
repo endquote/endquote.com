@@ -1,15 +1,18 @@
 {
-  "main": "swarm.mjs",
   "dependencies": {
     "clone": "^2.1.2",
     "dotenv": "^8.2.0",
     "request": "^2.88.2",
     "request-promise-native": "^1.0.8"
   },
-  "scripts": {
-    "run": "tsc --module commonjs --target es5 && node -r dotenv/config index.js"
-  },
   "devDependencies": {
     "@types/request-promise-native": "1.0.17"
+  },
+  "main": "swarm.mjs",
+  "resolutions": {
+    "lodash": ">=4.17.19"
+  },
+  "scripts": {
+    "run": "tsc --module commonjs --target es5 && node -r dotenv/config index.js"
   }
 }
