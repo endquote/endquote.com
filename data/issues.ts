@@ -430,10 +430,8 @@ export const issues: Issue[] = issueDefs
   });
 
 export const index = issues.map((i) => {
-  i = clone(i);
-  delete i.links;
-  delete i.intro;
-  return i;
+  const { links, intro, ...rest } = i;
+  return rest;
 });
 
 export function query(id: string): Issue | undefined {

@@ -766,6 +766,7 @@ drawings.sort((a, b) => {
 export const data: DrawingInfo[] = [];
 for (let wd = 0; wd < drawings.length; wd++) {
   const wallDrawing: DrawingInfo = Object.assign({}, drawings[wd]);
+  // @ts-ignore
   delete wallDrawing.diagram;
   wallDrawing.methods = [];
   data.push(wallDrawing);
