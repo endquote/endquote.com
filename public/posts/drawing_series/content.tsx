@@ -116,10 +116,12 @@ export const DrawingSeries: FC = () => {
       <Row className="mt-4">
         {/* prettier-ignore */}
         <Col>
-<p> A drawing is made up of a 2×2 grid of the above 2×2 sections. The top-left section uses each of the numbers 1-4 ordered in one of  24 possible ways. The order of those numbers changes from one section to the next in clockwise order, with the process of change determined by the <strong>series</strong> of the drawing. There are four series, with <strong>series 1</strong> using <strong>rotation</strong> of the numbers, <strong>series 2</strong> does a <strong>mirror</strong>, <strong>series 3</strong> uses a <strong>"cross mirror"</strong>, and <strong>series 4</strong> uses a <strong>"cross reverse"</strong>. Clicking the animations below will cycle through them.</p>
+          <p> A drawing is made up of a 2×2 grid of the above 2×2 sections. The top-left section uses each of the numbers 1-4 ordered in one of  24 possible ways. The order of those numbers changes from one section to the next in clockwise order, with the process of change determined by the <strong>series</strong> of the drawing. There are four series, with <strong>series 1</strong> using <strong>rotation</strong> of the numbers, <strong>series 2</strong> does a <strong>mirror</strong>, <strong>series 3</strong> uses a <strong>"cross mirror"</strong>, and <strong>series 4</strong> uses a <strong>"cross reverse"</strong>.
+{/* Clicking the animations below will cycle through them. */}
+          </p>
         </Col>
       </Row>
-      <SeriesList />
+      {/* <SeriesList /> */}
       <Row className="mt-4">
         {/* prettier-ignore */}
         <Col>
