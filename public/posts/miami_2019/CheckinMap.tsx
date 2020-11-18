@@ -64,7 +64,10 @@ export const CheckinMap: FC<Props> = ({
     // Log the map origin in dev mode.
     function onMoveEnd(e: MapEvent) {
       const view = map.getView();
-      console.log(toLonLat(view.getCenter()), view.getZoom());
+      const center = view.getCenter();
+      if (center) {
+        console.log(toLonLat(center), view.getZoom());
+      }
     }
 
     if (DEV) {

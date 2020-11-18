@@ -132,7 +132,7 @@ export const DrawingMap: FC<Props> = ({
       return;
     }
 
-    const px = ol.getEventPixel((e as unknown) as Event);
+    const px = ol.getEventPixel(e as unknown as UIEvent);
 
     if (!px) {
       return;
