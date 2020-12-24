@@ -24,7 +24,7 @@ const roles: Role[] = [
     location: "San Francisco, CA",
     start: "2020-05-01T00:00:00.000Z",
     desc:
-      "Building teams, tools, and processes that help the UX group at PlayStation push the boundaries of play.",
+      'Leading an engineering team that works with designers to prototype <a href="https://www.youtube.com/watch?v=7TBPrYJDoDE">PlayStation features</a> using the same technologies as in production. We use those prototypes to refine designs, test with users, and provide a starting place for production implementation.',
     accomplishments: [],
   },
   {
