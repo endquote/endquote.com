@@ -7,7 +7,7 @@ export function trackEvent(
 ): void {
   // @ts-ignore
   const _paq = window._paq || [];
-  console.log("trackEvent", { category, action, name, value });
+  // console.log("trackEvent", { category, action, name, value });
   _paq.push(["trackEvent", category, action, name, value]);
 }
 
@@ -15,7 +15,7 @@ export function trackEvent(
 export function trackPageView(url?: string): void {
   // @ts-ignore
   const _paq = window._paq || [];
-  console.log("trackPageView", url || "");
+  // console.log("trackPageView", url || "");
   _paq.push(["setGenerationTimeMs", 0]);
   if (url) {
     _paq.push(["setCustomUrl", url]);

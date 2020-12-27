@@ -48,6 +48,7 @@ export const ProjectThumb: FC<Props> = ({ project }) => {
                 "(min-width: 768px) 350px",
                 "(min-width: 576px) 510px",
               ].join(",")}
+              alt={project.title}
             />
           </div>
           <div
