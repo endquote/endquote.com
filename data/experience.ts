@@ -149,7 +149,7 @@ const education: Role[] = [
 
 export interface Volunteer {
   entity: string;
-  link: string;
+  link?: string;
   location: string;
   date: string;
   role: string;
@@ -174,7 +174,7 @@ const volunteering: Volunteer[] = [
   },
   {
     entity: "Future Fires",
-    link: "http://www.futurefires.com",
+    // link: "http://www.futurefires.com",
     location: "San Francisco, CA",
     date: "2017-03-01T00:00:00.000Z",
     role: `Produced "<a href="/project/meta_mirror">Meta Mirror</a>", a projection piece at the "Luminary" event`,

@@ -386,7 +386,7 @@ export const projects: Project[] = [
     technologies:
       "Node.js, JavaScript, Canvas2D, private Instagram API, openFrameworks, C++",
     client:
-      '<a href="https://stimulant.com/luminary/">Stimulant</a> for <a href="https://www.futurefires.com">Future Fires</a>',
+      '<a href="https://stimulant.com/luminary/">Stimulant</a> for Future Fires',
     description:
       "Approved photos with the event's hashtag were scraped from social media and merged into a Delaunay collage before being twisted and warped into a mesh of triangles.",
     role:
