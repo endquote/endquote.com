@@ -14,18 +14,22 @@ const skills: string[] = [
   "project concepting, scoping and estimation",
   "technology selection and systems architecture",
   "technical project management",
-  "design and implementation of QA and CI/CD processes",
 ];
 
 const roles: Role[] = [
   {
-    company: '<a href="https://www.playstation.com/en-us/">PlayStation</a>',
+    company: '<a href="https://www.playstation.com/">PlayStation</a>',
     title: "Senior Manager, Design Technology",
     location: "San Francisco, CA",
-    start: "2020-05-01T00:00:00.000Z",
+    start: "2020-05-04T00:00:00.000Z",
     desc:
-      'Leading an engineering team that works with designers to prototype <a href="https://www.youtube.com/watch?v=7TBPrYJDoDE">PlayStation features</a> using the same technologies as in production. We use those prototypes to refine designs, test with users, and provide a starting place for production implementation.',
-    accomplishments: [],
+      "Leading a team that helps PlayStation's designers enagage with their powerful technology platforms, and pushing those platforms forward to enable better designs.",
+    accomplishments: [
+      "Using production front-end frameworks and cloud APIs to implement a pipeline of prototypes across console, mobile, VR, and web.",
+      "Developing components and design systems that help ensure consistency in production engineering.",
+      "Deploying original and third-party design tooling with a focus on collaboration and consistency, with accessibility and localization as first-class concerns.",
+      "Integrating product telemetry into the design process to help focus on areas of opportunity and measure the impact of changes.",
+    ],
   },
   {
     company:

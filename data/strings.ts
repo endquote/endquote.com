@@ -25,7 +25,7 @@ export const engineer = {
 export const about = {
   title: "Josh Santangelo",
   headline:
-    "Leading engineering teams that work with emerging technologies to amplify the ambitions of designers.",
+    "Leading engineering teams that use technology to enable and amplify the visions of designers.",
   summary: [
     // "Leads engineering teams working with emerging software and hardware technologies to build and support products in retail, corporate, and consumer contexts.",
     // "Works hands-on to create robust behind-the-scenes tools and novel user interfaces that amplify the talents of engineering and design teams.",
