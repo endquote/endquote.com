@@ -49,7 +49,7 @@ export const Layout: FC<LayoutProps> = ({
 
   const head = (): ReactNode => {
     title = stripLinks(
-      title || "Josh Santangelo - emerging technology leadership"
+      title || "Josh Santangelo - creative technology leadership"
     );
     description = stripLinks(description || "");
     image = `${BASE_HREF}${image || "images/collage-td.jpg"}`;

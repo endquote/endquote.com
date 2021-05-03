@@ -1,5 +1,5 @@
 export const work = {
-  title: "Josh Santangelo - emerging technology leadership",
+  title: "Josh Santangelo - creative technology leadership",
   about:
     '<a href="/about">I build and lead technical teams</a> that combine emerging software and hardware technologies to create new products and experiences.',
   director:
