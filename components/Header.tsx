@@ -23,6 +23,23 @@ export const Header: FC<Props> = ({ active }) => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ml-auto">
+              <Link href="/" passHref={true}>
+                <Nav.Link active={active === "about"}>About</Nav.Link>
+              </Link>
+              <Link href="/immersive" passHref={true}>
+                <Nav.Link active={active === "immersive"}>
+                  Immersive
+                </Nav.Link>
+              </Link>
+              <Link href="/posts" passHref={true}>
+                <Nav.Link active={active === "posts"}>Posts</Nav.Link>
+              </Link>
+              {/*
+              <Link href="/work" passHref={true}>
+                <Nav.Link active={active === "work"}>
+                  Work
+                </Nav.Link>
+              </Link>
               <Link href="/director" passHref={true}>
                 <Nav.Link active={active === "director"}>
                   Technical Director
@@ -33,12 +50,7 @@ export const Header: FC<Props> = ({ active }) => {
                   Lead Engineer
                 </Nav.Link>
               </Link>
-              <Link href="/posts" passHref={true}>
-                <Nav.Link active={active === "posts"}>Posts</Nav.Link>
-              </Link>
-              <Link href="/about" passHref={true}>
-                <Nav.Link active={active === "about"}>About</Nav.Link>
-              </Link>
+              */}
             </Nav>
           </Navbar.Collapse>
         </Navbar>

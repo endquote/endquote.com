@@ -22,6 +22,20 @@ export const engineer = {
     "As an engineer I've specialized in architecting and implementing novel interfaces in unique scales and contexts. I create robust, legible codebases that stand up to 24/7 operation in public environments while realizing and amplifying the dreams of the creative team. I also create behind-the-scenes tools that help other engineers prioritize user-facing features. These are some of my favorite projects so far.",
 };
 
+export const immersive = {
+  title: "Josh Santangelo - Immersive Technology",
+  heading: "Immersive Technology",
+  copy:
+    'I spent a decade building and leading the engineering discipline at <a href="https://stimulant.com">Stimulant</a>, an agency that architects and implements novel interfaces in unique scales and contexts. I remain engaged in the field as an observer and supporter.',
+};
+
+export const posts = {
+  title: "Josh Santangelo - Posts",
+  heading: "Posts",
+  copy:
+    'For a while a tried a newsletter that shared what I was excited about in the field of <a href="/immersive">immersive technology</a> and built a couple of interactive <a href="/post/miami_2019">blog</a> <a href="/post/drawing_series">posts</a>. Perhaps I\'ll get back to publishing someday.',
+};
+
 export const about = {
   title: "Josh Santangelo",
   headline:
@@ -64,16 +78,4 @@ export const project = {
 export const footer = {
   contact: "Say hello",
   subscribe: "Creative technology newsletter",
-};
-
-export const posts = {
-  title: "Posts",
-};
-
-export const blog = {
-  title: "Blog",
-};
-
-export const studies = {
-  title: "Studies",
 };
