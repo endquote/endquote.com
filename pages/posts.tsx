@@ -19,12 +19,12 @@ export const Posts: FC<Props> = ({ posts = [], strings = {} }) => {
 
   return (
     <>
-      <Row>
+      {/* <Row>
         <Col>
           <h2>{strings.heading}</h2>
           <p className={css.headline}>{htmlToReact(strings.copy)}</p>
         </Col>
-      </Row>
+      </Row> */}
       <ContentList items={posts} />
     </>
   );

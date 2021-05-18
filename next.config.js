@@ -34,11 +34,11 @@ module.exports = withBundleAnalyzer({
 
   async redirects() {
     let routes = [
-      {
-        // moved about to the index page
-        source: "/about",
-        destination: "/",
-      },
+      // {
+      //   // moved about to the index page
+      //   source: "/about",
+      //   destination: "/",
+      // },
       {
         // /news > /newsletter
         source: "/news",
