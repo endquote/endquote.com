@@ -31,9 +31,6 @@ export const Header: FC<Props> = ({ active }) => {
                   Immersive
                 </Nav.Link>
               </Link> */}
-              <Link href="/posts" passHref={true}>
-                <Nav.Link active={active === "posts"}>Posts</Nav.Link>
-              </Link>
               {/*
               <Link href="/work" passHref={true}>
                 <Nav.Link active={active === "work"}>
@@ -50,6 +47,9 @@ export const Header: FC<Props> = ({ active }) => {
                 <Nav.Link active={active === "engineer"}>
                   Lead Engineer
                 </Nav.Link>
+              </Link>
+              <Link href="/posts" passHref={true}>
+                <Nav.Link active={active === "posts"}>Posts</Nav.Link>
               </Link>
             </Nav>
           </Navbar.Collapse>
