@@ -1,37 +1,38 @@
 {
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.15.3",
-    "bootstrap": "^4.6.0",
-    "clone": "^2.1.2",
-    "hls.js": "^1.0.4",
-    "html-to-react": "^1.4.5",
-    "isomorphic-unfetch": "^3.1.0",
-    "next": "^10.2.2",
-    "ol": "^6.5.0",
-    "popper.js": "^1.16.1",
-    "react": "^17.0.2",
-    "react-bootstrap": "^1.6.0",
-    "react-dom": "^17.0.2",
-    "resize-observer-polyfill": "^1.5.1",
-    "twemoji": "^13.0.2"
+    "@fortawesome/fontawesome-free": "5.15.3",
+    "bootstrap": "4.6.0",
+    "clone": "2.1.2",
+    "hls.js": "1.0.4",
+    "html-to-react": "1.4.5",
+    "isomorphic-unfetch": "3.1.0",
+    "next": "10.2.3",
+    "ol": "6.5.0",
+    "popper.js": "1.16.1",
+    "react": "17.0.2",
+    "react-bootstrap": "1.6.0",
+    "react-dom": "17.0.2",
+    "resize-observer-polyfill": "1.5.1",
+    "twemoji": "13.1.0"
   },
   "devDependencies": {
-    "@next/bundle-analyzer": "^10.2.2",
-    "@svgr/webpack": "^5.5.0",
-    "@types/clone": "^2.1.0",
-    "@types/hls.js": "^1.0.0",
-    "@types/node": "^15.3.1",
-    "@types/ol": "^6.5.0",
-    "@types/react": "^17.0.6",
-    "@types/twemoji": "^12.1.1",
-    "prettier": "^2.3.0",
-    "sass": "^1.32.13",
-    "typescript": "^4.2.4"
+    "@next/bundle-analyzer": "10.2.3",
+    "@svgr/webpack": "5.5.0",
+    "@types/clone": "2.1.0",
+    "@types/hls.js": "1.0.0",
+    "@types/node": "15.6.1",
+    "@types/ol": "6.5.0",
+    "@types/react": "17.0.8",
+    "@types/twemoji": "12.1.1",
+    "npm-check-updates": "11.5.13",
+    "prettier": "2.3.0",
+    "sass": "1.32.13",
+    "typescript": "4.3.2"
   },
   "name": "endquote",
   "private": true,
   "resolutions": {
-    "@types/react": "^17.0.6",
+    "@types/react": "17.0.8",
     "elliptic": ">=6.5.3",
     "lodash": ">=4.17.19",
     "serialize-javascript": ">=3.1.0"
@@ -40,7 +41,8 @@
     "build": "yarn data && next build",
     "data": "tsc --module commonjs --target es5 --outdir data --esModuleInterop data/*.ts",
     "dev": "yarn data && next dev",
-    "start": "yarn build && node app.js"
+    "start": "yarn build && node app.js",
+    "selfupdate": "ncu -u --reject \"/sass|bootstrap|react-bootstrap/\" && yarn"
   },
   "version": "0.1.0"
 }
