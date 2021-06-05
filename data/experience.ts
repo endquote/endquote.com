@@ -230,9 +230,9 @@ const honors: Honor[] = [
   },
   {
     title: "US Patent 8775973B2",
-    date: new Date(2011, 0).toISOString(),
+    date: new Date(2014, 6, 8).toISOString(),
     entity: "Microsoft",
-    description: `Issued for the <a href="http://www.google.com/patents/US8775973B2">image browsing interface</a> in <a href="/project/bing">the Bing application</a> that Stimulant developed for the Microsoft Surface table.`,
+    description: `Issued for the <a href="https://patents.google.com/patent/US8775973B2">image browsing interface</a> in <a href="/project/bing">the Bing application</a> that Stimulant developed for the Microsoft Surface table.`,
   },
 ].sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
 
