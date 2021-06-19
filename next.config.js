@@ -9,11 +9,6 @@ module.exports = withBundleAnalyzer({
   poweredByHeader: false,
   reactStrictMode: true,
 
-  // https://nextjs.org/docs/messages/webpack5
-  future: {
-    webpack5: true,
-  },
-
   webpack: (config, options) => {
     // SVG support. https://react-svgr.com
     config.module.rules.push({
