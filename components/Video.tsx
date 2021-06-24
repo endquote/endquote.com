@@ -1,7 +1,7 @@
 import PlayIcon from "@fortawesome/fontawesome-free/svgs/regular/play-circle.svg";
 import classNames from "classnames";
 import hls from "hls.js/dist/hls.light";
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useCallback, useEffect, useRef, useState } from "react";
 import { BASE_HLS, DEV } from "../data/constants";
 import { trackComponentEvent } from "../utils/tracking";
 import css from "./Video.module.scss";
@@ -37,37 +37,7 @@ export const Video: FC<Props> = ({
   const [attached, setAttached] = useState(false);
   const [playing, setIsPlaying] = useState(false);
 
-  // Initialize the HLS player.
-  useEffect(() => {
-    if (hlsPlayer === undefined) {
-      return;
-    }
-
-    hlsPlayer.attachMedia(video.current);
-    hlsPlayer.on(hls.Events.MEDIA_ATTACHED, () => {
-      hlsPlayer.loadSource(hlsUrl);
-      hlsPlayer.on(hls.Events.MANIFEST_PARSED, () => {
-        hlsPlayer.startLoad(skip);
-        video.current.play();
-      });
-    });
-
-    if (autoPlay) {
-      play();
-    }
-
-    return function cleanup() {
-      hlsPlayer.destroy();
-    };
-  }, [hlsPlayer]);
-
-  useEffect(() => {
-    if (autoPlay && !DEV) {
-      play();
-    }
-  }, [autoPlay]);
-
-  function play() {
+  const play = useCallback(()=>{
     if (attached) {
       // Play after a pause.
       video.current.play();
@@ -93,7 +63,37 @@ export const Video: FC<Props> = ({
     }
 
     setAttached(true);
-  }
+  }, [attached, hlsUrl, skip])
+
+  // Initialize the HLS player.
+  useEffect(() => {
+    if (hlsPlayer === undefined) {
+      return;
+    }
+
+    hlsPlayer.attachMedia(video.current);
+    hlsPlayer.on(hls.Events.MEDIA_ATTACHED, () => {
+      hlsPlayer.loadSource(hlsUrl);
+      hlsPlayer.on(hls.Events.MANIFEST_PARSED, () => {
+        hlsPlayer.startLoad(skip);
+        video.current.play();
+      });
+    });
+
+    if (autoPlay) {
+      play();
+    }
+
+    return function cleanup() {
+      hlsPlayer.destroy();
+    };
+  }, [autoPlay, hlsPlayer, hlsUrl, play, skip]);
+
+  useEffect(() => {
+    if (autoPlay && !DEV) {
+      play();
+    }
+  }, [autoPlay, play]);
 
   function onPlayBtnClick() {
     play();
@@ -128,7 +128,7 @@ export const Video: FC<Props> = ({
       trackComponentEvent(__filename, "play", hlsPath);
       setTracked(true);
     }
-  }, [playing]);
+  }, [hlsPath, playing, tracked]);
 
   return (
     <div

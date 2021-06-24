@@ -20,7 +20,7 @@ export const ContentCard: FC<Props> = ({ item }) => {
     if (img.current) {
       setLoaded(img.current.complete);
     }
-  }, [img.current]);
+  }, []);
 
   function imageLoaded(e: SyntheticEvent<HTMLImageElement, Event>) {
     if (img.current) {
@@ -32,6 +32,7 @@ export const ContentCard: FC<Props> = ({ item }) => {
     const cardLink = (
       <a className="card-link" href={item.link}>
         <img
+          alt={item.title}
           className="card-img-top"
           ref={img}
           src={item.image || ""}

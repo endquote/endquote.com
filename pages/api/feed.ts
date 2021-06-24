@@ -158,7 +158,7 @@ class Feeds {
   }
 }
 
-export default (req: NextApiRequest, res: NextApiResponse) => {
+const handler = (req: NextApiRequest, res: NextApiResponse) => {
   let type = "content";
   if (req.query.type && req.query.type.length) {
     if (Array.isArray(req.query.type)) {
@@ -185,3 +185,5 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
 
   return res.status(200).json(feed);
 };
+
+export default handler;

@@ -23,7 +23,7 @@ export const Subscribe: FC<Props> = ({ strings, invert = false }) => {
     if (email.current) {
       email.current.value = "";
     }
-  }, [submitState, email.current]);
+  }, [submitState]);
 
   // https://sendy.co/api
   async function onSubmit(event: FormEvent<HTMLFormElement>) {

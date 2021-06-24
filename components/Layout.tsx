@@ -159,6 +159,7 @@ export const Layout: FC<LayoutProps> = ({
         <div dangerouslySetInnerHTML={{ __html: tracker }}></div>
         <noscript>
           <img
+            alt=""
             src="//matomo.endquote.com/matomo.php?rec=1&amp;idsite=1&amp;rec=1"
             style={{ border: 0 }}
           />

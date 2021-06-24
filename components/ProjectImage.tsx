@@ -12,6 +12,7 @@ export const ProjectImage: FC<Props> = ({ project }) => {
     <div className="text-center">
       <img
         loading="lazy"
+        alt={project.title}
         className={classNames(css.projectImage, "w-100")}
         src={`/images/projects/${project.id}/640.jpg`}
       />

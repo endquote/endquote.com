@@ -24,6 +24,8 @@
     "@types/ol": "6.5.1",
     "@types/react": "17.0.11",
     "@types/twemoji": "12.1.1",
+    "eslint": "7.29.0",
+    "eslint-config-next": "11.0.1",
     "npm-check-updates": "11.7.1",
     "prettier": "2.3.1",
     "sass": "1.32.13",
