@@ -31,6 +31,7 @@ export const Video: FC<Props> = ({
 
   const hlsUrl = `${BASE_HLS}/${hlsPath}/playlist.m3u8`;
 
+  // @ts-ignore
   const [hlsPlayer, setHlsPlayer] = useState<Hls>();
   const [tracked, setTracked] = useState(false);
   const [attached, setAttached] = useState(false);
@@ -45,7 +46,7 @@ export const Video: FC<Props> = ({
     hlsPlayer.attachMedia(video.current);
     hlsPlayer.on(hls.Events.MEDIA_ATTACHED, () => {
       hlsPlayer.loadSource(hlsUrl);
-      hlsPlayer.on(hls.Events.MANIFEST_PARSED, (event, data) => {
+      hlsPlayer.on(hls.Events.MANIFEST_PARSED, () => {
         hlsPlayer.startLoad(skip);
         video.current.play();
       });
