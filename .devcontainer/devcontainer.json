@@ -6,17 +6,16 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
+				"antfu.iconify",
 				"bradgashler.htmltagwrap",
 				"bradlc.vscode-tailwindcss",
 				"davidanson.vscode-markdownlint",
 				"dbaeumer.vscode-eslint",
 				"esbenp.prettier-vscode",
-				"ms-azuretools.vscode-docker",
-				"github.vscode-pull-request-github",
 				"nuxt.mdc",
+				"prisma.prisma",
 				"vue.volar",
-				"yzhang.markdown-all-in-one",
-				"antfu.iconify"
+				"yzhang.markdown-all-in-one"
 			]
 		}
 	},
@@ -24,11 +23,13 @@
 		"--network=host"
 	],
 	"features": {
-		"ghcr.io/devcontainers/features/git-lfs:1": {}
+		"ghcr.io/devcontainers/features/git-lfs:1": {},
+		"ghcr.io/devcontainers-extra/features/pnpm": {
+			"version": "9.15.4"
+		}
 	},
 	"forwardPorts": [
 		4000,
 		3000
-	],
-	"postCreateCommand": "./.devcontainer/setup.zsh"
+	]
 }

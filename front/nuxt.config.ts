@@ -10,8 +10,8 @@ export default defineNuxtConfig({
     "@nuxt/eslint",
     "@nuxt/fonts",
     "@nuxtjs/robots",
-    "@nuxt/content",
     "@nuxtjs/sitemap",
+    "@nuxt/content",
   ],
   content: {
     preview: {
