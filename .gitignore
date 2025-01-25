@@ -1,34 +1,39 @@
-# Nuxt dev/build outputs
-.output
-.data
-.nuxt
-.nitro
-.cache
-dist
+# Development environment
+## Build outputs
+.output/
+.data/
+.nuxt/
+.nitro/
+.cache/
+dist/
 
-# Node dependencies
-node_modules
-.pnpm-store
+## Dependencies
+node_modules/
+.pnpm-store/
 
-# Logs
-logs
-*.log
-
-# Misc
-.DS_Store
-.fleet
-.idea
-
-# Local env files
+## Environment variables
 **/.env
 **/.env.*
-**/!.env.example
+!.env.example
 
-# Prisma specific
+# Database
+## Prisma specific
 **/prisma/*.db
 **/prisma/*.db-journal
-**/.prisma
-**/prisma/client
-**/generated
+**/.prisma/
+**/prisma/client/
+**/generated/
 **/*.generated.*
 **/postgres/
+
+# Logs and debugging
+logs/
+*.log
+
+# System and IDE files
+## macOS
+.DS_Store
+
+## IDE specific
+.fleet/
+.idea/

@@ -1,7 +1,14 @@
 {
   "recommendations": [
+    "antfu.iconify",
+    "bradgashler.htmltagwrap",
+    "bradlc.vscode-tailwindcss",
+    "davidanson.vscode-markdownlint",
     "dbaeumer.vscode-eslint",
     "esbenp.prettier-vscode",
-    "prisma.prisma"
+    "nuxt.mdc",
+    "prisma.prisma",
+    "vue.volar",
+    "yzhang.markdown-all-in-one",
   ]
 }

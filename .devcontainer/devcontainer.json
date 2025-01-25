@@ -1,0 +1,34 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/typescript-node
+{
+	"name": "endquote.com",
+	"image": "mcr.microsoft.com/devcontainers/typescript-node:1-22-bookworm",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"bradgashler.htmltagwrap",
+				"bradlc.vscode-tailwindcss",
+				"davidanson.vscode-markdownlint",
+				"dbaeumer.vscode-eslint",
+				"esbenp.prettier-vscode",
+				"ms-azuretools.vscode-docker",
+				"github.vscode-pull-request-github",
+				"nuxt.mdc",
+				"vue.volar",
+				"yzhang.markdown-all-in-one",
+				"antfu.iconify"
+			]
+		}
+	},
+	"runArgs": [
+		"--network=host"
+	],
+	"features": {
+		"ghcr.io/devcontainers/features/git-lfs:1": {}
+	},
+	"forwardPorts": [
+		4000,
+		3000
+	],
+	"postCreateCommand": "./.devcontainer/setup.zsh"
+}

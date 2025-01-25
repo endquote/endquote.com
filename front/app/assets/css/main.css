@@ -1,0 +1,63 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+@plugin "@tailwindcss/typography";
+
+:root {
+  /* trigger to load fonts https://fonts.nuxt.com/ */
+  font-family: "Titillium Web";
+}
+
+@layer base {
+  .dark {
+    --ui-text-inverted: var(--ui-color-primary-700);
+  }
+
+  body {
+    @apply font-sans;
+    @apply leading-7;
+  }
+
+  p {
+    @apply mb-4;
+  }
+
+  a {
+    @apply underline;
+  }
+
+  .prose-custom {
+    @apply prose;
+    @apply prose-neutral;
+    @apply print:prose-sm;
+    @apply max-w-none;
+    @apply dark:prose-invert;
+  }
+
+  @media (width >= theme(--breakpoint-2xl)) {
+    .prose-custom {
+      @apply prose-lg;
+    }
+  }
+
+  .prose-custom div > h1:first-child,
+  .prose-custom div > h2:first-child,
+  .prose-custom div > h3:first-child,
+  .prose-custom div > p:first-child,
+  .prose-custom div > ul:first-child {
+    @apply mt-0;
+  }
+}
+
+@layer components {
+}
+
+@layer utilities {
+}
+
+@theme {
+  /* https://tailwindcss.com/docs/font-family */
+  --font-sans: "Titillium Web", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+
+  --ui-text-inverted: var(--ui-color-primary-200);
+}
