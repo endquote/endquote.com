@@ -1,0 +1,24 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: postgres17
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+
+  back:
+    build:
+      context: ./back
+      dockerfile: Dockerfile
+    container_name: back
+    ports:
+      - "5555:5555"
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+    depends_on:
+      - postgres

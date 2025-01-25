@@ -1,0 +1,31 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.organizeImports": "explicit"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "modifications",
+  "npm.packageManager": "pnpm",
+  "files.exclude": {
+    "**/.DS_Store": true,
+    "**/.git": true,
+    "**/node_modules": true,
+    "**/*.js": true,
+    "**/.pnpm-store": true,
+    "postgres": true
+  },
+  "remote.autoForwardPorts": false,
+  "deno.enable": false,
+  // https://code.visualstudio.com/docs/terminal/profiles
+  // start tasks in the workspace folder so asdf can manage tools
+  "terminal.integrated.automationProfile.osx": {
+    "path": "zsh",
+    "args": [
+      "-l"
+    ],
+    "env": {
+      "ZDOTDIR": "${workspaceFolder}"
+    }
+  },
+}
