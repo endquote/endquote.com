@@ -23,7 +23,6 @@ node_modules/
 **/prisma/client/
 **/generated/
 **/*.generated.*
-**/postgres/
 
 # Logs and debugging
 logs/

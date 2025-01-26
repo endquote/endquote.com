@@ -1,9 +1,9 @@
 services:
-  back:
+  data:
     build:
-      context: ./back
+      context: ./data
       dockerfile: Dockerfile
-    container_name: back
+    container_name: data
     ports:
       - "5555:5555"
     environment:

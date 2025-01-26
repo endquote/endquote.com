@@ -23,11 +23,11 @@
       "name": "file",
       "type": "node",
       "program": "${file}",
-      "cwd": "${workspaceFolder}/back",
+      "cwd": "${workspaceFolder}/data",
       "runtimeExecutable": "tsx",
       "skipFiles": [
         "<node_internals>/**",
-        "${workspaceFolder}/back/node_modules/**"
+        "${workspaceFolder}/data/node_modules/**"
       ],
     },
   ],
@@ -41,4 +41,3 @@
     }
   ]
 }
-
