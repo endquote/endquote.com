@@ -29,7 +29,5 @@ services:
 
   redirect:
     image: cusspvz/redirect
-    ports:
-      - "80:80"
     environment:
       - REDIRECT=https://endquote.com
