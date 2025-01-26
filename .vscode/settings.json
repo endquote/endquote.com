@@ -5,7 +5,7 @@
   },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
-  "editor.formatOnSaveMode": "modifications",
+  "editor.formatOnSaveMode": "file",
   "npm.packageManager": "pnpm",
   "files.exclude": {
     "**/.DS_Store": true,

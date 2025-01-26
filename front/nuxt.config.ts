@@ -12,6 +12,7 @@ export default defineNuxtConfig({
     "@nuxtjs/robots",
     "@nuxtjs/sitemap",
     "@nuxt/content",
+    "@prisma/nuxt",
   ],
   content: {
     preview: {
@@ -41,6 +42,10 @@ export default defineNuxtConfig({
     url: "https://endquote.com",
     name: "Josh Santangelo",
   },
+  prisma: {
+    // https://www.prisma.io/docs/orm/more/help-and-troubleshooting/prisma-nuxt-module#configuration
+    runMigration: false,
+  },
   css: ["~/assets/css/main.css"],
   devtools: { enabled: true, disableAuthorization: true },
   routeRules: {
@@ -52,6 +57,14 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       hostname: "localhost",
+    },
+  },
+  vite: {
+    // https://www.prisma.io/docs/orm/more/help-and-troubleshooting/prisma-nuxt-module#resolving-typeerror-failed-to-resolve-module-specifier-prismaclientindex-browser
+    resolve: {
+      alias: {
+        ".prisma/client/index-browser": "./node_modules/.prisma/client/index-browser.js",
+      },
     },
   },
 });

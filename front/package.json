@@ -23,6 +23,8 @@
     "@nuxt/ui": "3.0.0-alpha.11",
     "@nuxtjs/robots": "5.2.2",
     "@nuxtjs/sitemap": "7.2.3",
+    "@prisma/client": "6.2.1",
+    "@prisma/nuxt": "0.3.0",
     "@tailwindcss/typography": "0.5.16",
     "@vueuse/core": "12.5.0",
     "globby": "14.0.2",
@@ -36,7 +38,7 @@
     "nuxi": "3.20.0",
     "prettier": "3.4.2",
     "prettier-plugin-tailwindcss": "0.6.11",
+    "prisma": "6.2.1",
     "typescript": "5.7.3"
-  },
-  "packageManager": "pnpm@9.15.4+sha512.b2dc20e2fc72b3e18848459b37359a32064663e5627a51e4c74b2c29dd8e8e0491483c3abb40789cfd578bf362fb6ba8261b05f0387d76792ed6e23ea3b1b6a0"
+  }
 }
