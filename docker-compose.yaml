@@ -26,3 +26,10 @@ services:
       - "3000:3000"
     environment:
       - DATABASE_URL=${DATABASE_URL}
+
+  redirect:
+    image: cusspvz/redirect
+    ports:
+      - "80:80"
+    environment:
+      - REDIRECT=https://endquote.com
