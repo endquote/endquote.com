@@ -4,8 +4,8 @@ services:
       context: ./data
       dockerfile: Dockerfile
     container_name: data
-    ports:
-      - "5555:5555"
+    # ports:
+    #   - "5555:5555"
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - FS_API_KEY=${FS_API_KEY}
@@ -22,8 +22,8 @@ services:
       context: ./data-proxy
       dockerfile: Dockerfile
     container_name: data-proxy
-    ports:
-      - "8080:80"
+    # ports:
+    #   - "8080:80"
     volumes:
       - ./data-proxy/nginx.conf:/etc/nginx/nginx.conf
     environment:
@@ -37,8 +37,8 @@ services:
       context: ./front
       dockerfile: Dockerfile
     container_name: front
-    ports:
-      - "3000:3000"
+    # ports:
+    #   - "3000:3000"
     environment:
       - DATABASE_URL=${DATABASE_URL}
 
