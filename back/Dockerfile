@@ -4,15 +4,12 @@ RUN --mount=type=cache,target=/var/cache/apt \
     apt-get update -y && \
     apt-get install -y openssl
 
-# enable pnpm
-RUN corepack enable pnpm
-
 # Stage 2: Dependencies installation
 FROM base AS deps
 WORKDIR /app
-COPY package.json pnpm-lock.yaml ./
-# Use BuildKit cache for pnpm packages
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+COPY package.json package-lock.json ./
+# Use BuildKit cache for npm packages
+RUN --mount=type=cache,id=npm,target=/root/.npm npm ci
 
 # Stage 3: Build stage
 FROM deps AS build
@@ -24,7 +21,7 @@ FROM base
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=build /app .
-RUN pnpm prisma:prod:generate   
+RUN npm run prisma:prod:generate
 EXPOSE 5555
-CMD ["pnpm", "start"]
+CMD ["npm", "start"]
 

@@ -10,7 +10,7 @@
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "clean": "rm -rf .nuxt .output .pnpm-store node_modules .data"
+    "clean": "rm -rf .nuxt .output node_modules .data"
   },
   "dependencies": {
     "@iconify-json/fa-regular": "1.2.1",

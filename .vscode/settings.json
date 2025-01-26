@@ -6,13 +6,12 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "file",
-  "npm.packageManager": "pnpm",
+  "npm.packageManager": "npm",
   "files.exclude": {
     "**/.DS_Store": true,
     "**/.git": true,
     "**/node_modules": true,
     "**/*.js": true,
-    "**/.pnpm-store": true,
     "postgres": true
   },
   "remote.autoForwardPorts": false,

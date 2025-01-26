@@ -9,15 +9,15 @@
     "data:hotels": "tsx ./src/hotels.ts",
     "data:hotels-visited": "tsx ./src/hotels-visited.ts",
     "data:trips": "tsx ./src/trips.ts",
-    "data:all": "pnpm data:checkins && pnpm data:restaurants && pnpm data:restaurants-visited && pnpm data:hotels && pnpm data:hotels-visited && pnpm data:trips",
+    "data:all": "npm run data:checkins && npm run data:restaurants && npm run data:restaurants-visited && npm run data:hotels && npm run data:hotels-visited && npm run data:trips",
     "prisma:dev:migrate": "prisma migrate dev",
     "prisma:dev:format": "prisma format",
     "prisma:dev:studio": "prisma studio --browser none --port 5555",
     "prisma:prod:generate": "prisma generate",
     "prisma:prod:migrate": "prisma migrate deploy",
     "dev:typecheck": "tsc --noEmit",
-    "dev:clean": "rm -rf .pnpm-store node_modules",
-    "start": "pnpm prisma:prod:migrate && pnpm prisma:dev:studio"
+    "dev:clean": "rm -rf .npm-store node_modules",
+    "start": "npm run prisma:prod:migrate && npm run prisma:dev:studio"
   },
   "keywords": [],
   "author": "Josh Santangelo",
@@ -33,6 +33,5 @@
     "@prisma/client": "6.2.1",
     "axios": "1.7.9",
     "dotenv": "16.4.7"
-  },
-  "packageManager": "pnpm@9.15.4+sha512.b2dc20e2fc72b3e18848459b37359a32064663e5627a51e4c74b2c29dd8e8e0491483c3abb40789cfd578bf362fb6ba8261b05f0387d76792ed6e23ea3b1b6a0"
+  }
 }
