@@ -10,7 +10,7 @@ ENV NUXT_PUBLIC_HOSTNAME=$COOLIFY_FQDN
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm install -g nuxt
-RUN npm ci --include=optional
+RUN npm ci
 COPY . .
 RUN npm run build
 
