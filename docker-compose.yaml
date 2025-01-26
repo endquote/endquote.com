@@ -1,16 +1,4 @@
 services:
-  database:
-    image: postgres:17
-    container_name: database
-    ports:
-      - "5432:5432"
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
-    volumes:
-      - ./postgres:/var/lib/postgresql/data
-
   back:
     build:
       context: ./back
@@ -19,7 +7,7 @@ services:
     ports:
       - "5555:5555"
     environment:
-      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB}
+      - DATABASE_URL=${DATABASE_URL}
       - FS_API_KEY=${FS_API_KEY}
       - FS_SERVICE_KEY=${FS_SERVICE_KEY}
       - FS_CLIENT_ID=${FS_CLIENT_ID}
@@ -28,8 +16,6 @@ services:
       - FS_ACCESS_TOKEN=${FS_ACCESS_TOKEN}
       - MICHELIN_USER=${MICHELIN_USER}
       - MICHELIN_PASS=${MICHELIN_PASS}
-    depends_on:
-      - database
 
   front:
     build:
@@ -39,6 +25,4 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB}
-    depends_on:
-      - database
+      - DATABASE_URL=${DATABASE_URL}
