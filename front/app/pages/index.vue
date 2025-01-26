@@ -27,7 +27,7 @@ onMounted(async () => {
 <template>
   <div>
     <ContentRenderer v-if="page" :value="page" class="prose-custom prose-2xl" />
-    <div>
+    <div class="hidden">
       <div v-if="loading">Loading...</div>
       <div v-else-if="error">Error: {{ error }}</div>
       <div v-else>{{ JSON.stringify(data) }}</div>
