@@ -4,7 +4,6 @@ services:
       # docker build -t endquote-back -f Dockerfile .
       context: ./data
       dockerfile: Dockerfile
-    container_name: data
     healthcheck:
       test: ["CMD", "wget", "--spider", "http://localhost:5555"]
       interval: 30s
@@ -31,7 +30,6 @@ services:
       args:
         - DATA_BASIC_AUTH_USER=${DATA_BASIC_AUTH_USER}
         - DATA_BASIC_AUTH_PASS=${DATA_BASIC_AUTH_PASS}
-    container_name: data-proxy
     # ports:
     #   - "8080:80"
     environment:
@@ -48,7 +46,6 @@ services:
       dockerfile: Dockerfile
       args:
         - DATABASE_URL=${DATABASE_URL}
-    container_name: front
     healthcheck:
       test: ["CMD", "wget", "--spider", "http://localhost:3000"]
       interval: 30s
