@@ -32,12 +32,6 @@ services:
         - DATA_BASIC_AUTH_USER=${DATA_BASIC_AUTH_USER}
         - DATA_BASIC_AUTH_PASS=${DATA_BASIC_AUTH_PASS}
     container_name: data-proxy
-    healthcheck:
-      test: ["CMD", "wget", "--spider", "http://localhost:80"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
     # ports:
     #   - "8080:80"
     environment:
