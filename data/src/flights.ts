@@ -65,8 +65,6 @@ const run = async () => {
       create: flight,
     });
   }
-
-  await db.$disconnect();
 };
 
 if (require.main === module) {
