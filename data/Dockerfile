@@ -1,6 +1,6 @@
 # Stage 1: Base system setup
 FROM node:23-slim AS base
-RUN --mount=type=cache,target=/var/cache/apt \
+RUN --mount=type=cache,sharing=locked,target=/var/cache/apt \
     apt-get update -y && \
     apt-get install -y openssl
 
@@ -9,7 +9,7 @@ FROM base AS deps
 WORKDIR /app
 COPY package.json package-lock.json ./
 # Use BuildKit cache for npm packages
-RUN --mount=type=cache,id=npm,target=/root/.npm npm ci
+RUN --mount=type=cache,sharing=locked,id=npm,target=/root/.npm npm ci
 
 # Stage 3: Build stage
 FROM deps AS build

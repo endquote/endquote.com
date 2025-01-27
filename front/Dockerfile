@@ -1,6 +1,6 @@
 # Stage 1: Base system setup
 FROM node:22-slim AS base
-RUN --mount=type=cache,sharing=private,target=/var/cache/apt \
+RUN --mount=type=cache,sharing=locked,target=/var/cache/apt \
     apt-get update -y && \
     apt-get install -y openssl
 ENV NODE_ENV=production

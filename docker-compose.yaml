@@ -35,8 +35,11 @@ services:
 
   front:
     build:
+      # docker build --build-arg DATABASE_URL=postgresql://endquote@host.docker.internal:5432/endquote -t endquote-front -f Dockerfile .
       context: ./front
       dockerfile: Dockerfile
+      args:
+        - DATABASE_URL=${DATABASE_URL}
     container_name: front
     # ports:
     #   - "3000:3000"
