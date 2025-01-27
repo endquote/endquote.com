@@ -16,7 +16,6 @@
     "@iconify-json/fa-regular": "1.2.1",
     "@iconify-json/fa6-brands": "1.2.5",
     "@iconify-json/heroicons": "1.2.2",
-    "ipx": "^2.1.0",
     "@nuxt/content": "3.0.1",
     "@nuxt/eslint": "0.7.5",
     "@nuxt/fonts": "0.10.3",
