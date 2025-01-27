@@ -1,6 +1,7 @@
 services:
   data:
     build:
+      # docker build -t endquote-back -f Dockerfile .
       context: ./data
       dockerfile: Dockerfile
     container_name: data
