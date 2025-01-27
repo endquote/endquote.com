@@ -1,3 +1,4 @@
+import { S3Client } from "@aws-sdk/client-s3";
 import { PrismaClient } from "@prisma/client";
 import axios from "axios";
 
@@ -11,6 +12,12 @@ http.interceptors.request.use((config) => {
 
 export const db = new PrismaClient({
   log: process.env.COOLIFY_FQDN ? [] : ["query", "info", "warn", "error"],
+});
+
+export const s3 = new S3Client({
+  region: process.env.S3_REGION,
+  credentials: { accessKeyId: process.env.S3_TOKEN!, secretAccessKey: process.env.S3_SECRET! },
+  endpoint: process.env.S3_ENDPOINT,
 });
 
 export const normalizeString = (str: string): string => {

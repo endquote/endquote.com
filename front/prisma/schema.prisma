@@ -77,3 +77,40 @@ model trip {
   start    Int       @unique
   checkins checkin[]
 }
+
+model flight {
+  eqId               Int       @id @default(autoincrement())
+  flightyId          String    @unique
+  date               DateTime
+  airline            String
+  flightNumber       String
+  fromAirport        String
+  toAirport          String
+  departureTerminal  String?
+  departureGate      String?
+  arrivalTerminal    String?
+  arrivalGate        String?
+  canceled           Boolean   @default(false)
+  divertedTo         String?
+  scheduledDeparture DateTime?
+  actualDeparture    DateTime?
+  scheduledTakeoff   DateTime?
+  actualTakeoff      DateTime?
+  scheduledLanding   DateTime?
+  actualLanding      DateTime?
+  scheduledArrival   DateTime?
+  actualArrival      DateTime?
+  aircraftType       String?
+  tailNumber         String?
+  pnr                String?
+  seat               String?
+  seatType           String?
+  cabinClass         String?
+  flightReason       String?
+  notes              String?
+  airlineFlightyId   String?
+  depAirportFlightyId String?
+  arrAirportFlightyId String?
+  divAirportFlightyId String?
+  aircraftFlightyId   String?
+}
