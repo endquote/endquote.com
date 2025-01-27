@@ -2,9 +2,11 @@
 FROM node:23-slim
 
 # Install system dependencies
+ENV DEBIAN_FRONTEND=noninteractive
 RUN --mount=type=cache,sharing=locked,target=/var/cache/apt \
     apt-get update -y && \
-    apt-get install -y openssl wget
+    apt-get install -y --no-install-recommends openssl wget && \
+    rm -rf /var/lib/apt/lists/*
 
 # Set working directory
 WORKDIR /app
