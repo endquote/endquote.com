@@ -5,6 +5,12 @@ services:
       context: ./data
       dockerfile: Dockerfile
     container_name: data
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:5555"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
     # ports:
     #   - "5555:5555"
     environment:
@@ -26,13 +32,20 @@ services:
         - DATA_BASIC_AUTH_USER=${DATA_BASIC_AUTH_USER}
         - DATA_BASIC_AUTH_PASS=${DATA_BASIC_AUTH_PASS}
     container_name: data-proxy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
     # ports:
     #   - "8080:80"
     environment:
       - DATA_BASIC_AUTH_USER=${DATA_BASIC_AUTH_USER}
       - DATA_BASIC_AUTH_PASS=${DATA_BASIC_AUTH_PASS}
     depends_on:
-      - data
+      data:
+        condition: service_healthy
 
   front:
     build:
@@ -42,6 +55,12 @@ services:
       args:
         - DATABASE_URL=${DATABASE_URL}
     container_name: front
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
     # ports:
     #   - "3000:3000"
     environment:
@@ -52,4 +71,5 @@ services:
     environment:
       - REDIRECT=https://endquote.com
     depends_on:
-      - front
+      front:
+        condition: service_healthy

@@ -4,7 +4,7 @@ FROM node:22-slim AS base
 # Install system dependencies
 RUN --mount=type=cache,sharing=locked,target=/var/cache/apt \
     apt-get update -y && \
-    apt-get install -y openssl
+    apt-get install -y openssl wget
 
 # Set environment variables
 ENV NODE_ENV=production
