@@ -1,12 +1,13 @@
-import { defineCollection, z, type Collection } from "@nuxt/content";
+import { defineCollection, defineCollectionSource, z, type Collection } from "@nuxt/content";
 import { asRobotsCollection } from "@nuxtjs/robots/content";
 import { asSitemapCollection } from "@nuxtjs/sitemap/content";
+import { PrismaClient } from "@prisma/client";
 
-const pageCollection = (collection: Collection<Zod.ZodRawShape>): Collection<Zod.ZodRawShape> => {
+const commonCollection = (collection: Collection<Zod.ZodRawShape>): Collection<Zod.ZodRawShape> => {
   return defineCollection(asRobotsCollection(asSitemapCollection(collection)));
 };
 
-const schema = {
+const commonSchema = {
   title: z.string(),
   date: z.string().date(),
   tags: z.array(z.string()).optional(),
@@ -15,16 +16,46 @@ const schema = {
   linkText: z.string().optional(),
 };
 
+const prisma = new PrismaClient();
+// https://content.nuxt.com/docs/advanced/custom-source
+const tripSource = defineCollectionSource({
+  getKeys: async () => {
+    const trips = await prisma.trip.findMany({ select: { eqId: true } });
+    return trips.map((trip) => `${trip.eqId}.json`);
+  },
+  getItem: async (key: string) => {
+    const trip = await prisma.trip.findFirst({
+      where: { eqId: parseInt(key) },
+      select: {
+        start: true,
+        checkins: {
+          select: {
+            date: true,
+            venue: { select: { eqId: true, name: true, lat: true, lng: true } },
+          },
+          orderBy: { date: "asc" },
+        },
+      },
+    });
+    if (!trip) {
+      return "";
+    }
+    trip.start *= 1000;
+    trip.checkins.forEach((c) => (c.date *= 1000));
+    return JSON.stringify(trip);
+  },
+});
+
 export const collections = {
-  content: pageCollection({
+  content: commonCollection({
     type: "page",
     source: "*.md",
   }),
-  projects: pageCollection({
+  projects: commonCollection({
     type: "page",
     source: "./projects/**/*.md",
     schema: z.object({
-      ...schema,
+      ...commonSchema,
       subtitle: z.string().optional(),
       role: z.string(),
       client: z.string().optional(),
@@ -37,11 +68,11 @@ export const collections = {
       contributions: z.array(z.enum(["engineering", "design", "management"])).optional(),
     }),
   }),
-  roles: pageCollection({
+  roles: commonCollection({
     type: "page",
     source: "./roles/**/*.md",
     schema: z.object({
-      ...schema,
+      ...commonSchema,
       company: z.string(),
       end: z.string().date().optional(),
       context: z.array(z.enum(["business", "personal", "educational", "volunteer"])).optional(),
@@ -51,7 +82,7 @@ export const collections = {
     type: "page",
     source: "./honors/**/*.md",
     schema: z.object({
-      ...schema,
+      ...commonSchema,
       role: z.string(),
       company: z.string(),
     }),
@@ -60,9 +91,23 @@ export const collections = {
     type: "data",
     source: "./awards/**/*.yaml",
     schema: z.object({
-      ...schema,
+      ...commonSchema,
       company: z.string(),
       project: z.string(),
+    }),
+  }),
+  trips: defineCollection({
+    type: "data",
+    source: tripSource,
+    schema: z.object({
+      start: z.date(),
+      checkins: z.array(
+        z.object({
+          eqId: z.number(),
+          date: z.date(),
+          venue: z.object({ name: z.string(), lat: z.number(), lng: z.number() }),
+        }),
+      ),
     }),
   }),
 };

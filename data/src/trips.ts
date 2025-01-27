@@ -8,7 +8,7 @@ const maxDist = 40;
 // trips must have at least this many checkins
 const minCheckins = 1;
 
-type Checkin = Prisma.CheckinGetPayload<{ include: { venue: true } }>;
+type Checkin = Prisma.checkinGetPayload<{ include: { venue: true } }>;
 
 type Cluster = {
   checkins: Checkin[];
