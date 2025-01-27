@@ -17,34 +17,6 @@ const commonSchema = {
 };
 
 const prisma = new PrismaClient();
-// https://content.nuxt.com/docs/advanced/custom-source
-const tripDataSource = defineCollectionSource({
-  getKeys: async () => {
-    const trips = await prisma.trip.findMany({ select: { eqId: true } });
-    return trips.map((trip) => `${trip.eqId}.json`);
-  },
-  getItem: async (key: string) => {
-    const trip = await prisma.trip.findFirst({
-      where: { eqId: parseInt(key) },
-      select: {
-        start: true,
-        checkins: {
-          select: {
-            date: true,
-            venue: { select: { eqId: true, name: true, lat: true, lng: true } },
-          },
-          orderBy: { date: "asc" },
-        },
-      },
-    });
-    if (!trip) {
-      return "";
-    }
-    trip.start *= 1000;
-    trip.checkins.forEach((c) => (c.date *= 1000));
-    return JSON.stringify(trip);
-  },
-});
 
 export const collections = {
   content: commonCollection({
@@ -98,7 +70,34 @@ export const collections = {
   }),
   tripData: defineCollection({
     type: "page",
-    source: tripDataSource,
+    source: defineCollectionSource({
+      // https://content.nuxt.com/docs/advanced/custom-source
+      getKeys: async () => {
+        const trips = await prisma.trip.findMany({ select: { eqId: true } });
+        return trips.map((trip) => `${trip.eqId}.json`);
+      },
+      getItem: async (key: string) => {
+        const trip = await prisma.trip.findFirst({
+          where: { eqId: parseInt(key) },
+          select: {
+            start: true,
+            checkins: {
+              select: {
+                date: true,
+                venue: { select: { eqId: true, name: true, lat: true, lng: true } },
+              },
+              orderBy: { date: "asc" },
+            },
+          },
+        });
+        if (!trip) {
+          return "";
+        }
+        trip.start *= 1000;
+        trip.checkins.forEach((c) => (c.date *= 1000));
+        return JSON.stringify(trip);
+      },
+    }),
     schema: z.object({
       start: z.date(),
       checkins: z.array(
