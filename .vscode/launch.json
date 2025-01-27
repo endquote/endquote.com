@@ -4,15 +4,16 @@
     {
       "type": "chrome",
       "request": "launch",
-      "name": "client: chrome",
+      "name": "front/client",
       "url": "http://localhost:3000",
       "webRoot": "${workspaceFolder}"
     },
     {
       "type": "node",
       "request": "launch",
-      "name": "server: nuxt",
+      "name": "front/server",
       "outputCapture": "std",
+      "cwd": "${workspaceFolder}/front",
       "program": "${workspaceFolder}/front/node_modules/nuxi/bin/nuxi.mjs",
       "args": [
         "dev"
@@ -20,7 +21,7 @@
     },
     {
       "request": "launch",
-      "name": "file",
+      "name": "data/file",
       "type": "node",
       "program": "${file}",
       "cwd": "${workspaceFolder}/data",
@@ -33,11 +34,11 @@
   ],
   "compounds": [
     {
-      "name": "fullstack: nuxt",
+      "name": "front",
       "configurations": [
-        "server: nuxt",
-        "client: chrome"
+        "front/server",
+        "front/client"
       ]
     }
-  ]
+  ],
 }
