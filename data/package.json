@@ -1,7 +1,6 @@
 {
   "name": "data.endquote.com",
-  "version": "1.0.0",
-  "description": "",
+  "private": true,
   "scripts": {
     "data:checkins": "tsx ./src/checkins.ts",
     "data:restaurants": "tsx ./src/restaurants.ts",
