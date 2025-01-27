@@ -18,7 +18,7 @@ const commonSchema = {
 
 const prisma = new PrismaClient();
 // https://content.nuxt.com/docs/advanced/custom-source
-const tripSource = defineCollectionSource({
+const tripDataSource = defineCollectionSource({
   getKeys: async () => {
     const trips = await prisma.trip.findMany({ select: { eqId: true } });
     return trips.map((trip) => `${trip.eqId}.json`);
@@ -96,9 +96,9 @@ export const collections = {
       project: z.string(),
     }),
   }),
-  trips: defineCollection({
-    type: "data",
-    source: tripSource,
+  tripData: defineCollection({
+    type: "page",
+    source: tripDataSource,
     schema: z.object({
       start: z.date(),
       checkins: z.array(
@@ -109,5 +109,9 @@ export const collections = {
         }),
       ),
     }),
+  }),
+  tripPages: commonCollection({
+    type: "page",
+    source: "./trips/**/*.md",
   }),
 };
