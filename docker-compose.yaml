@@ -57,6 +57,8 @@ services:
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - NUXT_PUBLIC_HOSTNAME=endquote.com
+      - NUXT_API_SECRET=foo
+      - NUXT_PUBLIC_API_BASE=bar
   front-redirect:
     image: cusspvz/redirect
     environment:
