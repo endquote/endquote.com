@@ -11,6 +11,7 @@ RUN --mount=type=cache,sharing=locked,target=/var/cache/apt \
 # Set environment variables
 ENV NODE_ENV=production
 ARG DATABASE_URL
+ARG NUXT_PUBLIC_HOSTNAME
 
 # Set working directory
 WORKDIR /app
