@@ -10,8 +10,6 @@ RUN --mount=type=cache,sharing=locked,target=/var/cache/apt \
 
 # Set environment variables
 ENV NODE_ENV=production
-ARG COOLIFY_FQDN
-ENV NUXT_PUBLIC_HOSTNAME=$COOLIFY_FQDN
 ARG DATABASE_URL
 
 # Set working directory

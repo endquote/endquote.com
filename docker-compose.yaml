@@ -56,7 +56,7 @@ services:
     #   - "3000:3000"
     environment:
       - DATABASE_URL=${DATABASE_URL}
-
+      - NUXT_PUBLIC_HOSTNAME=endquote.com
   front-redirect:
     image: cusspvz/redirect
     environment:
