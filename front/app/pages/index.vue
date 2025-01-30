@@ -4,8 +4,8 @@ const page = (await useAsyncData(() => queryCollection("content").where("path", 
 useSiteHead(page);
 const dev = useDev();
 const runtime = useRuntimeConfig();
-// console.log("dev", dev);
-// console.log("runtime", runtime);
+console.log("dev", dev);
+console.log("runtime", runtime);
 
 import { onMounted, ref } from "vue";
 
