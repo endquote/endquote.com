@@ -47,8 +47,6 @@ services:
       args:
         - DATABASE_URL=${DATABASE_URL}
         - NUXT_PUBLIC_HOSTNAME=endquote.com
-        - NUXT_API_SECRET=foo
-        - NUXT_PUBLIC_API_BASE=bar
     healthcheck:
       test: ["CMD", "wget", "--spider", "http://localhost:3000"]
       interval: 30s
