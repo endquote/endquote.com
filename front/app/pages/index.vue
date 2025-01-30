@@ -2,10 +2,6 @@
 const page = (await useAsyncData(() => queryCollection("content").where("path", "=", "/").first())).data.value!;
 
 useSiteHead(page);
-const dev = useDev();
-const runtime = useRuntimeConfig();
-console.log("dev", dev);
-console.log("runtime", runtime);
 
 import { onMounted, ref } from "vue";
 
