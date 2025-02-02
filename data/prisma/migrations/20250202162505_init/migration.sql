@@ -2,7 +2,7 @@
 CREATE TABLE "checkin" (
     "eqId" SERIAL NOT NULL,
     "fsId" TEXT NOT NULL,
-    "date" BIGINT NOT NULL,
+    "date" TIMESTAMP(3) NOT NULL,
     "tz" INTEGER NOT NULL,
     "venueId" INTEGER NOT NULL,
     "tripId" INTEGER,
@@ -68,6 +68,8 @@ CREATE TABLE "restaurant" (
 -- CreateTable
 CREATE TABLE "trip" (
     "eqId" SERIAL NOT NULL,
+    "start" TIMESTAMP(3) NOT NULL,
+    "end" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "trip_pkey" PRIMARY KEY ("eqId")
 );
@@ -76,7 +78,7 @@ CREATE TABLE "trip" (
 CREATE TABLE "flight" (
     "eqId" SERIAL NOT NULL,
     "flightyId" TEXT NOT NULL,
-    "date" BIGINT NOT NULL,
+    "date" TIMESTAMP(3) NOT NULL,
     "airline" TEXT NOT NULL,
     "flightNumber" TEXT NOT NULL,
     "fromAirport" TEXT NOT NULL,
@@ -87,14 +89,14 @@ CREATE TABLE "flight" (
     "arrivalGate" TEXT,
     "canceled" BOOLEAN NOT NULL DEFAULT false,
     "divertedTo" TEXT,
-    "scheduledDeparture" INTEGER,
-    "actualDeparture" INTEGER,
-    "scheduledTakeoff" INTEGER,
-    "actualTakeoff" INTEGER,
-    "scheduledLanding" INTEGER,
-    "actualLanding" INTEGER,
-    "scheduledArrival" INTEGER,
-    "actualArrival" INTEGER,
+    "scheduledDeparture" TIMESTAMP(3),
+    "actualDeparture" TIMESTAMP(3),
+    "scheduledTakeoff" TIMESTAMP(3),
+    "actualTakeoff" TIMESTAMP(3),
+    "scheduledLanding" TIMESTAMP(3),
+    "actualLanding" TIMESTAMP(3),
+    "scheduledArrival" TIMESTAMP(3),
+    "actualArrival" TIMESTAMP(3),
     "aircraftType" TEXT,
     "tailNumber" TEXT,
     "pnr" TEXT,
@@ -118,8 +120,8 @@ CREATE TABLE "home" (
     "name" TEXT NOT NULL,
     "lat" DOUBLE PRECISION NOT NULL,
     "lng" DOUBLE PRECISION NOT NULL,
-    "start" BIGINT NOT NULL,
-    "end" BIGINT NOT NULL,
+    "start" TIMESTAMP(3) NOT NULL,
+    "end" TIMESTAMP(3) NOT NULL,
     "airports" TEXT[],
 
     CONSTRAINT "home_pkey" PRIMARY KEY ("eqId")

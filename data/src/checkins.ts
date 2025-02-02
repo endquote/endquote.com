@@ -73,7 +73,7 @@ const getCheckins = async (token: string, homes: Prisma.homeGetPayload<{}>[]): P
         await db.checkin.create({
           data: {
             fsId: item.id,
-            date: item.createdAt,
+            date: new Date(item.createdAt * 1000),
             tz: item.timeZoneOffset,
             venue: { connect: { eqId: venue.eqId } },
           },

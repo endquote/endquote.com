@@ -1,4 +1,5 @@
 import { GetObjectCommand } from "@aws-sdk/client-s3";
+import { Prisma } from "@prisma/client";
 import { parse } from "csv-parse/sync";
 import { config } from "dotenv";
 import { promises as fs } from "fs";
@@ -54,7 +55,7 @@ const getFlightRows = async () => {
 };
 
 // convert the csv row to the prisma schema
-const parseFlight = (row: any, tzMap: Record<string, string>) => {
+const parseFlight = (row: any, tzMap: Record<string, string>): Prisma.flightCreateInput => {
   const obj = {
     flightyId: row["Flight Flighty ID"],
     date: row["Date"],
@@ -92,8 +93,11 @@ const parseFlight = (row: any, tzMap: Record<string, string>) => {
   };
 
   // the dates are in the local time of the airport, convert them to unix timestamps
-  const timestamp = (date: string, tz: string): number => {
-    return DateTime.fromISO(date).setZone(tz).toSeconds();
+  const timestamp = (date: string, tz: string): Date | null => {
+    if (!date) {
+      return null;
+    }
+    return DateTime.fromISO(date).setZone(tz).toJSDate();
   };
 
   obj.date = timestamp(obj.date, tzMap[obj.fromAirport]);

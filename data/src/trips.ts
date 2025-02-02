@@ -2,9 +2,8 @@ import { Prisma } from "@prisma/client";
 import fs from "fs";
 import path from "path";
 import { db, haversine } from "./shared";
-
-// trips break if there's this much time between checkins (s)
-const maxTime = 48 * 60 * 60;
+// trips break if there's this much time between checkins (ms)
+const maxTime = 48 * 60 * 60 * 1000;
 // trips break if there's this much distance between checkins (km)
 const tripDist = 40;
 // checkins within this distance of home are considered home (km)
@@ -13,13 +12,14 @@ const homeDist = 120; // about 75mi
 type Checkin = Prisma.checkinGetPayload<{ include: { venue: true } }>;
 type Flight = Prisma.flightGetPayload<{}>;
 type HomeAir = { venue: Prisma.venueGetPayload<{}>; home: Prisma.homeGetPayload<{}>; code: string };
-type Trip = { checkins: Checkin[]; flights: Flight[] };
+type Trip = { checkins: Checkin[]; flights: Flight[]; start: Date; end: Date };
 
 const main = async () => {
   const homes = await db.home.findMany();
 
   // all checkins, including venues
   const allCheckins = await db.checkin.findMany({ orderBy: { date: "asc" }, include: { venue: true } });
+
   // just the ones that are not at home
   const tripCheckins = allCheckins.filter((c) =>
     homes.some(
@@ -48,7 +48,7 @@ const main = async () => {
 // group non-home checkins into trips based on time gaps
 const buildCheckinTrips = (checkins: Checkin[]): Checkin[][] => {
   const trips: Checkin[][] = [];
-  checkins.sort((a, b) => Number(a.date) - Number(b.date));
+  checkins.sort((a, b) => (a.date > b.date ? 1 : -1));
   let trip: Checkin[] = [checkins[0]];
 
   for (let i = 1; i < checkins.length; i++) {
@@ -56,7 +56,7 @@ const buildCheckinTrips = (checkins: Checkin[]): Checkin[][] => {
 
     // add checkins as long as they're close in time/distance
     const lastCheckin = trip[trip.length - 1];
-    const time = c.date - lastCheckin.date;
+    const time = c.date.getTime() - lastCheckin.date.getTime();
     const dist = haversine(c.venue.lat, c.venue.lng, lastCheckin.venue.lat, lastCheckin.venue.lng);
     if (time <= maxTime && dist <= tripDist) {
       trip.push(c);
@@ -69,7 +69,7 @@ const buildCheckinTrips = (checkins: Checkin[]): Checkin[][] => {
   }
 
   trips.push(trip);
-  trips.sort((a, b) => Number(a[0].date) - Number(b[0].date));
+  trips.sort((a, b) => (a[0].date > b[0].date ? 1 : -1));
   return trips;
 };
 
@@ -80,7 +80,7 @@ const combineCheckinTrips = (checkinTrips: Checkin[][], allCheckins: Checkin[], 
     const nextTrip = checkinTrips[i + 1];
     const lastCheckin = thisTrip[thisTrip.length - 1];
     const firstCheckin = nextTrip[0];
-    const time = firstCheckin.date - lastCheckin.date;
+    const time = firstCheckin.date.getTime() - lastCheckin.date.getTime();
     const home = homeAir.find((h) => thisTrip[0].date >= h.home.start && thisTrip[0].date <= h.home.end);
     const airBreak = allCheckins.find(
       (c) => c.venue.eqId == home.venue.eqId && c.date < firstCheckin.date && c.date > lastCheckin.date,
@@ -89,7 +89,7 @@ const combineCheckinTrips = (checkinTrips: Checkin[][], allCheckins: Checkin[], 
     if (time <= maxTime * 2 && !airBreak) {
       // Combine trips
       thisTrip.push(...nextTrip);
-      thisTrip.sort((a, b) => Number(a.date) - Number(b.date));
+      thisTrip.sort((a, b) => (a.date > b.date ? 1 : -1));
       checkinTrips.splice(i + 1, 1);
       i--; // Recheck the current trip with the next one
     }
@@ -119,7 +119,7 @@ const extendCheckinTrips = (checkinTrips: Checkin[][], allCheckins: Checkin[], h
     for (let c = tripStart - 1; c >= Math.max(0, prevTripEnd, tripStart - search); c--) {
       const checkin = allCheckins[c];
       if (home.venue.eqId === checkin.venue.eqId) {
-        const time = trip[0].date - checkin.date;
+        const time = trip[0].date.getTime() - checkin.date.getTime();
         if (time <= maxTime) {
           trip.unshift(...allCheckins.slice(c, tripStart));
         }
@@ -136,7 +136,7 @@ const extendCheckinTrips = (checkinTrips: Checkin[][], allCheckins: Checkin[], h
     for (let c = tripEnd + 1; c <= Math.min(allCheckins.length - 1, nextTripStart, tripEnd + search); c++) {
       const checkin = allCheckins[c];
       if (home.venue.eqId === checkin.venue.eqId) {
-        const time = checkin.date - trip[trip.length - 1].date;
+        const time = checkin.date.getTime() - trip[trip.length - 1].date.getTime();
         if (time <= maxTime) {
           trip.push(...allCheckins.slice(tripEnd + 1, c + 1));
         }
@@ -154,7 +154,9 @@ const buildFlightTrips = (allFlights: Flight[], homeAir: HomeAir[]): Flight[][] 
   for (let i = 0; i < allFlights.length; i++) {
     const firstFlight = allFlights[i];
     const home = homeAir.find(
-      (h) => firstFlight.scheduledDeparture >= h.home.start && firstFlight.scheduledDeparture <= h.home.end,
+      (h) =>
+        flightStart(firstFlight).getTime() >= h.home.start.getTime() &&
+        flightEnd(firstFlight).getTime() <= h.home.end.getTime(),
     );
 
     if (firstFlight.fromAirport === home.code) {
@@ -163,7 +165,7 @@ const buildFlightTrips = (allFlights: Flight[], homeAir: HomeAir[]): Flight[][] 
         const nextFlight = allFlights[j];
         if (nextFlight.fromAirport === home.code) {
           // left from home twice, broken trip
-          i = j;
+          i = j - 1;
           break;
         }
 
@@ -189,14 +191,14 @@ const buildTrips = (checkinTrips: Checkin[][], flightTrips: Flight[][]): Trip[] 
   const ct = [...checkinTrips];
   const ft = [...flightTrips];
 
+  // pair checkins with flights to build trips
   for (const checkins of ct) {
-    const ctStart = checkins[0].date;
-    const ctEnd = checkins[checkins.length - 1].date;
-    const trip = { checkins: checkins, flights: [] };
-
+    const ctStart = checkins[0].date.getTime();
+    const ctEnd = checkins[checkins.length - 1].date.getTime();
+    let f: Flight[] = [];
     for (const flights of ft) {
-      const ftStart = flights[0].actualLanding;
-      const ftEnd = flights[flights.length - 1].scheduledDeparture;
+      const ftStart = flightStart(flights[0]).getTime();
+      const ftEnd = flightEnd(flights[flights.length - 1]).getTime();
 
       if (
         (ftStart >= ctStart && ftStart <= ctEnd) ||
@@ -204,52 +206,88 @@ const buildTrips = (checkinTrips: Checkin[][], flightTrips: Flight[][]): Trip[] 
         (ctStart >= ftStart && ctEnd <= ftEnd) ||
         (ctEnd >= ftStart && ctEnd <= ftEnd)
       ) {
-        trip.flights = flights;
+        f = flights;
         ft.splice(ft.indexOf(flights), 1);
         break;
       }
     }
 
-    trips.push(trip);
+    const start = new Date(
+      Math.min(checkins[0]?.date?.getTime() ?? Infinity, flightStart(f[0])?.getTime() ?? Infinity),
+    );
+    const end = new Date(
+      Math.max(checkins[checkins.length - 1]?.date?.getTime() ?? 0, flightEnd(f[f.length - 1])?.getTime() ?? 0),
+    );
+
+    trips.push({ checkins, flights: f, start, end });
   }
 
-  const x = [...ft.map((flights) => ({ checkins: [], flights }))];
-  trips.push(...ft.map((flights) => ({ checkins: [], flights })));
+  // make trips of any flights without checkins
+  for (const flights of ft) {
+    trips.push({ checkins: [], flights, start: flightStart(flights[0]), end: flightEnd(flights[flights.length - 1]) });
+  }
+
+  trips.sort((a, b) => a.start.getTime() - b.start.getTime());
 
   return trips;
 };
 
 const saveTrips = async (trips: Trip[]) => {
-  const filePath = path.join(__dirname, "trips.json");
-  const formatDate = (date: BigInt) => new Date(Number(date) * 1000).toUTCString();
-  const tripData = trips.map((trip) => ({
-    start: formatDate(trip.checkins[0]?.date || trip.flights[0]?.scheduledDeparture),
-    checkins: trip.checkins.map((c) => ({
-      eqId: c.eqId,
-      date: formatDate(c.date),
-      venue: c.venue.name,
-      city: c.venue.city,
-    })),
-    flights: trip.flights.map((f) => ({
-      date: formatDate(f.scheduledDeparture),
-      from: f.fromAirport,
-      to: f.toAirport,
-    })),
-  }));
-  tripData.sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
-
-  fs.writeFileSync(filePath, JSON.stringify(tripData, null, 2), "utf-8");
+  const formatDate = (date: Date) => date.toUTCString();
 
   await db.trip.deleteMany();
 
+  const debug = [];
   for (const trip of trips) {
+    debug.push({
+      start: formatDate(trip.start),
+      end: formatDate(trip.end),
+      checkins: trip.checkins.map((c) => ({
+        eqId: c.eqId,
+        date: formatDate(c.date),
+        venue: c.venue.name,
+        city: c.venue.city,
+      })),
+      flights: trip.flights.map((f) => ({
+        eqId: f.eqId,
+        start: formatDate(flightStart(f)),
+        from: f.fromAirport,
+        to: f.toAirport,
+      })),
+    });
     await db.trip.create({
       data: {
+        start: trip.start,
+        end: trip.end,
         checkins: { connect: trip.checkins.map((c) => ({ eqId: c.eqId })) },
         flights: { connect: trip.flights.map((f) => ({ eqId: f.eqId })) },
       },
     });
   }
+
+  fs.writeFileSync(path.join(__dirname, "trips.json"), JSON.stringify(debug, null, 2));
+};
+
+const flightStart = (flight: Flight): Date | null => {
+  if (!flight) {
+    return null;
+  }
+  return (
+    flight.actualTakeoff ||
+    flight.actualDeparture ||
+    flight.scheduledTakeoff ||
+    flight.scheduledDeparture ||
+    flight.date
+  );
+};
+
+const flightEnd = (flight: Flight): Date | null => {
+  if (!flight) {
+    return null;
+  }
+  return (
+    flight.actualLanding || flight.actualArrival || flight.scheduledLanding || flight.scheduledArrival || flight.date
+  );
 };
 
 if (require.main === module) {
