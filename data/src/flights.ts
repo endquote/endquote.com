@@ -1,19 +1,63 @@
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { parse } from "csv-parse/sync";
 import { config } from "dotenv";
-import { db, s3 } from "./shared";
+import { promises as fs } from "fs";
+import { DateTime } from "luxon";
+import path from "path";
+import { db, http, s3 } from "./shared";
 
 config();
 
-const ts = (date: string | null): number | null => {
-  if (!date) return null;
-  return Math.floor(new Date(date + "Z").getTime() / 1000);
+const main = async () => {
+  const tzMap = await getTzMap();
+  const flightRows = await getFlightRows();
+  for (const row of flightRows) {
+    const flight = parseFlight(row, tzMap);
+    await db.flight.upsert({
+      where: { flightyId: flight.flightyId },
+      update: flight,
+      create: flight,
+    });
+  }
 };
 
-const transformRow = (row: any) => {
-  return {
+// download a mapping of airport codes to time zones
+// https://www.fresse.org/dateutils/tzmaps.html
+const getTzMap = async () => {
+  const tzmapUrl = "https://raw.githubusercontent.com/hroptatyr/dateutils/tzmaps/iata.tzmap";
+  const tzmapPath = path.join(__dirname, "iata.tsv");
+  try {
+    await fs.access(tzmapPath);
+  } catch {
+    const response = await http.get(tzmapUrl);
+    await fs.writeFile(tzmapPath, response.data);
+  }
+
+  const tzmapContents = await fs.readFile(tzmapPath, "utf-8");
+  return tzmapContents
+    .split("\n")
+    .map((line) => line.split("\t"))
+    .reduce((acc, [code, zone]) => {
+      acc[code] = zone;
+      return acc;
+    }, {});
+};
+
+// download the export from flighty
+const getFlightRows = async () => {
+  const params = { Bucket: process.env.S3_BUCKET, Key: "FlightyExport.csv" };
+  const command = new GetObjectCommand(params);
+  const response = await s3.send(command);
+  const bodyContents = await response.Body.transformToString();
+  const records = parse(bodyContents, { columns: true, skip_empty_lines: true });
+  return records;
+};
+
+// convert the csv row to the prisma schema
+const parseFlight = (row: any, tzMap: Record<string, string>) => {
+  const obj = {
     flightyId: row["Flight Flighty ID"],
-    date: ts(row["Date"]),
+    date: row["Date"],
     airline: row["Airline"],
     flightNumber: row["Flight"],
     fromAirport: row["From"],
@@ -24,14 +68,14 @@ const transformRow = (row: any) => {
     arrivalGate: row["Arr Gate"] || null,
     canceled: row["Canceled"] === "true",
     divertedTo: row["Diverted To"] || null,
-    scheduledDeparture: ts(row["Gate Departure (Scheduled)"]),
-    actualDeparture: ts(row["Gate Departure (Actual)"]),
-    scheduledTakeoff: ts(row["Take off (Scheduled)"]),
-    actualTakeoff: ts(row["Take off (Actual)"]),
-    scheduledLanding: ts(row["Landing (Scheduled)"]),
-    actualLanding: ts(row["Landing (Actual)"]),
-    scheduledArrival: ts(row["Gate Arrival (Scheduled)"]),
-    actualArrival: ts(row["Gate Arrival (Actual)"]),
+    scheduledDeparture: row["Gate Departure (Scheduled)"],
+    actualDeparture: row["Gate Departure (Actual)"],
+    scheduledTakeoff: row["Take off (Scheduled)"],
+    actualTakeoff: row["Take off (Actual)"],
+    scheduledLanding: row["Landing (Scheduled)"],
+    actualLanding: row["Landing (Actual)"],
+    scheduledArrival: row["Gate Arrival (Scheduled)"],
+    actualArrival: row["Gate Arrival (Actual)"],
     aircraftType: row["Aircraft Type Name"] || null,
     tailNumber: row["Tail Number"] || null,
     pnr: row["PNR"] || null,
@@ -46,30 +90,23 @@ const transformRow = (row: any) => {
     divAirportFlightyId: row["Diverted To Airport Flighty ID"] || null,
     aircraftFlightyId: row["Aircraft Type Flighty ID"] || null,
   };
-};
 
-const main = async () => {
-  const params = {
-    Bucket: process.env.S3_BUCKET,
-    Key: "FlightyExport.csv",
+  // the dates are in the local time of the airport, convert them to unix timestamps
+  const timestamp = (date: string, tz: string): number => {
+    return DateTime.fromISO(date).setZone(tz).toSeconds();
   };
-  const command = new GetObjectCommand(params);
-  const response = await s3.send(command);
-  const bodyContents = await response.Body.transformToString();
 
-  const records = parse(bodyContents, {
-    columns: true,
-    skip_empty_lines: true,
-  });
+  obj.date = timestamp(obj.date, tzMap[obj.fromAirport]);
+  obj.scheduledDeparture = timestamp(obj.scheduledDeparture, tzMap[obj.fromAirport]);
+  obj.actualDeparture = timestamp(obj.actualDeparture, tzMap[obj.fromAirport]);
+  obj.scheduledTakeoff = timestamp(obj.scheduledTakeoff, tzMap[obj.fromAirport]);
+  obj.actualTakeoff = timestamp(obj.actualTakeoff, tzMap[obj.fromAirport]);
+  obj.scheduledLanding = timestamp(obj.scheduledLanding, tzMap[obj.toAirport]);
+  obj.actualLanding = timestamp(obj.actualLanding, tzMap[obj.toAirport]);
+  obj.scheduledArrival = timestamp(obj.scheduledArrival, tzMap[obj.toAirport]);
+  obj.actualArrival = timestamp(obj.actualArrival, tzMap[obj.toAirport]);
 
-  for (const record of records) {
-    const flight = transformRow(record);
-    await db.flight.upsert({
-      where: { flightyId: flight.flightyId },
-      update: flight,
-      create: flight,
-    });
-  }
+  return obj;
 };
 
 if (require.main === module) {

@@ -36,4 +36,6 @@ logs/
 .fleet/
 .idea/
 
+# temp files
 trips.json
+iata.tsv
