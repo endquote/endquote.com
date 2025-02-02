@@ -29,6 +29,7 @@ COPY . .
 
 # Generate Prisma client and build the application
 RUN prisma generate
+RUN prisma migrate deploy
 RUN npm run build
 
 # Expose the application port
