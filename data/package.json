@@ -2,6 +2,7 @@
   "name": "data.endquote.com",
   "private": true,
   "scripts": {
+    "data:homes": "tsx ./src/homes.ts",
     "data:checkins": "tsx ./src/checkins.ts",
     "data:restaurants": "tsx ./src/restaurants.ts",
     "data:restaurants-visited": "tsx ./src/restaurants-visited.ts",
@@ -9,7 +10,7 @@
     "data:hotels-visited": "tsx ./src/hotels-visited.ts",
     "data:flights": "tsx ./src/flights.ts",
     "data:trips": "tsx ./src/trips.ts",
-    "data:all": "npm run data:checkins && npm run data:restaurants && npm run data:restaurants-visited && npm run data:hotels && npm run data:hotels-visited && npm run data:flights && npm run data:trips",
+    "data:all": "npm run data:homes && npm run data:checkins && npm run data:restaurants && npm run data:restaurants-visited && npm run data:hotels && npm run data:hotels-visited && npm run data:flights && npm run data:trips",
     "prisma:dev:migrate": "prisma migrate dev",
     "prisma:dev:format": "prisma format",
     "prisma:dev:studio": "prisma studio --browser none --port 5555",
