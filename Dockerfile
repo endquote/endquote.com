@@ -19,17 +19,22 @@ WORKDIR /app
 # Install global npm packages
 RUN npm install -g nuxt prisma
 
-# Copy package files and install dependencies
-COPY package.json package-lock.json ./
+# Copy dependency files first
+COPY package*.json ./
+COPY prisma ./prisma/
+
+# Install dependencies with cache
 RUN --mount=type=cache,sharing=locked,target=/root/.npm \
     npm ci
 
 # Copy the rest of the application code
 COPY . .
 
-# Generate Prisma client and build the application
-RUN npm run prisma:generate
-RUN npm run nuxt:build
+# Run build commands
+RUN --mount=type=cache,target=/project/.nuxt/cache \
+    --mount=type=cache,target=/project/node_modules/.cache \
+    npm run prisma:generate && \
+    npm run nuxt:build
 
 # Expose the application ports
 EXPOSE 3000 5555
