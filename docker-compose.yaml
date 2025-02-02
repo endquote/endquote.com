@@ -33,7 +33,7 @@ services:
   # adds basic auth to prisma studio
   data-proxy:
     build:
-      context: ./data-proxy
+      context: ./data/proxy
       dockerfile: Dockerfile
       args:
         - DATA_BASIC_AUTH_USER=${DATA_BASIC_AUTH_USER}
