@@ -1,0 +1,129 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model checkin {
+  eqId    Int      @id @default(autoincrement())
+  fsId    String   @unique
+  date    DateTime
+  tz      Int
+  venue   venue    @relation(fields: [venueId], references: [eqId])
+  venueId Int
+  Trip    trip?    @relation(fields: [tripId], references: [eqId])
+  tripId  Int?
+}
+
+model venue {
+  eqId              Int         @id @default(autoincrement())
+  fsId              String      @unique
+  name              String
+  address           String?
+  lat               Float
+  lng               Float
+  postalCode        String?
+  cc                String
+  city              String?
+  state             String?
+  country           String
+  category          String?
+  icon              String?
+  checkins          checkin[]
+  hotelChecked      Boolean     @default(false)
+  hotel             hotel?
+  restaurantChecked Boolean     @default(false)
+  restaurant        restaurant?
+}
+
+model hotel {
+  eqId       Int    @id @default(autoincrement())
+  michelinId Int    @unique
+  lat        Float
+  lng        Float
+  name       String
+  city       String
+  country    String
+  award      String
+  url        String
+  venue      venue  @relation(fields: [venueId], references: [eqId])
+  venueId    Int    @unique
+}
+
+model restaurant {
+  eqId       Int    @id @default(autoincrement())
+  michelinId Int    @unique
+  lat        Float
+  lng        Float
+  name       String
+  city       String
+  country    String
+  street     String
+  award      String
+  url        String
+  website    String
+  venue      venue  @relation(fields: [venueId], references: [eqId])
+  venueId    Int    @unique
+}
+
+model trip {
+  eqId     Int       @id @default(autoincrement())
+  start    DateTime
+  end      DateTime
+  checkins checkin[]
+  flights  flight[]
+}
+
+model flight {
+  eqId                Int       @id @default(autoincrement())
+  flightyId           String    @unique
+  date                DateTime
+  airline             String
+  flightNumber        String
+  fromAirport         String
+  toAirport           String
+  departureTerminal   String?
+  departureGate       String?
+  arrivalTerminal     String?
+  arrivalGate         String?
+  canceled            Boolean   @default(false)
+  divertedTo          String?
+  scheduledDeparture  DateTime?
+  actualDeparture     DateTime?
+  scheduledTakeoff    DateTime?
+  actualTakeoff       DateTime?
+  scheduledLanding    DateTime?
+  actualLanding       DateTime?
+  scheduledArrival    DateTime?
+  actualArrival       DateTime?
+  aircraftType        String?
+  tailNumber          String?
+  pnr                 String?
+  seat                String?
+  seatType            String?
+  cabinClass          String?
+  flightReason        String?
+  notes               String?
+  airlineFlightyId    String?
+  depAirportFlightyId String?
+  arrAirportFlightyId String?
+  divAirportFlightyId String?
+  aircraftFlightyId   String?
+  trips               trip[]
+}
+
+model home {
+  eqId     Int      @id @default(autoincrement())
+  name     String   @unique
+  lat      Float
+  lng      Float
+  start    DateTime
+  end      DateTime
+  airports String[]
+}
