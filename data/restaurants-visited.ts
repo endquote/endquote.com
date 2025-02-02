@@ -37,7 +37,7 @@ const setVisited = async (token: string, visited: number[]): Promise<void> => {
   }
 };
 
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   main()
     .then(async () => {
       await db.$disconnect();

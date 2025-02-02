@@ -28,11 +28,12 @@ RUN --mount=type=cache,sharing=locked,target=/root/.npm \
 COPY . .
 
 # Generate Prisma client and build the application
-RUN prisma generate
-RUN npm run build
+RUN npm run prisma:generate
+RUN npm run nuxt:build
 
-# Expose the application port
-EXPOSE 3000
+# Expose the application ports
+EXPOSE 3000 5555
 
-# Start the application
-CMD ["node", ".output/server/index.mjs"]
+COPY start-services.sh /start-services.sh
+RUN chmod +x /start-services.sh
+CMD ["/start-services.sh"]

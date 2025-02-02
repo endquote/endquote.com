@@ -26,7 +26,7 @@ const main = async () => {
 // https://www.fresse.org/dateutils/tzmaps.html
 const getTzMap = async () => {
   const tzmapUrl = "https://raw.githubusercontent.com/hroptatyr/dateutils/tzmaps/iata.tzmap";
-  const tzmapPath = path.join(__dirname, "iata.tsv");
+  const tzmapPath = path.join(path.dirname(new URL(import.meta.url).pathname), "iata.tsv");
   try {
     await fs.access(tzmapPath);
   } catch {
@@ -113,7 +113,7 @@ const parseFlight = (row: any, tzMap: Record<string, string>): Prisma.flightCrea
   return obj;
 };
 
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   main()
     .then(async () => {
       await db.$disconnect();

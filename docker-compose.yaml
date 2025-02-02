@@ -1,28 +1,4 @@
 services:
-  data:
-    build:
-      # docker build -t endquote-back -f Dockerfile .
-      context: ./data
-      dockerfile: Dockerfile
-    healthcheck:
-      test: ["CMD", "wget", "--spider", "http://localhost:5555"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 20s
-    # ports:
-    #   - "5555:5555"
-    environment:
-      - DATABASE_URL=${DATABASE_URL}
-      - FS_API_KEY=${FS_API_KEY}
-      - FS_SERVICE_KEY=${FS_SERVICE_KEY}
-      - FS_CLIENT_ID=${FS_CLIENT_ID}
-      - FS_CLIENT_SECRET=${FS_CLIENT_SECRET}
-      - FS_REDIRECT_URI=${FS_REDIRECT_URI}
-      - FS_ACCESS_TOKEN=${FS_ACCESS_TOKEN}
-      - MICHELIN_USER=${MICHELIN_USER}
-      - MICHELIN_PASS=${MICHELIN_PASS}
-
   data-proxy:
     build:
       context: ./data-proxy
@@ -42,6 +18,7 @@ services:
   front:
     build:
       # docker build --build-arg DATABASE_URL=postgresql://endquote@host.docker.internal:5432/endquote -t endquote-front -f Dockerfile .
+      # docker run -p 3000:3000 -p 5555:5555 -e DATABASE_URL=postgresql://endquote@host.docker.internal:5432/endquote endquote-front
       context: ./front
       dockerfile: Dockerfile
       args:
@@ -55,6 +32,7 @@ services:
       start_period: 20s
     # ports:
     #   - "3000:3000"
+    #   - "5555:5555"
     environment:
       - DATABASE_URL=${DATABASE_URL}
   front-redirect:

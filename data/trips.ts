@@ -265,7 +265,10 @@ const saveTrips = async (trips: Trip[]) => {
     });
   }
 
-  fs.writeFileSync(path.join(__dirname, "trips.json"), JSON.stringify(debug, null, 2));
+  fs.writeFileSync(
+    path.join(path.dirname(new URL(import.meta.url).pathname), "trips.json"),
+    JSON.stringify(debug, null, 2),
+  );
 };
 
 const flightStart = (flight: Flight): Date | null => {
@@ -290,7 +293,7 @@ const flightEnd = (flight: Flight): Date | null => {
   );
 };
 
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   main()
     .then(async () => {
       await db.$disconnect();
