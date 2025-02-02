@@ -1,20 +1,5 @@
 services:
-  data-proxy:
-    build:
-      context: ./data-proxy
-      dockerfile: Dockerfile
-      args:
-        - DATA_BASIC_AUTH_USER=${DATA_BASIC_AUTH_USER}
-        - DATA_BASIC_AUTH_PASS=${DATA_BASIC_AUTH_PASS}
-    # ports:
-    #   - "8080:80"
-    environment:
-      - DATA_BASIC_AUTH_USER=${DATA_BASIC_AUTH_USER}
-      - DATA_BASIC_AUTH_PASS=${DATA_BASIC_AUTH_PASS}
-    depends_on:
-      data:
-        condition: service_healthy
-
+  # runs the nuxt server and prisma studio
   front:
     build:
       # docker build --build-arg DATABASE_URL=postgresql://endquote@host.docker.internal:5432/endquote -t endquote-front -f Dockerfile .
@@ -35,10 +20,29 @@ services:
     #   - "5555:5555"
     environment:
       - DATABASE_URL=${DATABASE_URL}
+
+  # redirects from www.endquote.com to endquote.com
   front-redirect:
     image: cusspvz/redirect
     environment:
       - REDIRECT=https://endquote.com
+    depends_on:
+      front:
+        condition: service_healthy
+
+  # adds basic auth to prisma studio
+  data-proxy:
+    build:
+      context: ./data-proxy
+      dockerfile: Dockerfile
+      args:
+        - DATA_BASIC_AUTH_USER=${DATA_BASIC_AUTH_USER}
+        - DATA_BASIC_AUTH_PASS=${DATA_BASIC_AUTH_PASS}
+    # ports:
+    #   - "8080:80"
+    environment:
+      - DATA_BASIC_AUTH_USER=${DATA_BASIC_AUTH_USER}
+      - DATA_BASIC_AUTH_PASS=${DATA_BASIC_AUTH_PASS}
     depends_on:
       front:
         condition: service_healthy
