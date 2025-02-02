@@ -4,7 +4,7 @@ services:
     build:
       # docker build --build-arg DATABASE_URL=postgresql://endquote@host.docker.internal:5432/endquote -t endquote-front -f Dockerfile .
       # docker run -p 3000:3000 -p 5555:5555 -e DATABASE_URL=postgresql://endquote@host.docker.internal:5432/endquote endquote-front
-      context: ./front
+      context: .
       dockerfile: Dockerfile
       args:
         - DATABASE_URL=${DATABASE_URL}
