@@ -77,34 +77,36 @@ export const collections = {
         return trips.map((trip) => `${trip.eqId}.json`);
       },
       getItem: async (key: string) => {
-        const trip = await prisma.trip.findFirst({
+        const trip = (await prisma.trip.findFirst({
           where: { eqId: parseInt(key) },
-          select: {
-            start: true,
-            checkins: {
-              select: {
-                date: true,
-                venue: { select: { eqId: true, name: true, lat: true, lng: true } },
-              },
-              orderBy: { date: "asc" },
-            },
-          },
+          include: { checkins: { include: { venue: true } }, flights: true },
+        }))!;
+        return JSON.stringify({
+          ...trip,
+          // add date-only fields for easier filtering
+          startDate: trip.start.toISOString().split("T")[0],
+          endDate: trip.end.toISOString().split("T")[0],
         });
-        if (!trip) {
-          return "";
-        }
-        trip.start *= 1000;
-        trip.checkins.forEach((c) => (c.date *= 1000));
-        return JSON.stringify(trip);
       },
     }),
     schema: z.object({
-      start: z.date(),
+      start: z.string().datetime(),
+      startDate: z.string().date(),
+      end: z.string().datetime(),
+      endDate: z.string().date(),
       checkins: z.array(
         z.object({
           eqId: z.number(),
-          date: z.date(),
+          date: z.string().datetime(),
           venue: z.object({ name: z.string(), lat: z.number(), lng: z.number() }),
+        }),
+      ),
+      flights: z.array(
+        z.object({
+          eqId: z.number(),
+          date: z.string().datetime(),
+          from: z.string(),
+          to: z.string(),
         }),
       ),
     }),
@@ -112,5 +114,8 @@ export const collections = {
   tripPages: commonCollection({
     type: "page",
     source: "./trips/**/*.md",
+    schema: z.object({
+      ...commonSchema,
+    }),
   }),
 };

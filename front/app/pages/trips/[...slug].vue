@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { TripDataCollectionItem, TripPagesCollectionItem } from "@nuxt/content";
 import { useDateFormat } from "@vueuse/core";
 
 // get page and 404 if not found
@@ -10,21 +9,21 @@ if (!res.data.value) {
 }
 
 // merge with trip data
-const tripPage = res.data.value!;
-const tripId = tripPage.path.match(/\d+/)?.[0]!;
-const tripData = (await useAsyncData(() => queryCollection("tripData").path(`/${tripId}`).first())).data.value!;
-const trip: TripDataCollectionItem & TripPagesCollectionItem = { ...tripData, ...tripPage };
+const page = res.data.value!;
+const date = route.params?.slug?.[0]!;
+const data = (await useAsyncData(() => queryCollection("tripData").where("startDate", "=", date).first())).data.value!;
+const trip = { data, page };
 
-useSiteHead(trip);
+useSiteHead(trip.page);
 
 const fmt = "YYYY-MM-DD";
 </script>
 
 <template>
   <div class="prose-custom">
-    <ContentRenderer :value="trip" />
+    <ContentRenderer :value="trip.page" />
     <ul>
-      <li v-for="checkin in trip.checkins" :key="checkin.eqId">
+      <li v-for="checkin in trip.data.checkins" :key="checkin.eqId">
         {{ useDateFormat(checkin.date, fmt) }} - {{ checkin.venue.name }}
       </li>
     </ul>
