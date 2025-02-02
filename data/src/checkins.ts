@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import dotenv from "dotenv";
 import { stdin as input, stdout as output } from "node:process";
 import readline from "readline/promises";
@@ -5,9 +6,10 @@ import { db, http } from "./shared";
 
 dotenv.config();
 
-const run = async () => {
+const main = async () => {
   const token = await getToken();
-  await getCheckins(token);
+  const homes = await db.home.findMany();
+  await getCheckins(token, homes);
 };
 
 const getToken = async () => {
@@ -32,7 +34,7 @@ const getToken = async () => {
   process.exit(1);
 };
 
-const getCheckins = async (token: string): Promise<void> => {
+const getCheckins = async (token: string, homes: Prisma.homeGetPayload<{}>[]): Promise<void> => {
   let offset = 0;
   let found = 0;
   const limit = 250;
@@ -46,7 +48,8 @@ const getCheckins = async (token: string): Promise<void> => {
     let done = items.length < limit;
 
     for (const item of items) {
-      const fsVenue = {
+      const fsVenue: Prisma.venueCreateInput = {
+        fsId: item.venue.id,
         name: item.venue.name,
         address: item.venue.location.address,
         lat: item.venue.location.lat,
@@ -61,9 +64,9 @@ const getCheckins = async (token: string): Promise<void> => {
       };
 
       const venue = await db.venue.upsert({
-        where: { fsId: item.venue.id },
+        where: { fsId: fsVenue.fsId },
         update: { ...fsVenue },
-        create: { fsId: item.venue.id, ...fsVenue },
+        create: { ...fsVenue },
       });
 
       try {
@@ -96,5 +99,13 @@ const getCheckins = async (token: string): Promise<void> => {
 };
 
 if (require.main === module) {
-  run();
+  main()
+    .then(async () => {
+      await db.$disconnect();
+    })
+    .catch(async (e) => {
+      console.error(e);
+      await db.$disconnect();
+      process.exit(1);
+    });
 }

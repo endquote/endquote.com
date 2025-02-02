@@ -1,88 +1,54 @@
 import { Prisma } from "@prisma/client";
+import fs from "fs";
+import path from "path";
 import { db, haversine } from "./shared";
 
-// trips break if there's this much time between checkins
+// trips break if there's this much time between checkins (s)
 const maxTime = 48 * 60 * 60;
 // trips break if there's this much distance between checkins (km)
-const maxDist = 40;
-// trips must have at least this many checkins
-const minCheckins = 1;
+const tripDist = 40;
+// checkins within this distance of home are considered home (km)
+const homeDist = 120; // about 75mi
 
 type Checkin = Prisma.checkinGetPayload<{ include: { venue: true } }>;
+type Flight = Prisma.flightGetPayload<{}>;
+type HomeAir = { venue: Prisma.venueGetPayload<{}>; home: Prisma.homeGetPayload<{}>; code: string };
+type Trip = { checkins: Checkin[]; flights: Flight[] };
 
-type Cluster = {
-  checkins: Checkin[];
-  isHome: boolean;
-};
+const main = async () => {
+  const homes = await db.home.findMany();
 
-const run = async () => {
-  const checkins = await db.checkin.findMany({ include: { venue: true } });
-  const clusters = createClusters(checkins);
-  const homeAir = getHomeAirports(clusters);
+  // all checkins, including venues
+  const allCheckins = await db.checkin.findMany({ orderBy: { date: "asc" }, include: { venue: true } });
+  // just the ones that are not at home
+  const tripCheckins = allCheckins.filter((c) =>
+    homes.some(
+      (h) => c.date >= h.start && c.date <= h.end && haversine(h.lat, h.lng, c.venue.lat, c.venue.lng) > homeDist,
+    ),
+  );
 
-  let trips = buildTrips(clusters);
-  trips = combineTrips(trips, checkins, homeAir);
-  trips = extendTrips(trips, checkins, homeAir);
-  trips = trips.filter((t) => t.length >= minCheckins);
+  // airports in the home regions
+  const homeAir: HomeAir[] = (await db.venue.findMany({ where: { category: { contains: "Airport" } } }))
+    .map((v) => ({ venue: v, code: v.name.match(/\(([A-Z]{3})\)/)?.[1] }))
+    .filter((v) => v.code)
+    .filter((v) => homes.some((h) => h.airports.includes(v.code)))
+    .map((v) => ({ venue: v.venue, code: v.code, home: homes.find((h) => h.airports.includes(v.code)) }));
 
+  let checkinTrips = buildCheckinTrips(tripCheckins);
+  checkinTrips = combineCheckinTrips(checkinTrips, allCheckins, homeAir);
+  checkinTrips = extendCheckinTrips(checkinTrips, allCheckins, homeAir);
+
+  const allFlights = await db.flight.findMany({ orderBy: { date: "asc" } });
+  const flightTrips = buildFlightTrips(allFlights, homeAir);
+
+  const trips = buildTrips(checkinTrips, flightTrips);
   await saveTrips(trips);
 };
 
-// cluster checkins based on distance between them
-const createClusters = (checkins: Checkin[]): Cluster[] => {
-  checkins.sort((a, b) => a.date - b.date);
-  const clusters: Cluster[] = [];
-
-  for (const c1 of checkins.filter((c) => c.venue.city)) {
-    let found = false;
-
-    for (const cluster of clusters) {
-      for (const c2 of cluster.checkins) {
-        const dist = haversine(c1.venue.lat, c1.venue.lng, c2.venue.lat, c2.venue.lng);
-        if (dist < maxDist) {
-          cluster.checkins.push(c1);
-          found = true;
-          break;
-        }
-      }
-
-      if (found) {
-        break;
-      }
-    }
-
-    if (!found) {
-      clusters.push({ checkins: [c1], isHome: false });
-    }
-  }
-
-  // Flag large clusters as "home", which means they don't get included in trips.
-  const largestSize = Math.max(...clusters.map((cl) => cl.checkins.length));
-  for (const g of clusters) {
-    g.isHome = g.checkins.length > largestSize * 0.5;
-  }
-
-  return clusters;
-};
-
-// return the venue IDs of the airports in the home clusters.
-const getHomeAirports = (clusters: Cluster[]): number[] => {
-  return Array.from(
-    new Set(
-      clusters
-        .filter((c) => c.isHome)
-        .flatMap((c) => c.checkins)
-        .filter((c) => c.venue.category?.includes("Airport") && c.venue.name.match(/\([A-Z]{3}\)/))
-        .map((c) => c.venue.eqId),
-    ),
-  );
-};
-
 // group non-home checkins into trips based on time gaps
-const buildTrips = (clusters: Cluster[]): Checkin[][] => {
+const buildCheckinTrips = (checkins: Checkin[]): Checkin[][] => {
   const trips: Checkin[][] = [];
-  const checkins = clusters.filter((c) => !c.isHome).flatMap((c) => c.checkins);
-  checkins.sort((a, b) => a.date - b.date);
+  checkins.sort((a, b) => Number(a.date) - Number(b.date));
   let trip: Checkin[] = [checkins[0]];
 
   for (let i = 1; i < checkins.length; i++) {
@@ -92,7 +58,7 @@ const buildTrips = (clusters: Cluster[]): Checkin[][] => {
     const lastCheckin = trip[trip.length - 1];
     const time = c.date - lastCheckin.date;
     const dist = haversine(c.venue.lat, c.venue.lng, lastCheckin.venue.lat, lastCheckin.venue.lng);
-    if (time <= maxTime && dist <= maxDist) {
+    if (time <= maxTime && dist <= tripDist) {
       trip.push(c);
       continue;
     }
@@ -103,107 +69,197 @@ const buildTrips = (clusters: Cluster[]): Checkin[][] => {
   }
 
   trips.push(trip);
-  trips.sort((a, b) => a[0].date - b[0].date);
+  trips.sort((a, b) => Number(a[0].date) - Number(b[0].date));
   return trips;
 };
 
 // combine trips if they're close together in time, unless they stopped a home airport in between
-const combineTrips = (trips: Checkin[][], checkins: Checkin[], homeAirports: number[]) => {
-  for (let i = 0; i < trips.length - 1; i++) {
-    const thisTrip = trips[i];
-    const nextTrip = trips[i + 1];
+const combineCheckinTrips = (checkinTrips: Checkin[][], allCheckins: Checkin[], homeAir: HomeAir[]) => {
+  for (let i = 0; i < checkinTrips.length - 1; i++) {
+    const thisTrip = checkinTrips[i];
+    const nextTrip = checkinTrips[i + 1];
     const lastCheckin = thisTrip[thisTrip.length - 1];
     const firstCheckin = nextTrip[0];
     const time = firstCheckin.date - lastCheckin.date;
-    const airBreak = checkins.find(
-      (c) => homeAirports.includes(c.venue.eqId) && c.date < firstCheckin.date && c.date > lastCheckin.date,
+    const home = homeAir.find((h) => thisTrip[0].date >= h.home.start && thisTrip[0].date <= h.home.end);
+    const airBreak = allCheckins.find(
+      (c) => c.venue.eqId == home.venue.eqId && c.date < firstCheckin.date && c.date > lastCheckin.date,
     );
 
     if (time <= maxTime * 2 && !airBreak) {
       // Combine trips
       thisTrip.push(...nextTrip);
-      thisTrip.sort((a, b) => a.date - b.date);
-      trips.splice(i + 1, 1);
+      thisTrip.sort((a, b) => Number(a.date) - Number(b.date));
+      checkinTrips.splice(i + 1, 1);
       i--; // Recheck the current trip with the next one
     }
   }
 
-  return trips;
+  return checkinTrips;
 };
 
 // add the home airports to trips
-const extendTrips = (trips: Checkin[][], checkins: Checkin[], homeAirports: number[]) => {
-  for (let t = 0; t < trips.length - 1; t++) {
-    const trip = trips[t];
+const extendCheckinTrips = (checkinTrips: Checkin[][], allCheckins: Checkin[], homeAir: HomeAir[]) => {
+  for (let t = 0; t < checkinTrips.length - 1; t++) {
+    const trip = checkinTrips[t];
     const hasAirports = trip.some((c) => c.venue.category?.includes("Airport") && c.venue.name.match(/\([A-Z]{3}\)/));
     if (!hasAirports) {
       continue;
     }
 
     const search = 5;
+    const home = homeAir.find((h) => trip[0].date >= h.home.start && trip[0].date <= h.home.end);
 
     // search backward from the start of the trip to find the home airport checkin
-    const tripStart = checkins.indexOf(trip[0]);
-    const prevTrip = trips[t - 1];
+    const tripStart = allCheckins.indexOf(trip[0]);
+    const prevTrip = checkinTrips[t - 1];
     // but don't search into the previous trip
-    const prevTripEnd = prevTrip ? checkins.indexOf(prevTrip[prevTrip.length - 1]) : 0;
+    const prevTripEnd = prevTrip ? allCheckins.indexOf(prevTrip[prevTrip.length - 1]) : 0;
 
     for (let c = tripStart - 1; c >= Math.max(0, prevTripEnd, tripStart - search); c--) {
-      const checkin = checkins[c];
-      if (homeAirports.includes(checkin.venue.eqId)) {
+      const checkin = allCheckins[c];
+      if (home.venue.eqId === checkin.venue.eqId) {
         const time = trip[0].date - checkin.date;
         if (time <= maxTime) {
-          trip.unshift(...checkins.slice(c, tripStart));
+          trip.unshift(...allCheckins.slice(c, tripStart));
         }
         break;
       }
     }
 
     // search forward from the end of the trip to find the home airport checkin
-    const tripEnd = checkins.indexOf(trip[trip.length - 1]);
-    const nextTrip = trips[t + 1];
+    const tripEnd = allCheckins.indexOf(trip[trip.length - 1]);
+    const nextTrip = checkinTrips[t + 1];
     // but don't search into the next trip
-    const nextTripStart = nextTrip ? checkins.indexOf(nextTrip[0]) : checkins.length - 1;
+    const nextTripStart = nextTrip ? allCheckins.indexOf(nextTrip[0]) : allCheckins.length - 1;
 
-    for (let c = tripEnd + 1; c <= Math.min(checkins.length - 1, nextTripStart, tripEnd + search); c++) {
-      const checkin = checkins[c];
-      if (homeAirports.includes(checkin.venueId)) {
+    for (let c = tripEnd + 1; c <= Math.min(allCheckins.length - 1, nextTripStart, tripEnd + search); c++) {
+      const checkin = allCheckins[c];
+      if (home.venue.eqId === checkin.venue.eqId) {
         const time = checkin.date - trip[trip.length - 1].date;
         if (time <= maxTime) {
-          trip.push(...checkins.slice(tripEnd + 1, c + 1));
+          trip.push(...allCheckins.slice(tripEnd + 1, c + 1));
         }
         break;
       }
     }
   }
 
+  return checkinTrips;
+};
+
+// group flights into trips
+const buildFlightTrips = (allFlights: Flight[], homeAir: HomeAir[]): Flight[][] => {
+  const trips: Flight[][] = [];
+  for (let i = 0; i < allFlights.length; i++) {
+    const firstFlight = allFlights[i];
+    const home = homeAir.find(
+      (h) => firstFlight.scheduledDeparture >= h.home.start && firstFlight.scheduledDeparture <= h.home.end,
+    );
+
+    if (firstFlight.fromAirport === home.code) {
+      const trip = [firstFlight];
+      for (let j = i + 1; j < allFlights.length; j++) {
+        const nextFlight = allFlights[j];
+        if (nextFlight.fromAirport === home.code) {
+          // left from home twice, broken trip
+          i = j;
+          break;
+        }
+
+        // add flight
+        trip.push(nextFlight);
+
+        if (nextFlight.toAirport === home.code) {
+          // returned home
+          i = j;
+          break;
+        }
+      }
+      trips.push(trip);
+    }
+  }
+
   return trips;
 };
 
-const saveTrips = async (trips: Checkin[][]) => {
-  const output = trips
-    .map((t) => {
-      t
-        .map((c) => {
-          const dt = new Date(c.date * 1000).toLocaleString();
-          return `${dt} | ${c.venue.name} (${c.venue.city}, ${c.venue.state}, ${c.venue.country})`;
-        })
-        .join("\n") + "\n-----";
-    })
-    .join("\n");
+// combine checkin and flight trips into trips
+const buildTrips = (checkinTrips: Checkin[][], flightTrips: Flight[][]): Trip[] => {
+  const trips: Trip[] = [];
+  const ct = [...checkinTrips];
+  const ft = [...flightTrips];
 
-  // fs.writeFileSync("trips.txt", output);
+  for (const checkins of ct) {
+    const ctStart = checkins[0].date;
+    const ctEnd = checkins[checkins.length - 1].date;
+    const trip = { checkins: checkins, flights: [] };
+
+    for (const flights of ft) {
+      const ftStart = flights[0].actualLanding;
+      const ftEnd = flights[flights.length - 1].scheduledDeparture;
+
+      if (
+        (ftStart >= ctStart && ftStart <= ctEnd) ||
+        (ftEnd >= ctStart && ftEnd <= ctEnd) ||
+        (ctStart >= ftStart && ctEnd <= ftEnd) ||
+        (ctEnd >= ftStart && ctEnd <= ftEnd)
+      ) {
+        trip.flights = flights;
+        ft.splice(ft.indexOf(flights), 1);
+        break;
+      }
+    }
+
+    trips.push(trip);
+  }
+
+  const x = [...ft.map((flights) => ({ checkins: [], flights }))];
+  trips.push(...ft.map((flights) => ({ checkins: [], flights })));
+
+  return trips;
+};
+
+const saveTrips = async (trips: Trip[]) => {
+  const filePath = path.join(__dirname, "trips.json");
+  const formatDate = (date: BigInt) => new Date(Number(date) * 1000).toUTCString();
+  const tripData = trips.map((trip) => ({
+    start: formatDate(trip.checkins[0]?.date || trip.flights[0]?.scheduledDeparture),
+    checkins: trip.checkins.map((c) => ({
+      eqId: c.eqId,
+      date: formatDate(c.date),
+      venue: c.venue.name,
+      city: c.venue.city,
+    })),
+    flights: trip.flights.map((f) => ({
+      date: formatDate(f.scheduledDeparture),
+      from: f.fromAirport,
+      to: f.toAirport,
+    })),
+  }));
+  tripData.sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+
+  fs.writeFileSync(filePath, JSON.stringify(tripData, null, 2), "utf-8");
+
+  await db.trip.deleteMany();
 
   for (const trip of trips) {
-    const checkins = { connect: trip.map((c) => ({ eqId: c.eqId })) };
-    await db.trip.upsert({
-      where: { start: trip[0].date },
-      update: { checkins },
-      create: { start: trip[0].date, checkins },
+    await db.trip.create({
+      data: {
+        checkins: { connect: trip.checkins.map((c) => ({ eqId: c.eqId })) },
+        flights: { connect: trip.flights.map((f) => ({ eqId: f.eqId })) },
+      },
     });
   }
 };
 
 if (require.main === module) {
-  run();
+  main()
+    .then(async () => {
+      await db.$disconnect();
+    })
+    .catch(async (e) => {
+      console.error(e);
+      await db.$disconnect();
+      process.exit(1);
+    });
 }

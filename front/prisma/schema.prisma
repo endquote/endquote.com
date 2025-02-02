@@ -13,7 +13,7 @@ datasource db {
 model checkin {
   eqId    Int    @id @default(autoincrement())
   fsId    String @unique
-  date    Int
+  date    BigInt
   tz      Int
   venue   venue  @relation(fields: [venueId], references: [eqId])
   venueId Int
@@ -74,43 +74,54 @@ model restaurant {
 
 model trip {
   eqId     Int       @id @default(autoincrement())
-  start    Int       @unique
   checkins checkin[]
+  flights  flight[]
 }
 
 model flight {
-  eqId               Int       @id @default(autoincrement())
-  flightyId          String    @unique
-  date               DateTime
-  airline            String
-  flightNumber       String
-  fromAirport        String
-  toAirport          String
-  departureTerminal  String?
-  departureGate      String?
-  arrivalTerminal    String?
-  arrivalGate        String?
-  canceled           Boolean   @default(false)
-  divertedTo         String?
-  scheduledDeparture DateTime?
-  actualDeparture    DateTime?
-  scheduledTakeoff   DateTime?
-  actualTakeoff      DateTime?
-  scheduledLanding   DateTime?
-  actualLanding      DateTime?
-  scheduledArrival   DateTime?
-  actualArrival      DateTime?
-  aircraftType       String?
-  tailNumber         String?
-  pnr                String?
-  seat               String?
-  seatType           String?
-  cabinClass         String?
-  flightReason       String?
-  notes              String?
-  airlineFlightyId   String?
+  eqId                Int     @id @default(autoincrement())
+  flightyId           String  @unique
+  date                BigInt
+  airline             String
+  flightNumber        String
+  fromAirport         String
+  toAirport           String
+  departureTerminal   String?
+  departureGate       String?
+  arrivalTerminal     String?
+  arrivalGate         String?
+  canceled            Boolean @default(false)
+  divertedTo          String?
+  scheduledDeparture  BigInt?
+  actualDeparture     BigInt?
+  scheduledTakeoff    BigInt?
+  actualTakeoff       BigInt?
+  scheduledLanding    BigInt?
+  actualLanding       BigInt?
+  scheduledArrival    BigInt?
+  actualArrival       BigInt?
+  aircraftType        String?
+  tailNumber          String?
+  pnr                 String?
+  seat                String?
+  seatType            String?
+  cabinClass          String?
+  flightReason        String?
+  notes               String?
+  airlineFlightyId    String?
   depAirportFlightyId String?
   arrAirportFlightyId String?
   divAirportFlightyId String?
   aircraftFlightyId   String?
+  trips               trip[] 
+}
+
+model home {
+  eqId     Int       @id @default(autoincrement())
+  name     String    @unique
+  lat      Float
+  lng      Float
+  start    BigInt
+  end      BigInt
+  airports String[]
 }

@@ -5,10 +5,15 @@ import { db, s3 } from "./shared";
 
 config();
 
+const ts = (date: string | null): number | null => {
+  if (!date) return null;
+  return Math.floor(new Date(date + "Z").getTime() / 1000);
+};
+
 const transformRow = (row: any) => {
   return {
     flightyId: row["Flight Flighty ID"],
-    date: new Date(row["Date"]),
+    date: ts(row["Date"]),
     airline: row["Airline"],
     flightNumber: row["Flight"],
     fromAirport: row["From"],
@@ -19,14 +24,14 @@ const transformRow = (row: any) => {
     arrivalGate: row["Arr Gate"] || null,
     canceled: row["Canceled"] === "true",
     divertedTo: row["Diverted To"] || null,
-    scheduledDeparture: row["Gate Departure (Scheduled)"] ? new Date(row["Gate Departure (Scheduled)"]) : null,
-    actualDeparture: row["Gate Departure (Actual)"] ? new Date(row["Gate Departure (Actual)"]) : null,
-    scheduledTakeoff: row["Take off (Scheduled)"] ? new Date(row["Take off (Scheduled)"]) : null,
-    actualTakeoff: row["Take off (Actual)"] ? new Date(row["Take off (Actual)"]) : null,
-    scheduledLanding: row["Landing (Scheduled)"] ? new Date(row["Landing (Scheduled)"]) : null,
-    actualLanding: row["Landing (Actual)"] ? new Date(row["Landing (Actual)"]) : null,
-    scheduledArrival: row["Gate Arrival (Scheduled)"] ? new Date(row["Gate Arrival (Scheduled)"]) : null,
-    actualArrival: row["Gate Arrival (Actual)"] ? new Date(row["Gate Arrival (Actual)"]) : null,
+    scheduledDeparture: ts(row["Gate Departure (Scheduled)"]),
+    actualDeparture: ts(row["Gate Departure (Actual)"]),
+    scheduledTakeoff: ts(row["Take off (Scheduled)"]),
+    actualTakeoff: ts(row["Take off (Actual)"]),
+    scheduledLanding: ts(row["Landing (Scheduled)"]),
+    actualLanding: ts(row["Landing (Actual)"]),
+    scheduledArrival: ts(row["Gate Arrival (Scheduled)"]),
+    actualArrival: ts(row["Gate Arrival (Actual)"]),
     aircraftType: row["Aircraft Type Name"] || null,
     tailNumber: row["Tail Number"] || null,
     pnr: row["PNR"] || null,
@@ -43,7 +48,7 @@ const transformRow = (row: any) => {
   };
 };
 
-const run = async () => {
+const main = async () => {
   const params = {
     Bucket: process.env.S3_BUCKET,
     Key: "FlightyExport.csv",
@@ -68,5 +73,13 @@ const run = async () => {
 };
 
 if (require.main === module) {
-  run();
+  main()
+    .then(async () => {
+      await db.$disconnect();
+    })
+    .catch(async (e) => {
+      console.error(e);
+      await db.$disconnect();
+      process.exit(1);
+    });
 }

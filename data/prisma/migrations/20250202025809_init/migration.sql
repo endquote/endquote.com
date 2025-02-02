@@ -2,7 +2,7 @@
 CREATE TABLE "checkin" (
     "eqId" SERIAL NOT NULL,
     "fsId" TEXT NOT NULL,
-    "date" INTEGER NOT NULL,
+    "date" BIGINT NOT NULL,
     "tz" INTEGER NOT NULL,
     "venueId" INTEGER NOT NULL,
     "tripId" INTEGER,
@@ -68,9 +68,69 @@ CREATE TABLE "restaurant" (
 -- CreateTable
 CREATE TABLE "trip" (
     "eqId" SERIAL NOT NULL,
-    "start" INTEGER NOT NULL,
 
     CONSTRAINT "trip_pkey" PRIMARY KEY ("eqId")
+);
+
+-- CreateTable
+CREATE TABLE "flight" (
+    "eqId" SERIAL NOT NULL,
+    "flightyId" TEXT NOT NULL,
+    "date" BIGINT NOT NULL,
+    "airline" TEXT NOT NULL,
+    "flightNumber" TEXT NOT NULL,
+    "fromAirport" TEXT NOT NULL,
+    "toAirport" TEXT NOT NULL,
+    "departureTerminal" TEXT,
+    "departureGate" TEXT,
+    "arrivalTerminal" TEXT,
+    "arrivalGate" TEXT,
+    "canceled" BOOLEAN NOT NULL DEFAULT false,
+    "divertedTo" TEXT,
+    "scheduledDeparture" INTEGER,
+    "actualDeparture" INTEGER,
+    "scheduledTakeoff" INTEGER,
+    "actualTakeoff" INTEGER,
+    "scheduledLanding" INTEGER,
+    "actualLanding" INTEGER,
+    "scheduledArrival" INTEGER,
+    "actualArrival" INTEGER,
+    "aircraftType" TEXT,
+    "tailNumber" TEXT,
+    "pnr" TEXT,
+    "seat" TEXT,
+    "seatType" TEXT,
+    "cabinClass" TEXT,
+    "flightReason" TEXT,
+    "notes" TEXT,
+    "airlineFlightyId" TEXT,
+    "depAirportFlightyId" TEXT,
+    "arrAirportFlightyId" TEXT,
+    "divAirportFlightyId" TEXT,
+    "aircraftFlightyId" TEXT,
+
+    CONSTRAINT "flight_pkey" PRIMARY KEY ("eqId")
+);
+
+-- CreateTable
+CREATE TABLE "home" (
+    "eqId" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "lat" DOUBLE PRECISION NOT NULL,
+    "lng" DOUBLE PRECISION NOT NULL,
+    "start" BIGINT NOT NULL,
+    "end" BIGINT NOT NULL,
+    "airports" TEXT[],
+
+    CONSTRAINT "home_pkey" PRIMARY KEY ("eqId")
+);
+
+-- CreateTable
+CREATE TABLE "_flightTotrip" (
+    "A" INTEGER NOT NULL,
+    "B" INTEGER NOT NULL,
+
+    CONSTRAINT "_flightTotrip_AB_pkey" PRIMARY KEY ("A","B")
 );
 
 -- CreateIndex
@@ -92,7 +152,13 @@ CREATE UNIQUE INDEX "restaurant_michelinId_key" ON "restaurant"("michelinId");
 CREATE UNIQUE INDEX "restaurant_venueId_key" ON "restaurant"("venueId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "trip_start_key" ON "trip"("start");
+CREATE UNIQUE INDEX "flight_flightyId_key" ON "flight"("flightyId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "home_name_key" ON "home"("name");
+
+-- CreateIndex
+CREATE INDEX "_flightTotrip_B_index" ON "_flightTotrip"("B");
 
 -- AddForeignKey
 ALTER TABLE "checkin" ADD CONSTRAINT "checkin_venueId_fkey" FOREIGN KEY ("venueId") REFERENCES "venue"("eqId") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -105,3 +171,9 @@ ALTER TABLE "hotel" ADD CONSTRAINT "hotel_venueId_fkey" FOREIGN KEY ("venueId") 
 
 -- AddForeignKey
 ALTER TABLE "restaurant" ADD CONSTRAINT "restaurant_venueId_fkey" FOREIGN KEY ("venueId") REFERENCES "venue"("eqId") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_flightTotrip" ADD CONSTRAINT "_flightTotrip_A_fkey" FOREIGN KEY ("A") REFERENCES "flight"("eqId") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_flightTotrip" ADD CONSTRAINT "_flightTotrip_B_fkey" FOREIGN KEY ("B") REFERENCES "trip"("eqId") ON DELETE CASCADE ON UPDATE CASCADE;

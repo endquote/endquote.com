@@ -3,7 +3,7 @@ import { db, http, normalizeString } from "./shared";
 
 dotenv.config();
 
-const run = async () => {
+const main = async () => {
   const venues = await db.venue.findMany({
     where: { icon: "fsq-lodging", hotelChecked: false },
     select: { name: true, eqId: true, lat: true, lng: true },
@@ -70,5 +70,13 @@ const run = async () => {
 };
 
 if (require.main === module) {
-  run();
+  main()
+    .then(async () => {
+      await db.$disconnect();
+    })
+    .catch(async (e) => {
+      console.error(e);
+      await db.$disconnect();
+      process.exit(1);
+    });
 }

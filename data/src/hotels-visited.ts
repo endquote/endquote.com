@@ -1,6 +1,6 @@
 import { db, getMichelinToken, http } from "./shared";
 
-const run = async () => {
+const main = async () => {
   const token = await getMichelinToken();
   const visited = await getFavorites();
   await setFavorites(token, visited);
@@ -30,5 +30,13 @@ const setFavorites = async (token: string, visited: number[]): Promise<void> => 
 };
 
 if (require.main === module) {
-  run();
+  main()
+    .then(async () => {
+      await db.$disconnect();
+    })
+    .catch(async (e) => {
+      console.error(e);
+      await db.$disconnect();
+      process.exit(1);
+    });
 }
