@@ -1,4 +1,4 @@
-import { defineCollection, defineCollectionSource, z, type Collection } from "@nuxt/content";
+import { defineCollection, z, type Collection } from "@nuxt/content";
 import { asRobotsCollection } from "@nuxtjs/robots/content";
 import { asSitemapCollection } from "@nuxtjs/sitemap/content";
 import { PrismaClient } from "@prisma/client";
@@ -66,49 +66,6 @@ export const collections = {
       ...commonSchema,
       company: z.string(),
       project: z.string(),
-    }),
-  }),
-  tripData: defineCollection({
-    type: "page",
-    source: defineCollectionSource({
-      // https://content.nuxt.com/docs/advanced/custom-source
-      getKeys: async () => {
-        const trips = await prisma.trip.findMany({ select: { eqId: true } });
-        return trips.map((trip) => `${trip.eqId}.json`);
-      },
-      getItem: async (key: string) => {
-        const trip = (await prisma.trip.findFirst({
-          where: { eqId: parseInt(key) },
-          include: { checkins: { include: { venue: true } }, flights: true },
-        }))!;
-        return JSON.stringify({
-          ...trip,
-          // add date-only fields for easier filtering
-          startDate: trip.start.toISOString().split("T")[0],
-          endDate: trip.end.toISOString().split("T")[0],
-        });
-      },
-    }),
-    schema: z.object({
-      start: z.string().datetime(),
-      startDate: z.string().date(),
-      end: z.string().datetime(),
-      endDate: z.string().date(),
-      checkins: z.array(
-        z.object({
-          eqId: z.number(),
-          date: z.string().datetime(),
-          venue: z.object({ name: z.string(), lat: z.number(), lng: z.number() }),
-        }),
-      ),
-      flights: z.array(
-        z.object({
-          eqId: z.number(),
-          date: z.string().datetime(),
-          from: z.string(),
-          to: z.string(),
-        }),
-      ),
     }),
   }),
   tripPages: commonCollection({

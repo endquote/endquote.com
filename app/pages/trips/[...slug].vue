@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useDateFormat } from "@vueuse/core";
+import type { TripQuery, TripResponse } from "../../../server/api/trip";
 
 // get page and 404 if not found
 const route = useRoute();
@@ -11,8 +12,9 @@ if (!res.data.value) {
 // merge with trip data
 const page = res.data.value!;
 const date = route.params?.slug?.[0]!;
-const data = (await useAsyncData(() => queryCollection("tripData").where("startDate", "=", date).first())).data.value!;
-const trip = { data, page };
+const { data } = await useFetch<TripResponse, TripQuery>("/api/trip", { query: { start: date } });
+
+const trip = { data: data.value!.data, page };
 
 useSiteHead(trip.page);
 

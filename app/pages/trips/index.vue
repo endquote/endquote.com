@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { useDateFormat } from "@vueuse/core";
+import type { TripsResponse } from "../../../server/api/trips";
 
 const page = (await useAsyncData(() => queryCollection("content").where("path", "=", "/trips").first())).data.value!;
 useSiteHead(page);
 
 // merge trip data and pages
-const tripData = (await useAsyncData(() => queryCollection("tripData").order("start", "DESC").all())).data.value!;
+const { data } = await useFetch<TripsResponse>("/api/trips");
 const tripPages = (await useAsyncData(() => queryCollection("tripPages").all())).data.value!;
-const trips = tripData.map((data) => {
-  const page = tripPages.find((page) => page.date >= data.startDate && page.date <= data.endDate);
+const trips = data.value?.data.map((data) => {
+  const page = tripPages.find((page) => page.date >= data.start.split("T")[0]! && page.date <= data.end.split("T")[0]!);
   return { data, page };
 });
 
@@ -21,7 +22,7 @@ const fmt = "YYYY-MM-DD";
   </div>
   <div class="prose-custom">
     <ul>
-      <li v-for="trip in trips" :key="trip.data.id">
+      <li v-for="trip in trips" :key="trip.data.eqId">
         <a v-if="trip.page" :href="`${trip.page.stem}`"
           >{{ useDateFormat(trip.data.start, fmt) }} - {{ useDateFormat(trip.data.end, fmt) }}</a
         >
