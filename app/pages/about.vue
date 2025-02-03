@@ -83,7 +83,7 @@ const metaRight = "flex-shrink-0";
           <h4>Josh Santangelo</h4>
           <h6><a href="mailto:josh@endquote.com" class="no-underline">josh@endquote.com</a></h6>
           <h6><a href="https://endquote.com" class="no-underline">endquote.com</a></h6>
-          <h6><a href="tel:+12062295674" class="no-underline">+1 (206) 229-5674</a></h6>
+          <h6><a href="tel:+12062295674" class="no-underline">+1&nbsp;(206)&nbsp;229&#8209;5674</a></h6>
         </div>
       </div>
       <div :class="colsR">
