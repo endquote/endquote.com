@@ -1,6 +1,8 @@
 import { S3Client } from "@aws-sdk/client-s3";
 import { PrismaClient } from "@prisma/client";
 import axios from "axios";
+import fs from "fs/promises";
+import path from "path";
 
 export const http = axios.create();
 http.interceptors.request.use((config) => {
@@ -51,3 +53,21 @@ export const haversine = (lat1: number, lng1: number, lat2: number, lng2: number
   const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
   return 2 * R * Math.asin(Math.sqrt(a));
 };
+
+export async function cacheFile(url: string, cachePath: string): Promise<string> {
+  const cacheDir = path.dirname(cachePath);
+
+  try {
+    // Create cache directory if it doesn't exist
+    await fs.mkdir(cacheDir, { recursive: true });
+
+    // Check if file exists
+    await fs.access(cachePath);
+  } catch {
+    // Download and save if file doesn't exist
+    const response = await http.get(url);
+    await fs.writeFile(cachePath, response.data);
+  }
+
+  return cachePath;
+}

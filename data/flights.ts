@@ -5,7 +5,7 @@ import { config } from "dotenv";
 import { promises as fs } from "fs";
 import { DateTime } from "luxon";
 import path from "path";
-import { db, http, s3 } from "./shared";
+import { cacheFile, db, s3 } from "./shared";
 
 config();
 
@@ -26,13 +26,9 @@ const main = async () => {
 // https://www.fresse.org/dateutils/tzmaps.html
 const getTzMap = async () => {
   const tzmapUrl = "https://raw.githubusercontent.com/hroptatyr/dateutils/tzmaps/iata.tzmap";
-  const tzmapPath = path.join(path.dirname(new URL(import.meta.url).pathname), "cache", "iata.tsv");
-  try {
-    await fs.access(tzmapPath);
-  } catch {
-    const response = await http.get(tzmapUrl);
-    await fs.writeFile(tzmapPath, response.data);
-  }
+  const tzmapDir = path.join(path.dirname(new URL(import.meta.url).pathname), "cache");
+  const tzmapPath = path.join(tzmapDir, "cache", "iata.tsv");
+  await cacheFile(tzmapUrl, tzmapPath);
 
   const tzmapContents = await fs.readFile(tzmapPath, "utf-8");
   return tzmapContents
