@@ -25,7 +25,7 @@ const fmt = "YYYY-MM-DD";
   <div class="prose-custom">
     <ul>
       <li v-for="trip in trips" :key="trip.data.eqId">
-        <a v-if="trip.page" :href="`${trip.page.stem}`"
+        <a v-if="trip.page" :href="`/${trip.page.stem}`"
           >{{ useDateFormat(trip.data.start, fmt) }} - {{ useDateFormat(trip.data.end, fmt) }}</a
         >
         <div v-else>
