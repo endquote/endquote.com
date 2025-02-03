@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useDateFormat } from "@vueuse/core";
-
 const page = (await useAsyncData(() => queryCollection("content").where("path", "=", "/trips").first())).data.value!;
 useSiteHead(page);
 
@@ -25,12 +23,10 @@ const fmt = "YYYY-MM-DD";
   <div class="prose-custom">
     <ul>
       <li v-for="trip in trips" :key="trip.data.eqId">
-        <a v-if="trip.page" :href="`/${trip.page.stem}`"
-          >{{ useDateFormat(trip.data.start, fmt) }} - {{ useDateFormat(trip.data.end, fmt) }}</a
-        >
+        <a v-if="trip.page" :href="`/${trip.page.stem}`">{{ "hi" }} - {{ "hi" }}</a>
         <div v-else>
-          {{ useDateFormat(trip.data.start, fmt) }} -
-          {{ useDateFormat(trip.data.end, fmt) }}
+          {{ "hi" }} -
+          {{ "hi" }}
         </div>
       </li>
     </ul>
