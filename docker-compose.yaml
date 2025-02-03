@@ -8,9 +8,6 @@ services:
       dockerfile: Dockerfile
       args:
         - DATABASE_URL=${DATABASE_URL}
-        - COOLIFY_FQDN=${COOLIFY_FQDN}
-        - COOLIFY_URL=${COOLIFY_URL}
-        - COOLIFY_BRANCH=${COOLIFY_BRANCH}
     healthcheck:
       test: ["CMD", "wget", "--spider", "http://localhost:3000"]
       interval: 30s
