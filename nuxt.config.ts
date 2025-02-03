@@ -15,7 +15,7 @@ export default defineNuxtConfig({
     "@prisma/nuxt",
   ],
   build: {
-    // https://trpc-nuxt.vercel.app
+    // https://trpc-nuxt.vercel.app/get-started/installation
     transpile: ["trpc-nuxt"],
   },
   content: {
@@ -60,9 +60,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      fqdn: "localhost:3000",
-      url: "http://localhost:3000",
-      branch: "main",
+      hostname: "localhost",
     },
   },
   vite: {

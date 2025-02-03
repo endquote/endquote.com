@@ -1,5 +1,6 @@
 export default function () {
   const config = useRuntimeConfig();
-  console.log(config.public);
-  return config.public.branch !== "main";
+  const dev = !config.public.hostname || !config.public.hostname.split(",").includes("endquote.com");
+  console.log({ dev });
+  return dev;
 }
