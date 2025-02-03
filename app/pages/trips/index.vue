@@ -19,14 +19,12 @@ const fmt = "YYYY-MM-DD";
 <template>
   <div class="prose-custom">
     <ContentRenderer v-if="page" :value="page" />
-  </div>
-  <div class="prose-custom">
     <ul>
       <li v-for="trip in trips" :key="trip.data.eqId">
-        <a v-if="trip.page" :href="`/${trip.page.stem}`">{{ "hi" }} - {{ "hi" }}</a>
+        <a v-if="trip.page" :href="`/${trip.page.stem}`">{{ trip.data.start }} - {{ trip.data.end }}</a>
         <div v-else>
-          {{ "hi" }} -
-          {{ "hi" }}
+          {{ trip.data.start }} -
+          {{ trip.data.end }}
         </div>
       </li>
     </ul>
