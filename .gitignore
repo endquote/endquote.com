@@ -37,5 +37,4 @@ logs/
 .idea/
 
 # temp files
-trips.json
-iata.tsv
+data/cache

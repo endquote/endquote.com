@@ -26,7 +26,7 @@ const main = async () => {
 // https://www.fresse.org/dateutils/tzmaps.html
 const getTzMap = async () => {
   const tzmapUrl = "https://raw.githubusercontent.com/hroptatyr/dateutils/tzmaps/iata.tzmap";
-  const tzmapPath = path.join(path.dirname(new URL(import.meta.url).pathname), "iata.tsv");
+  const tzmapPath = path.join(path.dirname(new URL(import.meta.url).pathname), "cache", "iata.tsv");
   try {
     await fs.access(tzmapPath);
   } catch {

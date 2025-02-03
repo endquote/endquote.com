@@ -233,7 +233,7 @@ const buildTrips = (checkinTrips: Checkin[][], flightTrips: Flight[][]): Trip[] 
 };
 
 const saveTrips = async (trips: Trip[]) => {
-  const formatDate = (date: Date) => date.toUTCString();
+  const formatDate = (date: Date) => date.toISOString();
 
   await db.trip.deleteMany();
 
@@ -266,7 +266,7 @@ const saveTrips = async (trips: Trip[]) => {
   }
 
   fs.writeFileSync(
-    path.join(path.dirname(new URL(import.meta.url).pathname), "trips.json"),
+    path.join(path.dirname(new URL(import.meta.url).pathname), "cache", "trips.json"),
     JSON.stringify(debug, null, 2),
   );
 };
