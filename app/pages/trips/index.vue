@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import { useDateFormat } from "@vueuse/core";
-import type { TripsResponse } from "../../../server/api/trips";
 
 const page = (await useAsyncData(() => queryCollection("content").where("path", "=", "/trips").first())).data.value!;
 useSiteHead(page);
 
 // merge trip data and pages
-const { data } = await useFetch<TripsResponse>("/api/trips");
+const { $client } = useNuxtApp();
+const tripData = await $client.trips.query();
+
 const tripPages = (await useAsyncData(() => queryCollection("tripPages").all())).data.value!;
-const trips = data.value?.data.map((data) => {
+
+const trips = tripData.map((data) => {
   const page = tripPages.find((page) => page.date >= data.start.split("T")[0]! && page.date <= data.end.split("T")[0]!);
   return { data, page };
 });

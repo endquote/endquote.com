@@ -14,6 +14,10 @@ export default defineNuxtConfig({
     "@nuxt/content",
     "@prisma/nuxt",
   ],
+  build: {
+    // https://trpc-nuxt.vercel.app
+    transpile: ['trpc-nuxt']
+  },
   content: {
     preview: {
       // https://content.nuxt.com/docs/studio/setup#troubleshooting
