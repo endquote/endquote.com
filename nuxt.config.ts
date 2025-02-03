@@ -16,7 +16,7 @@ export default defineNuxtConfig({
   ],
   build: {
     // https://trpc-nuxt.vercel.app
-    transpile: ['trpc-nuxt']
+    transpile: ["trpc-nuxt"],
   },
   content: {
     preview: {
@@ -60,7 +60,9 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      hostname: "localhost",
+      fqdn: "localhost:3000",
+      url: "http://localhost:3000",
+      branch: "main",
     },
   },
   vite: {
