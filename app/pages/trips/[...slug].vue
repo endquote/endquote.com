@@ -3,7 +3,7 @@ import { useDateFormat } from "@vueuse/core";
 
 // get page and 404 if not found
 const route = useRoute();
-const res = await useAsyncData(() => queryCollection("tripPages").path(route.path).first());
+const res = await useAsyncData(() => queryCollection("trips").path(route.path).first());
 if (!res.data.value) {
   throw createError({ statusCode: 404 });
 }
@@ -14,8 +14,6 @@ const date = route.params?.slug?.[0]!;
 
 const { $client } = useNuxtApp();
 const data = await $client.trip.query({ date });
-
-
 
 const trip = { data, page };
 

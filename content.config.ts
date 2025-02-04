@@ -68,7 +68,7 @@ export const collections = {
       project: z.string(),
     }),
   }),
-  tripPages: commonCollection({
+  trips: commonCollection({
     type: "page",
     source: "./trips/**/*.md",
     schema: z.object({
