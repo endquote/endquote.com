@@ -28,11 +28,11 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "3.740.0",
+    "@aws-sdk/client-s3": "3.741.0",
     "@iconify-json/fa-regular": "1.2.1",
     "@iconify-json/fa6-brands": "1.2.5",
     "@iconify-json/heroicons": "1.2.2",
-    "@nuxt/content": "3.0.1",
+    "@nuxt/content": "3.1.0",
     "@nuxt/eslint": "1.0.0",
     "@nuxt/fonts": "0.10.3",
     "@nuxt/image": "1.9.0",
@@ -59,7 +59,7 @@
   },
   "devDependencies": {
     "@types/luxon": "3.4.2",
-    "@types/node": "22.13.0",
+    "@types/node": "22.13.1",
     "nuxi": "3.21.1",
     "prettier": "3.4.2",
     "prettier-plugin-tailwindcss": "0.6.11",
