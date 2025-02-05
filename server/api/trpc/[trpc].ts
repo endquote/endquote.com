@@ -4,8 +4,8 @@
  */
 import { createNuxtApiHandler } from "trpc-nuxt";
 import { z } from "zod";
-import prisma from "../../../lib/prisma";
-import { publicProcedure, router } from "../../trpc/trpc";
+import prisma from "~~/lib/prisma";
+import { publicProcedure, router } from "~~/server/trpc/trpc";
 
 export const appRouter = router({
   trips: publicProcedure.query(async () => {
