@@ -39,7 +39,7 @@
     "@nuxt/ui": "3.0.0-alpha.12",
     "@nuxtjs/robots": "5.2.2",
     "@nuxtjs/sitemap": "7.2.4",
-    "@prisma/client": "6.3.0",
+    "@prisma/client": "6.3.1",
     "@prisma/nuxt": "0.3.0",
     "@tailwindcss/typography": "0.5.16",
     "@trpc/client": "10.45.2",
@@ -52,7 +52,7 @@
     "hls.js": "1.5.20",
     "luxon": "3.5.0",
     "nuxt": "3.15.4",
-    "prisma": "6.3.0",
+    "prisma": "6.3.1",
     "trpc-nuxt": "0.10.22",
     "vue": "3.5.13",
     "vue-router": "4.5.0"
@@ -63,7 +63,7 @@
     "nuxi": "3.21.1",
     "prettier": "3.4.2",
     "prettier-plugin-tailwindcss": "0.6.11",
-    "prisma": "6.3.0",
+    "prisma": "6.3.1",
     "typescript": "5.7.3"
   },
   "prisma": {
