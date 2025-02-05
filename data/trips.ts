@@ -38,7 +38,7 @@ const main = async () => {
   checkinTrips = combineCheckinTrips(checkinTrips, allCheckins, homeAir);
   checkinTrips = extendCheckinTrips(checkinTrips, allCheckins, homeAir);
 
-  const allFlights = await db.flight.findMany({ orderBy: { date: "asc" } });
+  const allFlights = await db.flight.findMany({ where: { canceled: false }, orderBy: { date: "asc" } });
   const flightTrips = buildFlightTrips(allFlights, homeAir);
 
   const trips = buildTrips(checkinTrips, flightTrips);
