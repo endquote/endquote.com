@@ -1,7 +1,5 @@
 import { Prisma } from "@prisma/client";
-import fs from "fs";
-import path from "path";
-import { db, haversine } from "./shared";
+import { db, haversine, saveString } from "./shared";
 // trips break if there's this much time between checkins (ms)
 const maxTime = 48 * 60 * 60 * 1000;
 // trips break if there's this much distance between checkins (km)
@@ -265,10 +263,7 @@ const saveTrips = async (trips: Trip[]) => {
     });
   }
 
-  fs.writeFileSync(
-    path.join(path.dirname(new URL(import.meta.url).pathname), "cache", "trips.json"),
-    JSON.stringify(debug, null, 2),
-  );
+  await saveString(JSON.stringify(debug, null, 2), "trips.json");
 };
 
 const flightStart = (flight: Flight): Date | null => {

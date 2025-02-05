@@ -54,20 +54,30 @@ export const haversine = (lat1: number, lng1: number, lat2: number, lng2: number
   return 2 * R * Math.asin(Math.sqrt(a));
 };
 
-export async function cacheFile(url: string, cachePath: string): Promise<string> {
-  const cacheDir = path.dirname(cachePath);
+const cacheDir = path.join(path.dirname(new URL(import.meta.url).pathname), "cache");
+
+export const cacheUrl = async (url: string, file: string): Promise<string> => {
+  file = path.join(cacheDir, file);
 
   try {
-    // Create cache directory if it doesn't exist
     await fs.mkdir(cacheDir, { recursive: true });
-
-    // Check if file exists
-    await fs.access(cachePath);
+    await fs.access(file);
   } catch {
-    // Download and save if file doesn't exist
     const response = await http.get(url);
-    await fs.writeFile(cachePath, response.data);
+    await fs.writeFile(file, response.data);
   }
 
-  return cachePath;
-}
+  return file;
+};
+
+export const saveString = async (str: string, file: string): Promise<string> => {
+  file = path.join(cacheDir, file);
+  await fs.mkdir(cacheDir, { recursive: true });
+  await fs.writeFile(file, str);
+  return file;
+};
+
+export const readString = async (file: string): Promise<string> => {
+  file = path.join(cacheDir, file);
+  return await fs.readFile(file, "utf-8");
+};

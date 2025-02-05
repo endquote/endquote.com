@@ -2,10 +2,8 @@ import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { Prisma } from "@prisma/client";
 import { parse } from "csv-parse/sync";
 import { config } from "dotenv";
-import { promises as fs } from "fs";
 import { DateTime } from "luxon";
-import path from "path";
-import { cacheFile, db, s3 } from "./shared";
+import { cacheUrl, db, readString, s3 } from "./shared";
 
 config();
 
@@ -26,11 +24,9 @@ const main = async () => {
 // https://www.fresse.org/dateutils/tzmaps.html
 const getTzMap = async () => {
   const tzmapUrl = "https://raw.githubusercontent.com/hroptatyr/dateutils/tzmaps/iata.tzmap";
-  const tzmapDir = path.join(path.dirname(new URL(import.meta.url).pathname), "cache");
-  const tzmapPath = path.join(tzmapDir, "iata.tsv");
-  await cacheFile(tzmapUrl, tzmapPath);
+  await cacheUrl(tzmapUrl, "iata.tsv");
 
-  const tzmapContents = await fs.readFile(tzmapPath, "utf-8");
+  const tzmapContents = await readString("iata.tsv");
   return tzmapContents
     .split("\n")
     .map((line) => line.split("\t"))
