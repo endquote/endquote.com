@@ -27,7 +27,7 @@ const main = async () => {
 const getTzMap = async () => {
   const tzmapUrl = "https://raw.githubusercontent.com/hroptatyr/dateutils/tzmaps/iata.tzmap";
   const tzmapDir = path.join(path.dirname(new URL(import.meta.url).pathname), "cache");
-  const tzmapPath = path.join(tzmapDir, "cache", "iata.tsv");
+  const tzmapPath = path.join(tzmapDir, "iata.tsv");
   await cacheFile(tzmapUrl, tzmapPath);
 
   const tzmapContents = await fs.readFile(tzmapPath, "utf-8");
