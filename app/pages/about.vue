@@ -2,46 +2,44 @@
 import type { ProjectsCollectionItem } from "@nuxt/content";
 import { useDateFormat } from "@vueuse/core";
 
-const page = (await useAsyncData(() => queryCollection("content").where("path", "=", "/about").first())).data.value!;
-
-useSiteHead(page);
+const route = useRoute();
+const { data: page } = await useAsyncData(() => queryCollection("content").path(route.path).first());
+useSiteHead(page.value);
 
 // get all business roles
-const roles = (await useAsyncData(() => queryCollection("roles").order("date", "DESC").all())).data.value!;
+const { data: roles } = await useAsyncData(() => queryCollection("roles").order("date", "DESC").all());
 
-const business = roles.filter((role) => role.context?.includes("business"));
+const business = roles.value?.filter((role) => role.context?.includes("business")) || [];
 
 // get projects associated with each role
-const roleProjects = (
-  await useAsyncData(() =>
-    queryCollection("projects")
-      .select("title", "date", "stem", "role")
-      .where(
-        "role",
-        "IN",
-        business.map((r) => r.stem.split("/").pop()),
-      )
-      .order("date", "DESC")
-      .all(),
-  )
-).data.value!;
+const { data: roleProjects } = await useAsyncData(() =>
+  queryCollection("projects")
+    .select("title", "date", "stem", "role")
+    .where(
+      "role",
+      "IN",
+      business.map((r) => r.stem.split("/").pop()),
+    )
+    .order("date", "DESC")
+    .all(),
+);
 
 // join projects to roles
 for (const role of business) {
-  role.meta.projects = roleProjects.filter((p) => role.stem.endsWith(p.role));
+  role.meta.projects = roleProjects.value?.filter((p) => role.stem.endsWith(p.role));
 }
 
 // roles older than this are "additional experience"
 const oldRoles = business.findIndex((role) => role.date < "2007-01-01");
 
 // get all education roles
-const education = roles.filter((role) => role.context?.includes("educational"));
+const education = roles.value?.filter((role) => role.context?.includes("educational"));
 
 // get all honors
-const honors = (await useAsyncData(() => queryCollection("honors").order("date", "DESC").all())).data.value!;
+const { data: honors } = await useAsyncData(() => queryCollection("honors").order("date", "DESC").all());
 
 // get all awards
-const awards = (await useAsyncData(() => queryCollection("awards").order("date", "DESC").all())).data.value!;
+const { data: awards } = await useAsyncData(() => queryCollection("awards").order("date", "DESC").all());
 
 // get projects associated with each award
 const awardProjects = (
@@ -51,19 +49,19 @@ const awardProjects = (
       .where(
         "stem",
         "IN",
-        awards.map((a) => `projects/${a.project.split("/").pop()}`),
+        awards.value!.map((a) => `projects/${a.project.split("/").pop()}`),
       )
       .all(),
   )
 ).data.value!;
 
 // join projects to awards
-for (const award of awards) {
+for (const award of awards.value!) {
   award.meta.project = awardProjects.find((p) => p.stem.endsWith(award.project));
 }
 
 // get all volunteer roles
-const volunteer = roles.filter((role) => role.context?.includes("volunteer"));
+const volunteer = roles.value?.filter((role) => role.context?.includes("volunteer"));
 
 const printOnly = "hidden print:block";
 const section = "mt-8 print:mt-0";
@@ -87,7 +85,7 @@ const metaRight = "flex-shrink-0";
         </div>
       </div>
       <div :class="colsR">
-        <h2 :class="['print:mt-4', 'mb-0']">{{ page.description }}</h2>
+        <h2 :class="['print:mt-4', 'mb-0']">{{ page?.description }}</h2>
       </div>
     </div>
 
@@ -98,7 +96,7 @@ const metaRight = "flex-shrink-0";
             <h2>Experience</h2>
           </template>
         </div>
-        <div :class="colsR" v-if="i < oldRoles">
+        <div :class="colsR" v-if="i < oldRoles && roles">
           <h3 v-if="i === 0 || roles[i - 1]!.company !== role.company">{{ role.company }}</h3>
           <div :class="metaRow">
             <div :class="metaLeft">
@@ -126,7 +124,7 @@ const metaRight = "flex-shrink-0";
             <h2>Additional Experience</h2>
           </template>
         </div>
-        <div :class="colsR" v-if="i >= oldRoles">
+        <div :class="colsR" v-if="i >= oldRoles && roles">
           <h3 v-if="i === 0 || roles[i - 1]!.company !== role.company">{{ role.company }}</h3>
           <div :class="metaRow">
             <div :class="metaLeft">

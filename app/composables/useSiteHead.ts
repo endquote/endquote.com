@@ -7,7 +7,7 @@ interface HeadProps {
   image?: string;
 }
 
-export default function (content?: ContentCollectionItem | null, props?: HeadProps) {
+export default function (content?: ContentCollectionItem | undefined, props?: HeadProps) {
   const isDev = useDev();
   const img = useImage();
 

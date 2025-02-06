@@ -1,7 +1,8 @@
 <script setup lang="ts">
-const page = (await useAsyncData(() => queryCollection("content").where("path", "=", "/projects").first())).data.value!;
-const projects = (await useAsyncData(() => queryCollection("projects").order("date", "DESC").all())).data.value!;
-useSiteHead(page);
+const route = useRoute();
+const { data: page } = await useAsyncData(() => queryCollection("content").path(route.path).first());
+useSiteHead(page.value);
+const { data: projects } = await useAsyncData(() => queryCollection("projects").order("date", "DESC").all());
 </script>
 
 <template>

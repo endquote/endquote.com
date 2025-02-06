@@ -2,30 +2,27 @@
 import Image from "~/components/Image.vue";
 
 const route = useRoute();
-
-const res = await useAsyncData(() => queryCollection("projects").path(route.path).first());
-
-if (!res.data.value) {
+const { data: project } = await useAsyncData(() => queryCollection("projects").path(route.path).first());
+if (!project.value) {
   throw createError({ statusCode: 404 });
 }
 
-const project = res.data.value!;
-const projectId = project.stem.split("/").pop()!;
+const projectId = project.value.stem.split("/").pop()!;
 
-useSiteHead(project, { image: `/do/projects/${projectId}/project.jpg` });
+useSiteHead(project.value, { image: `/do/projects/${projectId}/project.jpg` });
 
 const role = (
   await useAsyncData(() =>
     queryCollection("roles")
       .select("title", "company", "path", "stem")
-      .where("stem", "LIKE", `%${project.role}`)
+      .where("stem", "LIKE", `%${project.value?.role}`)
       .first(),
   )
 ).data.value!;
 </script>
 
 <template>
-  <div class="prose-custom">
+  <div class="prose-custom" v-if="project">
     <h1 class="mb-2">{{ project.title }}</h1>
     <div class="mb-5 italic">{{ project.subtitle }}</div>
     <div class="grid grid-cols-3 gap-x-7">
@@ -65,7 +62,7 @@ const role = (
   </div>
 
   <VideoPlayer
-    v-if="project.video"
+    v-if="project?.video"
     :playlist="`/do/projects/${projectId}/hls/playlist.m3u8`"
     :skip="project.skip"
     :auto-play="false"
@@ -74,12 +71,12 @@ const role = (
   />
 
   <Gallery
-    v-if="project.gallery?.length"
+    v-if="project?.gallery?.length"
     :id="projectId"
     :images="project.gallery.map((i) => `/do/projects/${projectId}/gallery/${i}`)"
   />
 
-  <div v-if="!project.gallery && !project.video">
+  <div v-if="project && !project.gallery && !project.video">
     <div class="flex justify-center">
       <Image
         :src="`/do/projects/${projectId}/project.jpg`"
