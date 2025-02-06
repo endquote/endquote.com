@@ -3,30 +3,28 @@ import { useDateFormat } from "@vueuse/core";
 
 // get page and 404 if not found
 const route = useRoute();
-const res = await useAsyncData(() => queryCollection("trips").path(route.path).first());
-if (!res.data.value) {
+const { data: page } = await useAsyncData(() => queryCollection("trips").path(route.path).first());
+useSiteHead(page.value);
+
+
+if (!page.value) {
   throw createError({ statusCode: 404 });
 }
 
 // merge with trip data
-const page = res.data.value!;
 const date = route.params?.slug?.[0]!;
 
 const { $client } = useNuxtApp();
 const data = await $client.trip.query({ date });
 
-const trip = { data, page };
-
-useSiteHead(trip.page);
-
 const fmt = "YYYY-MM-DD";
 </script>
 
 <template>
-  <div class="prose-custom">
-    <ContentRenderer :value="trip.page" />
+  <div class="prose-custom" v-if="page">
+    <ContentRenderer :value="page" />
     <ul>
-      <li v-for="checkin in trip.data?.checkins" :key="checkin.eqId">
+      <li v-for="checkin in data?.checkins" :key="checkin.eqId">
         {{ useDateFormat(checkin.date, fmt) }} - {{ checkin.venue.name }}
       </li>
     </ul>

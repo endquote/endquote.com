@@ -3,24 +3,22 @@ import { useDateFormat } from "@vueuse/core";
 
 const route = useRoute();
 
-const res = await useAsyncData(() => queryCollection("roles").path(route.path).first());
+const { data: role } = await useAsyncData(() => queryCollection("roles").path(route.path).first());
 
-if (!res.data.value) {
+if (!role.value) {
   throw createError({ statusCode: 404 });
 }
 
-const role = res.data.value!;
+useSiteHead(role.value);
 
-useSiteHead(role);
-
-const roleId = role.stem.split("/").pop();
+const roleId = role.value.stem.split("/").pop();
 const projects = (
   await useAsyncData(() => queryCollection("projects").where("role", "=", roleId).order("date", "DESC").all())
 ).data.value;
 </script>
 
 <template>
-  <div class="prose-custom">
+  <div class="prose-custom" v-if="role">
     <h1 v-if="role.link">
       <NuxtLink :href="role.link" class="not-prose">{{ role.company }}</NuxtLink>
     </h1>

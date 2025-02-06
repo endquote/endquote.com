@@ -2,9 +2,9 @@
 import type { ProjectsCollectionItem } from "@nuxt/content";
 import { useDateFormat } from "@vueuse/core";
 
-const page = (await useAsyncData(() => queryCollection("content").where("path", "=", "/about").first())).data.value!;
-
-useSiteHead(page);
+const route = useRoute();
+const { data: page } = await useAsyncData(() => queryCollection("content").path(route.path).first());
+useSiteHead(page.value);
 
 // get all business roles
 const roles = (await useAsyncData(() => queryCollection("roles").order("date", "DESC").all())).data.value!;
@@ -87,7 +87,7 @@ const metaRight = "flex-shrink-0";
         </div>
       </div>
       <div :class="colsR">
-        <h2 :class="['print:mt-4', 'mb-0']">{{ page.description }}</h2>
+        <h2 :class="['print:mt-4', 'mb-0']">{{ page?.description }}</h2>
       </div>
     </div>
 
