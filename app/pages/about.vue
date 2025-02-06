@@ -4,31 +4,29 @@ import { useDateFormat } from "@vueuse/core";
 
 const route = useRoute();
 const { data: page } = await useAsyncData(() => queryCollection("content").path(route.path).first());
-useSiteHead(page.value) ;
+useSiteHead(page.value);
 
 // get all business roles
-const {data:roles} = await useAsyncData(() => queryCollection("roles").order("date", "DESC").all());
+const { data: roles } = await useAsyncData(() => queryCollection("roles").order("date", "DESC").all());
 
-const business = roles.value?.filter((role) => role.context?.includes("business")) || [] ;
+const business = roles.value?.filter((role) => role.context?.includes("business")) || [];
 
 // get projects associated with each role
-const roleProjects = (
-  await useAsyncData(() =>
-    queryCollection("projects")
-      .select("title", "date", "stem", "role")
-      .where(
-        "role",
-        "IN",
-        business.map((r) => r.stem.split("/").pop()),
-      )
-      .order("date", "DESC")
-      .all(),
-  )
-).data.value!;
+const { data: roleProjects } = await useAsyncData(() =>
+  queryCollection("projects")
+    .select("title", "date", "stem", "role")
+    .where(
+      "role",
+      "IN",
+      business.map((r) => r.stem.split("/").pop()),
+    )
+    .order("date", "DESC")
+    .all(),
+);
 
 // join projects to roles
 for (const role of business) {
-  role.meta.projects = roleProjects.filter((p) => role.stem.endsWith(p.role));
+  role.meta.projects = roleProjects.value?.filter((p) => role.stem.endsWith(p.role));
 }
 
 // roles older than this are "additional experience"
@@ -38,10 +36,10 @@ const oldRoles = business.findIndex((role) => role.date < "2007-01-01");
 const education = roles.value?.filter((role) => role.context?.includes("educational"));
 
 // get all honors
-const honors = (await useAsyncData(() => queryCollection("honors").order("date", "DESC").all())).data.value!;
+const { data: honors } = await useAsyncData(() => queryCollection("honors").order("date", "DESC").all());
 
 // get all awards
-const awards = (await useAsyncData(() => queryCollection("awards").order("date", "DESC").all())).data.value!;
+const { data: awards } = await useAsyncData(() => queryCollection("awards").order("date", "DESC").all());
 
 // get projects associated with each award
 const awardProjects = (
@@ -51,14 +49,14 @@ const awardProjects = (
       .where(
         "stem",
         "IN",
-        awards.map((a) => `projects/${a.project.split("/").pop()}`),
+        awards.value!.map((a) => `projects/${a.project.split("/").pop()}`),
       )
       .all(),
   )
 ).data.value!;
 
 // join projects to awards
-for (const award of awards) {
+for (const award of awards.value!) {
   award.meta.project = awardProjects.find((p) => p.stem.endsWith(award.project));
 }
 
