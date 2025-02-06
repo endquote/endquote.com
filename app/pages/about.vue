@@ -4,12 +4,12 @@ import { useDateFormat } from "@vueuse/core";
 
 const route = useRoute();
 const { data: page } = await useAsyncData(() => queryCollection("content").path(route.path).first());
-useSiteHead(page.value);
+useSiteHead(page.value) ;
 
 // get all business roles
-const roles = (await useAsyncData(() => queryCollection("roles").order("date", "DESC").all())).data.value!;
+const {data:roles} = await useAsyncData(() => queryCollection("roles").order("date", "DESC").all());
 
-const business = roles.filter((role) => role.context?.includes("business"));
+const business = roles.value?.filter((role) => role.context?.includes("business")) || [] ;
 
 // get projects associated with each role
 const roleProjects = (
@@ -35,7 +35,7 @@ for (const role of business) {
 const oldRoles = business.findIndex((role) => role.date < "2007-01-01");
 
 // get all education roles
-const education = roles.filter((role) => role.context?.includes("educational"));
+const education = roles.value?.filter((role) => role.context?.includes("educational"));
 
 // get all honors
 const honors = (await useAsyncData(() => queryCollection("honors").order("date", "DESC").all())).data.value!;
@@ -63,7 +63,7 @@ for (const award of awards) {
 }
 
 // get all volunteer roles
-const volunteer = roles.filter((role) => role.context?.includes("volunteer"));
+const volunteer = roles.value?.filter((role) => role.context?.includes("volunteer"));
 
 const printOnly = "hidden print:block";
 const section = "mt-8 print:mt-0";
@@ -98,7 +98,7 @@ const metaRight = "flex-shrink-0";
             <h2>Experience</h2>
           </template>
         </div>
-        <div :class="colsR" v-if="i < oldRoles">
+        <div :class="colsR" v-if="i < oldRoles && roles">
           <h3 v-if="i === 0 || roles[i - 1]!.company !== role.company">{{ role.company }}</h3>
           <div :class="metaRow">
             <div :class="metaLeft">
@@ -126,7 +126,7 @@ const metaRight = "flex-shrink-0";
             <h2>Additional Experience</h2>
           </template>
         </div>
-        <div :class="colsR" v-if="i >= oldRoles">
+        <div :class="colsR" v-if="i >= oldRoles && roles">
           <h3 v-if="i === 0 || roles[i - 1]!.company !== role.company">{{ role.company }}</h3>
           <div :class="metaRow">
             <div :class="metaLeft">
