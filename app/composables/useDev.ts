@@ -1,6 +1,9 @@
 export default function () {
   const config = useRuntimeConfig();
-  const dev = config.public.hostname !== "endquote.com";
-  console.log({ dev });
+  let dev = config.public.hostname !== "endquote.com";
+  if (dev && import.meta.client && useRoute().query.dev === "false") {
+    dev = false;
+  }
+  // console.log({ dev });
   return dev;
 }
