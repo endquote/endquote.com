@@ -63,12 +63,10 @@ export default defineNuxtConfig({
       hostname: "localhost",
     },
   },
-  vite: {
-    // https://www.prisma.io/docs/orm/more/help-and-troubleshooting/prisma-nuxt-module#resolving-typeerror-failed-to-resolve-module-specifier-prismaclientindex-browser
-    resolve: {
-      alias: {
-        ".prisma/client/index-browser": "./node_modules/.prisma/client/index-browser.js",
-      },
+  nitro: {
+    // https://nitro.build/guide/utils#async-context-experimental
+    experimental: {
+      asyncContext: true,
     },
   },
 });

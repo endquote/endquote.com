@@ -1,15 +1,29 @@
-/**
- * This is the API-handler of your app that contains all your API routes.
- * On a bigger app, you will probably want to split this file up into multiple files.
- */
 import { createNuxtApiHandler } from "trpc-nuxt";
 import { z } from "zod";
+import useDev from "~/composables/useDev";
 import prisma from "~~/lib/prisma";
 import { publicProcedure, router } from "~~/server/trpc/trpc";
 
 export const appRouter = router({
+  // return all trips that have an associated page
+  // in dev mode, return all trips
   trips: publicProcedure.query(async () => {
+    let where = {};
+    if (!useDev()) {
+      const pages = await queryCollection(useEvent(), "trips").select("date").all();
+      const pageDates = pages.map((page) => page.date);
+      where = {
+        OR: pageDates.map((date) => ({
+          start: {
+            gte: new Date(date + "T00:00:00.000Z"),
+            lte: new Date(date + "T23:59:59.999Z"),
+          },
+        })),
+      };
+    }
+
     return prisma.trip.findMany({
+      where,
       include: {
         checkins: { include: { venue: true }, orderBy: { date: "desc" } },
         flights: { orderBy: { date: "desc" } },
@@ -17,6 +31,8 @@ export const appRouter = router({
       orderBy: { start: "desc" },
     });
   }),
+
+  // return a single trip by start date
   trip: publicProcedure
     .input(
       z.object({
@@ -24,6 +40,14 @@ export const appRouter = router({
       }),
     )
     .query(async ({ input }) => {
+      // only return trips that have an associated page
+      if (!useDev()) {
+        const page = await queryCollection(useEvent(), "trips").where("date", "=", input.date).first();
+        if (!page) {
+          return null;
+        }
+      }
+
       return prisma.trip.findFirst({
         include: {
           checkins: { include: { venue: true }, orderBy: { date: "asc" } },
@@ -32,15 +56,13 @@ export const appRouter = router({
         orderBy: { start: "asc" },
         where: {
           start: {
-            gte: new Date(input.date as string),
+            gte: new Date(input.date + "T00:00:00.000Z"),
           },
         },
       });
     }),
 });
 
-// export only the type definition of the API
-// None of the actual implementation is exposed to the client
 export type AppRouter = typeof appRouter;
 
 // export API handler
