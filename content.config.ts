@@ -1,7 +1,6 @@
 import { defineCollection, z, type Collection } from "@nuxt/content";
 import { asRobotsCollection } from "@nuxtjs/robots/content";
 import { asSitemapCollection } from "@nuxtjs/sitemap/content";
-import { PrismaClient } from "@prisma/client";
 
 const commonCollection = (collection: Collection<Zod.ZodRawShape>): Collection<Zod.ZodRawShape> => {
   return defineCollection(asRobotsCollection(asSitemapCollection(collection)));
@@ -14,12 +13,20 @@ const commonSchema = {
   draft: z.boolean().default(false),
 };
 
-const prisma = new PrismaClient();
-
 export const collections = {
   content: commonCollection({
     type: "page",
     source: "*.md",
+  }),
+  blog: commonCollection({
+    type: "page",
+    source: "./blog/**/*.md",
+    schema: z.object({
+      ...commonSchema,
+      slug: z.string(),
+      subtitle: z.string(),
+      location: z.string().default("San Francisco, CA"),
+    }),
   }),
   projects: commonCollection({
     type: "page",
