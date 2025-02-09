@@ -19,8 +19,8 @@ export default defineNuxtConfig({
     transpile: ["trpc-nuxt"],
   },
   content: {
+    // https://content.nuxt.com/docs/studio/setup#troubleshooting
     preview: {
-      // https://content.nuxt.com/docs/studio/setup#troubleshooting
       api: "https://api.nuxt.studio",
       gitInfo: {
         name: "endquote.com",
@@ -59,13 +59,14 @@ export default defineNuxtConfig({
     "/do/**": { proxy: "https://endquote.objects-us-east-1.dream.io/**" },
   },
   runtimeConfig: {
+    // https://nuxt.com/docs/guide/going-further/runtime-config#environment-variables
     public: {
       hostname: "localhost",
     },
   },
   nitro: {
-    // https://nitro.build/guide/utils#async-context-experimental
     experimental: {
+      // https://nitro.build/guide/utils#async-context-experimental
       asyncContext: true,
     },
   },
