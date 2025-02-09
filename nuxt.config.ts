@@ -69,4 +69,12 @@ export default defineNuxtConfig({
       asyncContext: true,
     },
   },
+  vite: {
+    resolve: {
+      alias: {
+        // https://www.prisma.io/docs/orm/more/help-and-troubleshooting/prisma-nuxt-module#resolving-typeerror-failed-to-resolve-module-specifier-prismaclientindex-browser
+        ".prisma/client/index-browser": "./node_modules/.prisma/client/index-browser.js",
+      },
+    },
+  },
 });
