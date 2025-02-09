@@ -11,9 +11,7 @@ const commonSchema = {
   title: z.string(),
   date: z.string().date(),
   tags: z.array(z.string()).optional(),
-  location: z.string().optional(),
-  link: z.string().optional(),
-  linkText: z.string().optional(),
+  draft: z.boolean().default(false),
 };
 
 const prisma = new PrismaClient();
@@ -38,6 +36,8 @@ export const collections = {
       skip: z.number().default(0),
       audio: z.boolean().default(false),
       contributions: z.array(z.enum(["engineering", "design", "management"])).optional(),
+      link: z.string().optional(),
+      linkText: z.string().optional(),
     }),
   }),
   roles: commonCollection({
@@ -48,6 +48,8 @@ export const collections = {
       company: z.string(),
       end: z.string().date().optional(),
       context: z.array(z.enum(["business", "personal", "educational", "volunteer"])).optional(),
+      location: z.string(),
+      link: z.string().optional(),
     }),
   }),
   honors: defineCollection({
@@ -66,6 +68,7 @@ export const collections = {
       ...commonSchema,
       company: z.string(),
       project: z.string(),
+      link: z.string().optional(),
     }),
   }),
   trips: commonCollection({
