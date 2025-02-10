@@ -1,11 +1,9 @@
 ---
-slug: getting-back-to-building
 subtitle: Recognizing and ignoring my excuses
 tags:
   - reflection
   - updates
 date: 2025-02-09T16:00:00-08:00
-draft: false
 ---
 
 # Getting back to building

@@ -10,7 +10,7 @@ const commonSchema = {
   title: z.string(),
   date: z.string().datetime(),
   tags: z.array(z.string()).optional(),
-  draft: z.boolean().default(false),
+  robots: z.boolean().default(true),
 };
 
 export const collections = {
@@ -23,7 +23,6 @@ export const collections = {
     source: "./blog/**/*.md",
     schema: z.object({
       ...commonSchema,
-      slug: z.string(),
       subtitle: z.string(),
       location: z.string().default("San Francisco, CA"),
       rawbody: z.string(),

@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
   // get the date of the most recent post
   const lastDate = await queryCollection(event, "blog")
     .select("date")
-    .where("draft", "=", false)
+    .where("robots", "=", true)
     .where("date", "<", now)
     .order("date", "DESC")
     .first();
@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
   const firstDate = new Date(lastDate.date);
   firstDate.setUTCMonth(firstDate.getUTCMonth() - 3);
   let posts = await queryCollection(event, "blog")
-    .where("draft", "=", false)
+    .where("robots", "=", true)
     .where("date", "<", now)
     .where("date", ">", firstDate.toISOString())
     .order("date", "DESC")
@@ -71,7 +71,7 @@ export default defineEventHandler(async (event) => {
       date: new Date(post.date),
       title: post.title,
       id: post.id,
-      link: `${base}/blog/${post.slug}`,
+      link: `${base}${post.path}`,
       description: post.seo.description,
       content: html[post.id],
     });

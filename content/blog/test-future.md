@@ -1,11 +1,10 @@
 ---
-slug: test-future
 subtitle: not really a post
 tags:
   - reflection
   - updates
 date: 2025-02-11T16:00:00-08:00
-draft: false
+robots: false
 ---
 
 # test test
