@@ -1,11 +1,10 @@
 import { Feed } from "feed";
-import useDev from "~/composables/useDev";
-
 import rehypeSanitize from "rehype-sanitize";
 import rehypeStringify from "rehype-stringify";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
 import { unified } from "unified";
+import useDev from "~/composables/useDev";
 
 export default defineEventHandler(async (event) => {
   const now = new Date().toISOString();
@@ -36,18 +35,14 @@ export default defineEventHandler(async (event) => {
   }
 
   const feed = new Feed({
-    title: "endquote.com - blog",
+    title: "endquote.com/blog",
     id: `${base}/blog`,
     link: `${base}/blog`,
     image: `${base}/images/favicon/favicon-32x32.png`,
     favicon: `${base}/images/favicon/favicon.ico`,
     copyright: `All rights reserved ${new Date().getUTCFullYear()}, Josh Santangelo`,
-    updated: new Date(posts[0].date),
-    author: {
-      name: "Josh Santangelo",
-      email: "josh@endquote.com",
-      link: base,
-    },
+    updated: new Date(lastDate.date),
+    author: { name: "Josh Santangelo", email: "josh@endquote.com", link: base },
   });
 
   // render markdown to html (why doesn't nuxt-content have this?)
