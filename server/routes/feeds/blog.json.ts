@@ -57,12 +57,16 @@ export default defineEventHandler(async (event) => {
     let clean = post.rawbody.replace(/\\n/g, "\n");
     // remove frontmatter
     clean = clean.replace(/---\n[\s\S]*?\n---\n/, "");
+    // remove h1
+    clean = clean.replace(/\n#\s.*?\n/, "");
+
     const file = await unified()
       .use(remarkParse)
       .use(remarkRehype)
       .use(rehypeSanitize)
       .use(rehypeStringify)
       .process(clean);
+
     html[post.id] = String(file);
   }
 
