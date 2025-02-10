@@ -9,8 +9,8 @@ import { unified } from "unified";
 
 export default defineEventHandler(async (event) => {
   const now = new Date().toISOString();
-  const dev = useDev();
-  const host = dev ? "http://localhost:3000" : `https://${useAppConfig().public.hostname}`;
+  const hostname = useRuntimeConfig(event).public.hostname;
+  const base = hostname === "localhost" ? "http://localhost:3000" : `https://${hostname}`;
 
   // get the date of the most recent post
   const lastDate = await queryCollection(event, "blog")
@@ -30,23 +30,23 @@ export default defineEventHandler(async (event) => {
     .order("date", "DESC")
     .all();
 
-  if (dev) {
+  if (useDev()) {
     // get all posts
     posts = await queryCollection(event, "blog").order("date", "DESC").all();
   }
 
   const feed = new Feed({
     title: "endquote.com - blog",
-    id: `${host}/blog`,
-    link: `${host}/blog`,
-    // image: `${host}/favicon.ico`,
-    favicon: `${host}/favicon.ico`,
+    id: `${base}/blog`,
+    link: `${base}/blog`,
+    // image: `${url}/favicon.ico`,
+    favicon: `${base}/favicon.ico`,
     copyright: `All rights reserved ${new Date().getUTCFullYear()}, Josh Santangelo`,
     updated: new Date(posts[0].date),
     author: {
       name: "Josh Santangelo",
       email: "josh@endquote.com",
-      link: host,
+      link: base,
     },
   });
 
@@ -72,7 +72,7 @@ export default defineEventHandler(async (event) => {
       date: new Date(post.date),
       title: post.title,
       id: post.id,
-      link: `${host}/blog/${post.slug}`,
+      link: `${base}/blog/${post.slug}`,
       description: post.seo.description,
       content: html[post.id],
     });
