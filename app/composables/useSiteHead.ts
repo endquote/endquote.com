@@ -34,7 +34,14 @@ export default function (content?: ContentCollectionItem | undefined, props?: He
       { name: "author", content: "Josh Santangelo" },
       { name: "publisher", content: "endquote" },
     ],
-    link: [{ rel: "alternate", type: "application/feed+json", title: "blog - json feed", href: "/feeds/blog.json" }],
+    link: [
+      { rel: "alternate", type: "application/feed+json", title: "blog - json feed", href: "/feeds/blog.json" },
+      { rel: "apple-touch-icon", sizes: "180x180", href: "/images/favicon/apple-touch-icon.png" },
+      { rel: "icon", type: "image/png", sizes: "32x32", href: "/images/favicon/favicon-32x32.png" },
+      { rel: "icon", type: "image/png", sizes: "16x16", href: "/images/favicon/favicon-16x16.png" },
+      { rel: "manifest", href: "/images/favicon/site.webmanifest" },
+      { rel: "mask-icon", href: "/images/favicon/safari-pinned-tab.svg", color: "#000000" },
+    ],
   });
 
   useSeoMeta({
@@ -54,5 +61,5 @@ export default function (content?: ContentCollectionItem | undefined, props?: He
     ...content.seo,
   });
 
-  useFavicon("/images/favicon.ico");
+  useFavicon("/images/favicon/favicon.ico");
 }
