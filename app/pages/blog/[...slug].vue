@@ -1,0 +1,17 @@
+<script setup lang="ts">
+const route = useRoute();
+const { data: page } = await useAsyncData(() =>
+  queryCollection("blog").where("slug", "=", route.path.split("/")[2]).first(),
+);
+if (!page.value) {
+  // throw createError({ statusCode: 404 });
+}
+
+useSiteHead(page.value);
+</script>
+
+<template>
+  <div class="prose-custom">
+    <ContentRenderer v-if="page" :value="page" />
+  </div>
+</template>
