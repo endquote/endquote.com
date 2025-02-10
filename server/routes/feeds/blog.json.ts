@@ -39,8 +39,8 @@ export default defineEventHandler(async (event) => {
     title: "endquote.com - blog",
     id: `${base}/blog`,
     link: `${base}/blog`,
-    // image: `${url}/favicon.ico`,
-    favicon: `${base}/favicon.ico`,
+    image: `${base}/images/favicon/favicon-32x32.png`,
+    favicon: `${base}/images/favicon/favicon.ico`,
     copyright: `All rights reserved ${new Date().getUTCFullYear()}, Josh Santangelo`,
     updated: new Date(posts[0].date),
     author: {

@@ -8,22 +8,13 @@ interface HeadProps {
 }
 
 export default function (content?: ContentCollectionItem | undefined, props?: HeadProps) {
-  const isDev = useDev();
-  const img = useImage();
-
-  if (!isDev) {
-    // tracking
-    const umami = "bf393154-3d37-487c-8e86-d011b69fa26a";
-    useHead({ script: [{ src: "/stats/script.js", async: true, "data-website-id": umami }] });
-  }
-
   if (!content) {
     return;
   }
 
   const title = props?.title || content.seo.title;
   const description = props?.description || content.seo.description;
-  const image = img(props?.image || "images/collage-td.jpg", { format: "webp" });
+  const image = useImage()(props?.image || "images/collage-td.jpg", { format: "webp" });
 
   useHead({
     title: title,
@@ -62,4 +53,10 @@ export default function (content?: ContentCollectionItem | undefined, props?: He
   });
 
   useFavicon("/images/favicon/favicon.ico");
+
+  if (!useDev()) {
+    // tracking
+    const umami = "bf393154-3d37-487c-8e86-d011b69fa26a";
+    useHead({ script: [{ src: "/stats/script.js", async: true, "data-website-id": umami }] });
+  }
 }
