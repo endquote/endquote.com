@@ -5,7 +5,13 @@ const route = useRoute();
 const { data: page } = await useAsyncData(() => queryCollection("content").path(route.path).first());
 useSiteHead(page.value);
 
-const { data: posts } = await useAsyncData(() => queryCollection("blog").order("date", "DESC").all());
+const { data: posts } = await useAsyncData(() =>
+  queryCollection("blog")
+    .where("draft", "=", false)
+    .where("date", "<", new Date().toISOString())
+    .order("date", "DESC")
+    .all(),
+);
 </script>
 
 <template>

@@ -8,7 +8,7 @@ const commonCollection = (collection: Collection<Zod.ZodRawShape>): Collection<Z
 
 const commonSchema = {
   title: z.string(),
-  date: z.string().date(),
+  date: z.string().datetime(),
   tags: z.array(z.string()).optional(),
   draft: z.boolean().default(false),
 };
