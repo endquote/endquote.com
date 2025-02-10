@@ -7,23 +7,14 @@ interface HeadProps {
 }
 
 export default function (content?: ContentCollectionItem | undefined, props?: HeadProps) {
-  if (!content) {
-    return;
+  // tracking
+  if (!useDev()) {
+    const umami = "bf393154-3d37-487c-8e86-d011b69fa26a";
+    useHead({ script: [{ src: "/stats/script.js", async: true, "data-website-id": umami }] });
   }
 
-  const title = props?.title || content.seo.title;
-  const description = props?.description || content.seo.description;
-  const image = useImage()(props?.image || "images/collage-td.jpg", { format: "webp" });
-
+  // icons
   useHead({
-    title: title,
-    meta: [
-      { name: "headline", content: title },
-      { name: "description", content: description },
-      { name: "image", content: image },
-      { name: "author", content: "Josh Santangelo" },
-      { name: "publisher", content: "endquote" },
-    ],
     link: [
       { rel: "alternate", type: "application/feed+json", title: "blog - json feed", href: "/feeds/blog.json" },
       { rel: "icon", type: "image/ico", href: "/images/favicon/favicon.ico" },
@@ -35,6 +26,27 @@ export default function (content?: ContentCollectionItem | undefined, props?: He
     ],
   });
 
+  if (!content) {
+    return;
+  }
+
+  const title = props?.title || content.seo.title;
+  const description = props?.description || content.seo.description;
+  const image = useImage()(props?.image || "images/collage-td.jpg", { format: "webp" });
+
+  // content
+  useHead({
+    title: title,
+    meta: [
+      { name: "headline", content: title },
+      { name: "description", content: description },
+      { name: "image", content: image },
+      { name: "author", content: "Josh Santangelo" },
+      { name: "publisher", content: "endquote" },
+    ],
+  });
+
+  // seo/social
   useSeoMeta({
     ogLocale: "en_US",
     ogSiteName: "Josh Santangelo",
@@ -51,10 +63,4 @@ export default function (content?: ContentCollectionItem | undefined, props?: He
     twitterCreator: "@endquote",
     ...content.seo,
   });
-
-  if (!useDev()) {
-    // tracking
-    const umami = "bf393154-3d37-487c-8e86-d011b69fa26a";
-    useHead({ script: [{ src: "/stats/script.js", async: true, "data-website-id": umami }] });
-  }
 }
