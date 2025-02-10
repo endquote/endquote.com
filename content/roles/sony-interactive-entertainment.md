@@ -1,7 +1,6 @@
 ---
 company: Sony Interactive Entertainment
 link: https://www.playstation.com/
-linkText: PlayStation
 title: Senior Manager, Design Technology
 location: San Francisco, CA
 date: 2020-05-04

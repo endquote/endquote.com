@@ -4,14 +4,14 @@
     {
       "type": "chrome",
       "request": "launch",
-      "name": "front/client",
+      "name": "client",
       "url": "http://localhost:3000",
       "webRoot": "${workspaceFolder}"
     },
     {
       "type": "node",
       "request": "launch",
-      "name": "front/server",
+      "name": "server",
       "outputCapture": "std",
       "cwd": "${workspaceFolder}",
       "program": "${workspaceFolder}/node_modules/nuxi/bin/nuxi.mjs",
@@ -34,10 +34,10 @@
   ],
   "compounds": [
     {
-      "name": "front",
+      "name": "stack",
       "configurations": [
-        "front/server",
-        "front/client"
+        "server",
+        "client"
       ]
     }
   ],

@@ -1,7 +1,6 @@
 import { defineCollection, z, type Collection } from "@nuxt/content";
 import { asRobotsCollection } from "@nuxtjs/robots/content";
 import { asSitemapCollection } from "@nuxtjs/sitemap/content";
-import { PrismaClient } from "@prisma/client";
 
 const commonCollection = (collection: Collection<Zod.ZodRawShape>): Collection<Zod.ZodRawShape> => {
   return defineCollection(asRobotsCollection(asSitemapCollection(collection)));
@@ -9,19 +8,26 @@ const commonCollection = (collection: Collection<Zod.ZodRawShape>): Collection<Z
 
 const commonSchema = {
   title: z.string(),
-  date: z.string().date(),
+  date: z.string().datetime(),
   tags: z.array(z.string()).optional(),
-  location: z.string().optional(),
-  link: z.string().optional(),
-  linkText: z.string().optional(),
+  draft: z.boolean().default(false),
 };
-
-const prisma = new PrismaClient();
 
 export const collections = {
   content: commonCollection({
     type: "page",
     source: "*.md",
+  }),
+  blog: commonCollection({
+    type: "page",
+    source: "./blog/**/*.md",
+    schema: z.object({
+      ...commonSchema,
+      slug: z.string(),
+      subtitle: z.string(),
+      location: z.string().default("San Francisco, CA"),
+      rawbody: z.string(),
+    }),
   }),
   projects: commonCollection({
     type: "page",
@@ -38,6 +44,8 @@ export const collections = {
       skip: z.number().default(0),
       audio: z.boolean().default(false),
       contributions: z.array(z.enum(["engineering", "design", "management"])).optional(),
+      link: z.string().optional(),
+      linkText: z.string().optional(),
     }),
   }),
   roles: commonCollection({
@@ -48,6 +56,8 @@ export const collections = {
       company: z.string(),
       end: z.string().date().optional(),
       context: z.array(z.enum(["business", "personal", "educational", "volunteer"])).optional(),
+      location: z.string(),
+      link: z.string().optional(),
     }),
   }),
   honors: defineCollection({
@@ -66,6 +76,7 @@ export const collections = {
       ...commonSchema,
       company: z.string(),
       project: z.string(),
+      link: z.string().optional(),
     }),
   }),
   trips: commonCollection({

@@ -1,7 +1,6 @@
 ---
 company: Sony Interactive Entertainment
 link: https://www.playstation.com/
-linkText: PlayStation
 title: Director, UX
 location: San Francisco, CA
 date: 2023-01-20

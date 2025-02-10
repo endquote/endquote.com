@@ -11,12 +11,6 @@ export default function (content?: ContentCollectionItem | undefined, props?: He
   const isDev = useDev();
   const img = useImage();
 
-  if (isDev) {
-    // TODO: remove this once nuxt/robots works
-    // https://nuxtseo.com/docs/robots/guides/content#requirements
-    useHead({ meta: [{ name: "robots", content: "noindex, nofollow, noarchive, nosnippet" }] });
-  }
-
   if (!isDev) {
     // tracking
     const umami = "bf393154-3d37-487c-8e86-d011b69fa26a";
@@ -40,6 +34,7 @@ export default function (content?: ContentCollectionItem | undefined, props?: He
       { name: "author", content: "Josh Santangelo" },
       { name: "publisher", content: "endquote" },
     ],
+    link: [{ rel: "alternate", type: "application/feed+json", title: "blog - json feed", href: "/feeds/blog.json" }],
   });
 
   useSeoMeta({
