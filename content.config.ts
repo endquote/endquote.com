@@ -26,6 +26,7 @@ export const collections = {
       slug: z.string(),
       subtitle: z.string(),
       location: z.string().default("San Francisco, CA"),
+      rawbody: z.string(),
     }),
   }),
   projects: commonCollection({

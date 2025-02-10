@@ -20,7 +20,7 @@ const { data: posts } = await useAsyncData(() => {
     <div
       v-for="post in posts"
       class="table-row w-full"
-      :key="post.slug"
+      :key="post.id"
       :class="{ 'bg-amber-400': post.draft || post.date > now }"
     >
       <div class="table-cell text-nowrap pr-7">{{ useDateFormat(post.date, "MMM D, YYYY") }}</div>

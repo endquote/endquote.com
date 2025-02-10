@@ -40,6 +40,7 @@ export default function (content?: ContentCollectionItem | undefined, props?: He
       { name: "author", content: "Josh Santangelo" },
       { name: "publisher", content: "endquote" },
     ],
+    link: [{ rel: "alternate", type: "application/feed+json", title: "blog - json feed", href: "/feeds/blog.json" }],
   });
 
   useSeoMeta({
