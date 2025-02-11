@@ -68,7 +68,6 @@ export default defineEventHandler(async (event) => {
     clean = clean.replace(new RegExp(`\n# ${post.title}\n`), "");
     // replace markdown links that start with / to be relative to the base
     clean = clean.replace(/\]\((\/[^)]+)\)/g, `](${base}$1)`);
-    // tODO: handle internal links/images
 
     const file = await unified()
       .use(remarkParse)
