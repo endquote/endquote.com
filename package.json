@@ -32,7 +32,7 @@
     "@iconify-json/fa-regular": "1.2.1",
     "@iconify-json/fa6-brands": "1.2.5",
     "@iconify-json/heroicons": "1.2.2",
-    "@nuxt/content": "3.1.0",
+    "@nuxt/content": "3.1.1",
     "@nuxt/eslint": "1.0.1",
     "@nuxt/fonts": "0.10.3",
     "@nuxt/image": "1.9.0",
