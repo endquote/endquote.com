@@ -16,7 +16,6 @@ export default function (content?: ContentCollectionItem | undefined, props?: He
   // icons
   useHead({
     link: [
-      { rel: "alternate", type: "application/feed+json", title: "blog - json feed", href: "/feeds/blog.json" },
       { rel: "icon", type: "image/ico", href: "/images/favicon/favicon.ico" },
       { rel: "icon", type: "image/png", sizes: "32x32", href: "/images/favicon/favicon-32x32.png" },
       { rel: "icon", type: "image/png", sizes: "16x16", href: "/images/favicon/favicon-16x16.png" },
@@ -24,6 +23,17 @@ export default function (content?: ContentCollectionItem | undefined, props?: He
       { rel: "manifest", href: "/images/favicon/site.webmanifest" },
       { rel: "mask-icon", href: "/images/favicon/safari-pinned-tab.svg", color: "#000000" },
     ],
+  });
+
+  // feeds
+  useHead({
+    link: ["blog"]
+      .map((col) => [
+        { rel: "alternate", type: "application/feed+json", title: `${col}/json`, href: `/api/feed/${col}/json` },
+        { rel: "alternate", type: "application/rss+xml", title: `${col}/rss`, href: `/api/feed/${col}/rss` },
+        { rel: "alternate", type: "application/atom+xml", title: `${col}/atom`, href: `/api/feed/${col}/atom` },
+      ])
+      .flat(),
   });
 
   if (!content) {
