@@ -5,13 +5,14 @@
 :root {
   /* trigger to load fonts https://fonts.nuxt.com/ */
   font-family: "Titillium Web";
+  /* https://tailwindcss.com/docs/font-family */
+  --font-sans: "Titillium Web", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+
+  --ui-text-inverted: var(--ui-color-primary-200);
 }
 
 @layer base {
-  .dark {
-    --ui-text-inverted: var(--ui-color-primary-700);
-  }
-
   body {
     @apply font-sans;
     @apply leading-7;
@@ -55,9 +56,8 @@
 }
 
 @theme {
-  /* https://tailwindcss.com/docs/font-family */
-  --font-sans: "Titillium Web", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-    "Segoe UI Symbol", "Noto Color Emoji";
+}
 
-  --ui-text-inverted: var(--ui-color-primary-200);
+.dark {
+  --ui-text-inverted: var(--ui-color-primary-700);
 }
