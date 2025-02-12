@@ -5,16 +5,16 @@ import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
 import { unified } from "unified";
 import useDev from "~/composables/useDev";
+import { FEED_COLLECTIONS } from "~/utils/constants";
 
-const collections = ["blog"] as const;
-type ValidCollections = (typeof collections)[number];
-const formats = ["json", "rss", "atom"] as const;
-type ValidFormats = (typeof formats)[number];
+type FeedCollections = (typeof FEED_COLLECTIONS)[number];
+const feedFormats = ["json", "rss", "atom"] as const;
+type FeedFormats = (typeof feedFormats)[number];
 
 export default defineEventHandler(async (event) => {
-  const collection = event.context.params?.collection as ValidCollections;
-  const format = event.context.params?.format as ValidFormats;
-  if (!collection || !format || !collections.includes(collection) || !formats.includes(format)) {
+  const collection = event.context.params?.collection as FeedCollections;
+  const format = event.context.params?.format as FeedFormats;
+  if (!collection || !format || !FEED_COLLECTIONS.includes(collection) || !feedFormats.includes(format)) {
     setResponseStatus(event, 404);
     return;
   }
