@@ -1,5 +1,4 @@
 import type { ContentCollectionItem } from "@nuxt/content";
-import { FEED_COLLECTIONS } from "~/utils/constants";
 
 interface HeadProps {
   title?: string;
@@ -28,11 +27,13 @@ export default function (content?: ContentCollectionItem | undefined, props?: He
 
   // feeds
   useHead({
-    link: FEED_COLLECTIONS.map((col) => [
-      { rel: "alternate", type: "application/feed+json", title: `${col}/json`, href: `/api/feed/${col}/json` },
-      { rel: "alternate", type: "application/rss+xml", title: `${col}/rss`, href: `/api/feed/${col}/rss` },
-      { rel: "alternate", type: "application/atom+xml", title: `${col}/atom`, href: `/api/feed/${col}/atom` },
-    ]).flat(),
+    link: ["blog"]
+      .map((col) => [
+        { rel: "alternate", type: "application/feed+json", title: `${col}/json`, href: `/api/feed/${col}/json` },
+        { rel: "alternate", type: "application/rss+xml", title: `${col}/rss`, href: `/api/feed/${col}/rss` },
+        { rel: "alternate", type: "application/atom+xml", title: `${col}/atom`, href: `/api/feed/${col}/atom` },
+      ])
+      .flat(),
   });
 
   if (!content) {
