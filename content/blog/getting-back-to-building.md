@@ -2,8 +2,7 @@
 subtitle: Recognizing and ignoring my excuses
 tags:
   - reflection
-  - updates
-date: 2025-02-09T16:00:00-08:00
+date: 2025-02-10T00:00:00Z
 ---
 
 # Getting back to building
