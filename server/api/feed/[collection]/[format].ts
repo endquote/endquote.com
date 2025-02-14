@@ -3,6 +3,7 @@ import rehypeSanitize from "rehype-sanitize";
 import rehypeStringify from "rehype-stringify";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
+import remarkSmartypants from "remark-smartypants";
 import { unified } from "unified";
 import useDev from "~/composables/useDev";
 
@@ -71,6 +72,7 @@ export default defineEventHandler(async (event) => {
 
     const file = await unified()
       .use(remarkParse)
+      .use(remarkSmartypants)
       .use(remarkRehype)
       .use(rehypeSanitize)
       .use(rehypeStringify)

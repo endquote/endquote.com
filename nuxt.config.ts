@@ -28,6 +28,12 @@ export default defineNuxtConfig({
         url: "https://github.com/endquote/endquote.com",
       },
     },
+    build: {
+      markdown: {
+        // https://content.nuxt.com/docs/getting-started/configuration#remarkplugins
+        remarkPlugins: { "remark-smartypants": {} },
+      },
+    },
   },
   ui: {
     // https://ui.nuxt.com/getting-started/installation#options
