@@ -28,7 +28,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "3.744.0",
+    "@aws-sdk/client-s3": "3.749.0",
     "@iconify-json/fa-regular": "1.2.1",
     "@iconify-json/fa6-brands": "1.2.5",
     "@iconify-json/heroicons": "1.2.2",
@@ -44,7 +44,7 @@
     "@tailwindcss/typography": "0.5.16",
     "@trpc/client": "10.45.2",
     "@trpc/server": "10.45.2",
-    "@vueuse/core": "12.5.0",
+    "@vueuse/core": "12.6.1",
     "axios": "1.7.9",
     "csv-parse": "5.6.0",
     "dotenv": "16.4.7",
@@ -62,9 +62,9 @@
   },
   "devDependencies": {
     "@types/luxon": "3.4.2",
-    "@types/node": "22.13.1",
+    "@types/node": "22.13.4",
     "nuxi": "3.21.1",
-    "prettier": "3.5.0",
+    "prettier": "3.5.1",
     "prettier-plugin-tailwindcss": "0.6.11",
     "prisma": "6.3.1",
     "typescript": "5.7.3"
