@@ -94,13 +94,13 @@ export default defineEventHandler(async (event) => {
   });
 
   if (format === "json") {
-    setHeaders(event, { "Content-Type": "application/feed+json" });
+    setHeaders(event, { "Content-Type": "application/feed+json; charset=utf-8" });
     return feed.json1();
   } else if (format === "rss") {
-    setHeaders(event, { "Content-Type": "application/rss+xml" });
+    setHeaders(event, { "Content-Type": "application/rss+xml; charset=utf-8" });
     return feed.rss2();
   } else if (format === "atom") {
-    setHeaders(event, { "Content-Type": "application/atom+xml" });
+    setHeaders(event, { "Content-Type": "application/atom+xml; charset=utf-8" });
     return feed.atom1();
   }
 });
