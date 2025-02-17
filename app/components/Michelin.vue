@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { restaurant } from '@prisma/client';
+import { Prisma } from "@prisma/client";
 
 const props = defineProps<{
-  restaurant: restaurant | null;
+  restaurant: Prisma.restaurantGetPayload<{ select: { url: true, award: true } }> | null;
 }>();
 
 </script>
