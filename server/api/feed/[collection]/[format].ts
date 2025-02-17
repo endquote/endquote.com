@@ -1,10 +1,14 @@
 import { Feed } from "feed";
+import type { Heading, Image, Link, Parent, Root, Text, Yaml } from "mdast";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeStringify from "rehype-stringify";
+import remarkFrontmatter from "remark-frontmatter";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
 import remarkSmartypants from "remark-smartypants";
 import { unified } from "unified";
+import type { Visitor } from "unist-util-visit";
+import { EXIT, visit } from "unist-util-visit";
 import useDev from "~/composables/useDev";
 
 const feedCollections = ["blog"] as const;
@@ -16,6 +20,8 @@ export default cachedEventHandler(
   async (event) => {
     const collection = event.context.params?.collection as FeedCollections;
     const format = event.context.params?.format as FeedFormats;
+
+    // make sure this is a collection we support feeds for
     if (!collection || !format || !feedCollections.includes(collection) || !feedFormats.includes(format)) {
       setResponseStatus(event, 404);
       return;
@@ -23,7 +29,6 @@ export default cachedEventHandler(
 
     const now = new Date().toISOString();
     const hostname = useRuntimeConfig(event).public.hostname;
-    const base = hostname === "localhost" ? "http://localhost:3000" : `https://${hostname}`;
 
     // get the date of the most recent post
     const lastDate = await queryCollection(event, collection)
@@ -48,6 +53,8 @@ export default cachedEventHandler(
       posts = await queryCollection(event, collection).order("date", "DESC").all();
     }
 
+    const base = hostname === "localhost" ? "http://localhost:3000" : `https://${hostname}`;
+
     const feed = new Feed({
       title: `endquote.com/${collection}`,
       id: `${base}/${collection}`,
@@ -59,25 +66,69 @@ export default cachedEventHandler(
       author: { name: "Josh Santangelo", email: "josh@endquote.com", link: base },
     });
 
-    // render markdown to html (why doesn't nuxt-content have this?)
+    // render markdown to html
     const html: Record<string, string> = {};
+
     for (const post of posts) {
       // unescape newlines
-      let clean = post.rawbody.replace(/\\n/g, "\n");
-      // remove frontmatter
-      clean = clean.replace(/---\n[\s\S]*?\n---\n/, "");
-      // remove title in h1
-      clean = clean.replace(new RegExp(`\n# ${post.title}\n`), "");
-      // replace markdown links that start with / to be relative to the base
-      clean = clean.replace(/\]\((\/[^)]+)\)/g, `](${base}$1)`);
+      const preprocess = post.rawbody.replace(/\\n/g, "\n");
 
       const file = await unified()
+        // parse markdown
         .use(remarkParse)
+
+        // parse frontmatter
+        .use(remarkFrontmatter, ["yaml"])
+
+        // custom parsing
+        .use(() => (tree: Root) => {
+          // remove frontmatter
+          visit(tree, "yaml", ((node, index, parent) => {
+            (parent as Parent).children.splice(index!, 1);
+            return EXIT;
+          }) satisfies Visitor<Yaml>);
+
+          // remove h1 matching post title
+          visit(tree, "heading", ((node, index, parent) => {
+            if (
+              node.depth === 1 &&
+              node.children.length === 1 &&
+              (node.children[0] as Text).type === "text" &&
+              (node.children[0] as Text).value === post.title
+            ) {
+              (parent as Parent).children.splice(index!, 1);
+              return EXIT;
+            }
+          }) satisfies Visitor<Heading>);
+
+          // convert relative links to absolute
+          visit(tree, "link", ((node) => {
+            if (node.url.startsWith("http")) return;
+            node.url = node.url.replace(/\.md$/, "");
+            const url = new URL(node.url, `${base}${post.path}`).toString();
+            node.url = url;
+          }) satisfies Visitor<Link>);
+
+          // convert relative images to absolute
+          visit(tree, "image", ((node) => {
+            if (node.url.startsWith("http")) return;
+            const url = new URL(node.url, `${base}${post.path}`).toString();
+            node.url = url;
+          }) satisfies Visitor<Image>);
+        })
+
+        // make nice typography
         .use(remarkSmartypants)
+
+        // convert markdown AST to HTML AST
         .use(remarkRehype)
+
+        // sanitize HTML
         .use(rehypeSanitize)
+
+        // convert HTML AST to HTML string
         .use(rehypeStringify)
-        .process(clean);
+        .process(preprocess);
 
       html[post.id] = String(file);
     }
@@ -110,6 +161,7 @@ export default cachedEventHandler(
     swr: false,
     maxAge: 24 * 60 * 60,
 
+    // return a cache key that's similar to the default
     getKey: (event) => {
       const collection = event.context.params?.collection as FeedCollections;
       const format = event.context.params?.format as FeedFormats;
@@ -118,6 +170,8 @@ export default cachedEventHandler(
 
     // don't render the feed again if there hasn't been a new post
     shouldInvalidateCache: async (event) => {
+      if (useDev()) return true;
+
       const base = "cache";
       const name = "_";
       const group = "nitro:handlers";
