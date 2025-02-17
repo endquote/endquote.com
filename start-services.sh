@@ -1,5 +1,7 @@
 #!/bin/bash
 
+npm run prisma:deploy
+
 # Create logs directory
 mkdir -p /app/logs
 
