@@ -1,5 +1,5 @@
 import { Feed } from "feed";
-import type { Heading, Image, Link, Parent, Root, Text, Yaml } from "mdast";
+import type { Parent, Root, Text } from "mdast";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeStringify from "rehype-stringify";
 import remarkFrontmatter from "remark-frontmatter";
@@ -7,7 +7,6 @@ import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
 import remarkSmartypants from "remark-smartypants";
 import { unified } from "unified";
-import type { Visitor } from "unist-util-visit";
 import { EXIT, visit } from "unist-util-visit";
 import useDev from "~/composables/useDev";
 
@@ -83,13 +82,13 @@ export default cachedEventHandler(
         // custom parsing
         .use(() => (tree: Root) => {
           // remove frontmatter
-          visit(tree, "yaml", ((node, index, parent) => {
+          visit(tree, "yaml", (node, index, parent) => {
             (parent as Parent).children.splice(index!, 1);
             return EXIT;
-          }) satisfies Visitor<Yaml>);
+          });
 
           // remove h1 matching post title
-          visit(tree, "heading", ((node, index, parent) => {
+          visit(tree, "heading", (node, index, parent) => {
             if (
               node.depth === 1 &&
               node.children.length === 1 &&
@@ -99,22 +98,22 @@ export default cachedEventHandler(
               (parent as Parent).children.splice(index!, 1);
               return EXIT;
             }
-          }) satisfies Visitor<Heading>);
+          });
 
           // convert relative links to absolute
-          visit(tree, "link", ((node) => {
+          visit(tree, "link", (node) => {
             if (node.url.startsWith("http")) return;
             node.url = node.url.replace(/\.md$/, "");
             const url = new URL(node.url, `${base}${post.path}`).toString();
             node.url = url;
-          }) satisfies Visitor<Link>);
+          });
 
           // convert relative images to absolute
-          visit(tree, "image", ((node) => {
+          visit(tree, "image", (node) => {
             if (node.url.startsWith("http")) return;
             const url = new URL(node.url, `${base}${post.path}`).toString();
             node.url = url;
-          }) satisfies Visitor<Image>);
+          });
         })
 
         // make nice typography
