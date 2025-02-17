@@ -19,6 +19,9 @@ model checkin {
   venueId Int
   Trip    trip?    @relation(fields: [tripId], references: [eqId])
   tripId  Int?
+
+  flightId Int?
+  flight   flight? @relation(fields: [flightId], references: [eqId])
 }
 
 model venue {
@@ -116,6 +119,7 @@ model flight {
   divAirportFlightyId String?
   aircraftFlightyId   String?
   trips               trip[]
+  checkins            checkin[]
 }
 
 model home {

@@ -28,7 +28,8 @@ const fmt = "YYYY-MM-DD";
         <li v-for="checkin in data.checkins" :key="checkin.eqId">
           {{ useDateFormat(checkin.date, fmt) }} - <NuxtLink :href="`https://foursquare.com/v/${checkin.venue.fsId}`">{{
             checkin.venue.name }}</NuxtLink>
-          <Michelin :restaurant="checkin.venue.restaurant" />
+          <Flight v-if="checkin.flight" :checkin="checkin" />
+          <Michelin v-if="checkin.venue.restaurant" :restaurant="checkin.venue.restaurant" />
         </li>
       </ul>
     </div>

@@ -51,7 +51,10 @@ export const appRouter = router({
       return prisma.trip.findFirst({
         include: {
           checkins: {
-            include: { venue: { include: { restaurant: { select: { award: true, url: true } } } } },
+            include: {
+              flight: { select: { fromAirport: true, toAirport: true } },
+              venue: { include: { restaurant: { select: { award: true, url: true } } } },
+            },
             orderBy: { date: "asc" },
           },
           flights: { orderBy: { date: "asc" } },

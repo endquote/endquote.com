@@ -237,6 +237,7 @@ const saveTrips = async (trips: Trip[]) => {
 
   const debug = [];
   for (const trip of trips) {
+    // write out the trips to a file for debugging
     debug.push({
       start: formatDate(trip.start),
       end: formatDate(trip.end),
@@ -253,6 +254,8 @@ const saveTrips = async (trips: Trip[]) => {
         to: f.toAirport,
       })),
     });
+
+    // save the trip
     await db.trip.create({
       data: {
         start: trip.start,
@@ -264,6 +267,30 @@ const saveTrips = async (trips: Trip[]) => {
   }
 
   await saveString(JSON.stringify(debug, null, 2), "trips.json");
+
+  // link checkins to flights
+  for (const trip of trips) {
+    for (const checkin of trip.checkins) {
+      if (checkin.venue.category?.includes("Airport")) {
+        const code = checkin.venue.name.match(/\(([A-Z]{3})\)/)?.[1];
+        if (code) {
+          const checkinDate = checkin.date.toISOString().split("T")[0];
+          for (const flight of trip.flights) {
+            if (flight.fromAirport === code || flight.toAirport === code) {
+              const start = flight.date.toISOString().split("T")[0];
+              const end = flight.date.toISOString().split("T")[0];
+              if (checkinDate == start || checkinDate == end) {
+                await db.checkin.update({
+                  where: { eqId: checkin.eqId },
+                  data: { flight: { connect: { eqId: flight.eqId } } },
+                });
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 };
 
 const flightStart = (flight: Flight): Date | null => {
