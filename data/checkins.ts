@@ -40,6 +40,7 @@ const getCheckins = async (token: string, homes: Prisma.homeGetPayload<{}>[]): P
   const limit = 250;
 
   while (true) {
+    // https://docs.foursquare.com/developer/reference/get-user-checkins
     const { data } = await http.get(`https://api.foursquare.com/v2/users/self/checkins`, {
       params: { oauth_token: token, v: 20231010, limit, offset },
     });

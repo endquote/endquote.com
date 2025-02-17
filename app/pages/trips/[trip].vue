@@ -11,7 +11,7 @@ if (!page.value && !useDev()) {
 }
 
 // merge with trip data
-const date = route.params?.slug?.[0]!;
+const date = route.params?.trip as string;
 
 const { $client } = useNuxtApp();
 const data = await $client.trip.query({ date });
@@ -26,7 +26,9 @@ const fmt = "YYYY-MM-DD";
       <h2>Checkins</h2>
       <ul>
         <li v-for="checkin in data.checkins" :key="checkin.eqId">
-          {{ useDateFormat(checkin.date, fmt) }} - {{ checkin.venue.name }}
+          {{ useDateFormat(checkin.date, fmt) }} - <NuxtLink :href="`https://foursquare.com/v/${checkin.venue.fsId}`">{{
+            checkin.venue.name }}</NuxtLink>
+          <Michelin :restaurant="checkin.venue.restaurant" />
         </li>
       </ul>
     </div>

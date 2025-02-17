@@ -29,9 +29,9 @@ const fmt = "YYYY-MM-DD";
     <ContentRenderer v-if="page" :value="page" />
     <ul>
       <li v-for="trip in trips" :key="trip.data.eqId">
-        <NuxtLink :href="`/trips/${useDateFormat(trip.data.start, fmt).value}`"
-          >{{ useDateFormat(trip.data.start, fmt) }} - {{ useDateFormat(trip.data.end, fmt) }}</NuxtLink
-        >
+        <NuxtLink :href="`/trips/${useDateFormat(trip.data.start, fmt).value}`">{{ useDateFormat(trip.data.start, fmt)
+          }} - {{ useDateFormat(trip.data.end, fmt) }} - {{trip.data.flights.map(f => f.toAirport).join(", ")}}
+        </NuxtLink>
       </li>
     </ul>
   </div>
