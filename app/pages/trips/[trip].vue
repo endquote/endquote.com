@@ -14,7 +14,7 @@ if (!page.value && !useDev()) {
 const date = route.params?.trip as string;
 
 const { $client } = useNuxtApp();
-const data = await $client.trip.query({ date });
+const { data, error } = await useAsyncData(() => $client.trip.query({ date }));
 
 const fmt = "YYYY-MM-DD";
 </script>
@@ -28,15 +28,15 @@ const fmt = "YYYY-MM-DD";
         <li v-for="checkin in data.checkins" :key="checkin.eqId">
           {{ useDateFormat(checkin.date, fmt) }} - <NuxtLink :href="`https://foursquare.com/v/${checkin.venue.fsId}`">{{
             checkin.venue.name }}</NuxtLink>
-          <Flight v-if="checkin.flight" :checkin="checkin" />
-          <Michelin v-if="checkin.venue.restaurant" :restaurant="checkin.venue.restaurant" />
+          <Flight :checkin="checkin" />
+          <Michelin :restaurant="checkin.venue.restaurant" />
         </li>
       </ul>
     </div>
     <div v-if="data && data.flights.length">
       <h2>Flights</h2>
       <ul>
-        <li v-for="flight in data?.flights" :key="flight.eqId">
+        <li v-for="flight in data?.flights" :key="flight.eqId" :class="{ 'line-through': flight.canceled }">
           {{ useDateFormat(flight.date, fmt) }} - {{ flight.fromAirport }}-{{ flight.toAirport }}
         </li>
       </ul>

@@ -36,7 +36,7 @@ const main = async () => {
   checkinTrips = combineCheckinTrips(checkinTrips, allCheckins, homeAir);
   checkinTrips = extendCheckinTrips(checkinTrips, allCheckins, homeAir);
 
-  const allFlights = await db.flight.findMany({ where: { canceled: false }, orderBy: { date: "asc" } });
+  const allFlights = await db.flight.findMany({ orderBy: [{ date: "asc" }, { scheduledDeparture: "asc" }] });
   const flightTrips = buildFlightTrips(allFlights, homeAir);
 
   const trips = buildTrips(checkinTrips, flightTrips);
@@ -100,7 +100,7 @@ const combineCheckinTrips = (checkinTrips: Checkin[][], allCheckins: Checkin[], 
 const extendCheckinTrips = (checkinTrips: Checkin[][], allCheckins: Checkin[], homeAir: HomeAir[]) => {
   for (let t = 0; t < checkinTrips.length - 1; t++) {
     const trip = checkinTrips[t];
-    const hasAirports = trip.some((c) => c.venue.category?.includes("Airport") && c.venue.name.match(/\([A-Z]{3}\)/));
+    const hasAirports = trip.some((c) => isAirport(c.venue) && c.venue.name.match(/\([A-Z]{3}\)/));
     if (!hasAirports) {
       continue;
     }
@@ -170,7 +170,7 @@ const buildFlightTrips = (allFlights: Flight[], homeAir: HomeAir[]): Flight[][] 
         // add flight
         trip.push(nextFlight);
 
-        if (nextFlight.toAirport === home.code) {
+        if (nextFlight.toAirport === home.code && !nextFlight.canceled) {
           // returned home
           i = j;
           break;
@@ -268,29 +268,66 @@ const saveTrips = async (trips: Trip[]) => {
 
   await saveString(JSON.stringify(debug, null, 2), "trips.json");
 
+  // remove flights from all checkins
+  await db.checkin.updateMany({ data: { flightId: null } });
+  const airportSearch = 3;
+
   // link checkins to flights
   for (const trip of trips) {
-    for (const checkin of trip.checkins) {
-      if (checkin.venue.category?.includes("Airport")) {
-        const code = checkin.venue.name.match(/\(([A-Z]{3})\)/)?.[1];
-        if (code) {
-          const checkinDate = checkin.date.toISOString().split("T")[0];
-          for (const flight of trip.flights) {
-            if (flight.fromAirport === code || flight.toAirport === code) {
-              const start = flight.date.toISOString().split("T")[0];
-              const end = flight.date.toISOString().split("T")[0];
-              if (checkinDate == start || checkinDate == end) {
-                await db.checkin.update({
-                  where: { eqId: checkin.eqId },
-                  data: { flight: { connect: { eqId: flight.eqId } } },
-                });
-              }
-            }
-          }
-        }
+    for (const checkin of trip.checkins.filter((c) => isAirport(c.venue))) {
+      const code = airportCode(checkin.venue);
+      if (!code) continue;
+
+      // see if there are more airports in the near future
+      const moreAirports = trip.checkins
+        .slice(trip.checkins.indexOf(checkin) + 1, trip.checkins.indexOf(checkin) + (airportSearch + 1))
+        .some((c) => isAirport(c.venue));
+
+      const foundFlight = moreAirports
+        ? // if there are more airports, we are flying away from this checkin
+          findClosestFlight(
+            trip.flights.filter((f) => f.fromAirport === code),
+            checkin.date,
+            true,
+          )
+        : // if there are no more airports, we are flying toward this checkin
+          findClosestFlight(
+            trip.flights.filter((f) => f.toAirport === code),
+            checkin.date,
+            false,
+          );
+
+      if (foundFlight) {
+        await db.checkin.update({
+          where: { eqId: checkin.eqId },
+          data: { flight: { connect: { eqId: foundFlight.eqId } } },
+        });
       }
     }
   }
+};
+
+const isAirport = (venue: Prisma.venueGetPayload<{}>) => venue.category?.includes("Airport");
+
+const airportCode = (venue: Prisma.venueGetPayload<{}>) => venue.name.match(/\(([A-Z]{3})\)/)?.[1];
+
+const findClosestFlight = (flights: Flight[], date: Date, checkStart: boolean): Flight | null => {
+  let closestFlight: Flight | null = null;
+  let smallestDiff = Infinity;
+
+  for (const flight of flights) {
+    const flightDate = checkStart ? flightStart(flight) : flightEnd(flight);
+    if (!flightDate) continue;
+
+    const diff = Math.abs(flightDate.getTime() - date.getTime());
+
+    if (diff < smallestDiff) {
+      smallestDiff = diff;
+      closestFlight = flight;
+    }
+  }
+
+  return closestFlight;
 };
 
 const flightStart = (flight: Flight): Date | null => {

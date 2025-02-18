@@ -52,7 +52,7 @@ export const appRouter = router({
         include: {
           checkins: {
             include: {
-              flight: { select: { fromAirport: true, toAirport: true } },
+              flight: { select: { fromAirport: true, toAirport: true, canceled: true } },
               venue: { include: { restaurant: { select: { award: true, url: true } } } },
             },
             orderBy: { date: "asc" },

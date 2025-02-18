@@ -8,13 +8,13 @@ useSiteHead(page.value);
 
 // get trip data
 const { $client } = useNuxtApp();
-const tripData = await $client.trips.query();
+const { data: tripData, error } = await useAsyncData(() => $client.trips.query());
 
 // get trip pages
 const { data: pages } = await useAsyncData(() => queryCollection("trips").all());
 
 // merge trip data with pages
-let trips = tripData.map((data) => {
+let trips = tripData.value?.map((data) => {
   const page = pages.value?.find(
     (page) => page.date >= data.start.split("T")[0]! && page.date <= data.end.split("T")[0]!,
   );
