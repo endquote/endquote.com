@@ -89,7 +89,7 @@ const parseFlight = (row: any, tzMap: Record<string, string>): Prisma.flightCrea
     if (!date) {
       return null;
     }
-    return DateTime.fromISO(date).setZone(tz).toJSDate();
+    return DateTime.fromISO(date, { zone: tz }).toUTC().toJSDate();
   };
 
   obj.date = timestamp(obj.date, tzMap[obj.fromAirport]);
