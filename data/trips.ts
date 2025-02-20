@@ -100,7 +100,7 @@ const combineCheckinTrips = (checkinTrips: Checkin[][], allCheckins: Checkin[], 
 const extendCheckinTrips = (checkinTrips: Checkin[][], allCheckins: Checkin[], homeAir: HomeAir[]) => {
   for (let t = 0; t < checkinTrips.length - 1; t++) {
     const trip = checkinTrips[t];
-    const hasAirports = trip.some((c) => isAirport(c.venue) && c.venue.name.match(/\([A-Z]{3}\)/));
+    const hasAirports = trip.some((c) => c.venue.airport);
     if (!hasAirports) {
       continue;
     }
@@ -274,14 +274,14 @@ const saveTrips = async (trips: Trip[]) => {
 
   // link checkins to flights
   for (const trip of trips) {
-    for (const checkin of trip.checkins.filter((c) => isAirport(c.venue))) {
-      const code = airportCode(checkin.venue);
+    for (const checkin of trip.checkins.filter((c) => c.venue.airport)) {
+      const code = checkin.venue.airport;
       if (!code) continue;
 
       // see if there are more airports in the near future
       const moreAirports = trip.checkins
         .slice(trip.checkins.indexOf(checkin) + 1, trip.checkins.indexOf(checkin) + (airportSearch + 1))
-        .some((c) => isAirport(c.venue));
+        .some((c) => c.venue.airport);
 
       const foundFlight = moreAirports
         ? // if there are more airports, we are flying away from this checkin
@@ -306,10 +306,6 @@ const saveTrips = async (trips: Trip[]) => {
     }
   }
 };
-
-const isAirport = (venue: Prisma.venueGetPayload<{}>) => venue.category?.includes("Airport");
-
-const airportCode = (venue: Prisma.venueGetPayload<{}>) => venue.name.match(/\(([A-Z]{3})\)/)?.[1];
 
 const findClosestFlight = (flights: Flight[], date: Date, checkStart: boolean): Flight | null => {
   let closestFlight: Flight | null = null;

@@ -7,17 +7,19 @@ type RouterOutput = inferRouterOutputs<AppRouter>
 type TripOutput = NonNullable<RouterOutput['trip']>
 type CheckinOutput = TripOutput['checkins'][number]
 
-const props = defineProps<{ checkin: CheckinOutput | null }>()
+const props = defineProps<{
+  airport: string | null,
+  flight: CheckinOutput["flight"] | null
+}>()
 
-const code = ref(props.checkin?.venue.name.match(/\(([A-Z]{3})\)/)?.[1]);
 
 </script>
 <template>
-  <span v-if="checkin && checkin.flight">
+  <span v-if="airport && flight">
     &nbsp;
-    <span :class="{ 'line-through': checkin.flight.canceled }">
-      <span v-if="code === checkin.flight.fromAirport">🛬 {{ checkin.flight.toAirport }}</span>
-      <span v-if="code === checkin.flight.toAirport">🛫 {{ checkin.flight.fromAirport }}</span>
+    <span :class="{ 'line-through': flight.canceled }">
+      <span v-if="airport === flight.fromAirport">🛬 {{ flight.toAirport }}</span>
+      <span v-if="airport === flight.toAirport">🛫 {{ flight.fromAirport }}</span>
     </span>
   </span>
 </template>

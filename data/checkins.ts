@@ -49,6 +49,8 @@ const getCheckins = async (token: string, homes: Prisma.homeGetPayload<{}>[]): P
     let done = items.length < limit;
 
     for (const item of items) {
+      const isAirport = item.venue.categories.some((c: any) => c.name.includes("Airport"));
+      const airportCode = isAirport ? item.venue.name.match(/\(([A-Z]{3})\)/)?.[1] : undefined;
       const fsVenue: Prisma.venueCreateInput = {
         fsId: item.venue.id,
         name: item.venue.name,
@@ -62,7 +64,12 @@ const getCheckins = async (token: string, homes: Prisma.homeGetPayload<{}>[]): P
         country: item.venue.location.country,
         category: item.venue.categories[0]?.name,
         icon: item.venue.categories[0]?.mapIcon,
+        airport: airportCode ? airportCode : undefined,
       };
+
+      if (isAirport) {
+        const x = 1;
+      }
 
       const venue = await db.venue.upsert({
         where: { fsId: fsVenue.fsId },

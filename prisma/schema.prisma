@@ -11,17 +11,16 @@ datasource db {
 }
 
 model checkin {
-  eqId    Int      @id @default(autoincrement())
-  fsId    String   @unique
-  date    DateTime
-  tz      Int
-  venue   venue    @relation(fields: [venueId], references: [eqId])
-  venueId Int
-  Trip    trip?    @relation(fields: [tripId], references: [eqId])
-  tripId  Int?
-
+  eqId     Int      @id @default(autoincrement())
+  fsId     String   @unique
+  date     DateTime
+  tz       Int
+  venue    venue    @relation(fields: [venueId], references: [eqId])
+  venueId  Int
+  Trip     trip?    @relation(fields: [tripId], references: [eqId])
+  tripId   Int?
   flightId Int?
-  flight   flight? @relation(fields: [flightId], references: [eqId])
+  flight   flight?  @relation(fields: [flightId], references: [eqId])
 }
 
 model venue {
@@ -38,6 +37,7 @@ model venue {
   country           String
   category          String?
   icon              String?
+  airport           String?
   checkins          checkin[]
   hotelChecked      Boolean     @default(false)
   hotel             hotel?
