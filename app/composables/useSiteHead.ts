@@ -42,14 +42,14 @@ export default function (content?: ContentCollectionItem | undefined, props?: He
 
   const title = props?.title || content.seo.title;
   const description = props?.description || content.seo.description;
-  const image = useImage()(props?.image || "images/collage-td.jpg", { format: "webp" });
+  const image = props?.image ? useImage()(props?.image || "images/collage-td.jpg", { format: "webp" }) : null;
 
   // content
   useHead({
     title: title,
     meta: [
-      { name: "headline", content: title },
-      { name: "description", content: description },
+      { name: "headline", content: props?.title || content.seo.title },
+      { name: "description", content: props?.description || content.seo.description },
       { name: "image", content: image },
       { name: "author", content: "Josh Santangelo" },
       { name: "publisher", content: "endquote" },

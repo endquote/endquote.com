@@ -11,12 +11,17 @@ const commonSchema = {
   date: z.string().datetime(),
   tags: z.array(z.string()).optional(),
   robots: z.boolean().default(true),
+  image: z.string().optional(),
 };
 
 export const collections = {
   content: commonCollection({
     type: "page",
     source: "*.md",
+    schema: z.object({
+      robots: z.boolean().default(true),
+      image: z.string().optional(),
+    }),
   }),
   blog: commonCollection({
     type: "page",

@@ -15,6 +15,10 @@ const roleId = role.value.stem.split("/").pop();
 const projects = (
   await useAsyncData(() => queryCollection("projects").where("role", "=", roleId).order("date", "DESC").all())
 ).data.value;
+
+
+useSiteHead(role.value, { image: projects?.[0] ? `/do/${projects[0].stem}/project.jpg` : '' });
+
 </script>
 
 <template>
@@ -27,8 +31,7 @@ const projects = (
     <p>
       {{ role.location }}, {{ useDateFormat(role.date, "YYYY") }}-<template v-if="role.end">{{
         useDateFormat(role.end, "YYYY")
-      }}</template
-      ><template v-else>present</template>
+        }}</template><template v-else>present</template>
     </p>
     <ContentRenderer :value="role" />
   </div>

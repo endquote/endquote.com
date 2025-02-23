@@ -1,5 +1,6 @@
 ---
 title: Josh Santangelo
+ogImage: /images/collage-td.jpg
 ---
 
 **Hi, I'm Josh.** I use my engineering experience and design sense to [manage teams](/about) that create incredible user experiences in unconventional contexts.

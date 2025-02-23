@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const route = useRoute();
 const { data: page } = await useAsyncData(() => queryCollection("content").path(route.path).first());
-useSiteHead(page.value);
+useSiteHead(page.value, { image: page.value?.image });
 </script>
 
 <template>

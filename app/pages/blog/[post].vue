@@ -19,7 +19,7 @@ if (!page.value) {
   throw createError({ statusCode: 404 });
 }
 
-useSiteHead(page.value);
+useSiteHead(page.value, { image: page.value?.image });
 </script>
 
 <template>

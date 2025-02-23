@@ -4,7 +4,7 @@ import { useDateFormat } from "@vueuse/core";
 
 const route = useRoute();
 const { data: page } = await useAsyncData(() => queryCollection("content").path(route.path).first());
-useSiteHead(page.value);
+useSiteHead(page.value, { image: page.value?.image });
 
 // get all business roles
 const { data: roles } = await useAsyncData(() => queryCollection("roles").order("date", "DESC").all());
@@ -101,14 +101,13 @@ const metaRight = "flex-shrink-0";
           <div :class="metaRow">
             <div :class="metaLeft">
               <NuxtLink v-if="(role.meta.projects as ProjectsCollectionItem[]).length" :to="role.stem">
-                <strong>{{ role.title }}</strong></NuxtLink
-              ><strong v-else>{{ role.title }}</strong>
+                <strong>{{ role.title }}</strong>
+              </NuxtLink><strong v-else>{{ role.title }}</strong>
             </div>
             <div :class="metaRight">
               {{ role.location }}, {{ useDateFormat(role.date, "YYYY") }}-<template v-if="role.end">{{
                 useDateFormat(role.end, "YYYY")
-              }}</template
-              ><template v-else>present</template>
+                }}</template><template v-else>present</template>
             </div>
           </div>
 
@@ -129,8 +128,8 @@ const metaRight = "flex-shrink-0";
           <div :class="metaRow">
             <div :class="metaLeft">
               <NuxtLink v-if="(role.meta.projects as ProjectsCollectionItem[]).length" :to="role.stem">
-                <strong>{{ role.title }}</strong></NuxtLink
-              ><strong v-else>{{ role.title }}</strong>
+                <strong>{{ role.title }}</strong>
+              </NuxtLink><strong v-else>{{ role.title }}</strong>
             </div>
             <div :class="metaRight">
               {{ role.location }}
@@ -201,8 +200,7 @@ const metaRight = "flex-shrink-0";
             - {{ award.company }},
             <NuxtLink :to="(award.meta.project as ProjectsCollectionItem).stem">{{
               (award.meta.project as ProjectsCollectionItem).title
-            }}</NuxtLink
-            >, {{ useDateFormat(award.date, "YYYY") }}
+              }}</NuxtLink>, {{ useDateFormat(award.date, "YYYY") }}
           </li>
         </ul>
       </div>
