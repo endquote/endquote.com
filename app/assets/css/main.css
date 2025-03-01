@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import "tailwindcss" theme(static);
 @import "@nuxt/ui";
 @plugin "@tailwindcss/typography";
 
@@ -6,8 +6,9 @@
   /* trigger to load fonts https://fonts.nuxt.com/ */
   font-family: "Titillium Web";
   /* https://tailwindcss.com/docs/font-family */
-  --font-sans: "Titillium Web", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-    "Segoe UI Symbol", "Noto Color Emoji";
+  --font-sans:
+    "Titillium Web", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    "Noto Color Emoji";
 
   --ui-text-inverted: var(--ui-color-primary-200);
 }

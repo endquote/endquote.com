@@ -28,7 +28,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "3.750.0",
+    "@aws-sdk/client-s3": "3.758.0",
     "@iconify-json/fa-regular": "1.2.1",
     "@iconify-json/fa6-brands": "1.2.5",
     "@iconify-json/heroicons": "1.2.2",
@@ -37,7 +37,7 @@
     "@nuxt/eslint": "1.1.0",
     "@nuxt/fonts": "0.10.3",
     "@nuxt/image": "1.9.0",
-    "@nuxt/ui": "3.0.0-alpha.13",
+    "@nuxt/ui": "3.0.0-beta.2",
     "@nuxtjs/robots": "5.2.4",
     "@nuxtjs/sitemap": "7.2.6",
     "@prisma/client": "6.4.1",
@@ -46,7 +46,7 @@
     "@trpc/client": "10.45.2",
     "@trpc/server": "10.45.2",
     "@vueuse/core": "12.7.0",
-    "axios": "1.7.9",
+    "axios": "1.8.1",
     "csv-parse": "5.6.0",
     "dotenv": "16.4.7",
     "feed": "4.2.2",
@@ -65,12 +65,12 @@
   },
   "devDependencies": {
     "@types/luxon": "3.4.2",
-    "@types/node": "22.13.5",
+    "@types/node": "22.13.7",
     "nuxi": "3.22.2",
     "prettier": "3.5.2",
     "prettier-plugin-tailwindcss": "0.6.11",
     "prisma": "6.4.1",
-    "typescript": "5.7.3"
+    "typescript": "5.8.2"
   },
   "prisma": {
     "seed": "tsx ./data/seed.ts"
