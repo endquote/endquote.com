@@ -32,6 +32,14 @@ export default defineNuxtConfig({
       markdown: {
         // https://content.nuxt.com/docs/getting-started/configuration#remarkplugins
         remarkPlugins: { "remark-smartypants": {} },
+        rehypePlugins: {
+          "rehype-external-links": {
+            test: (url: string) => {
+              console.log("Testing URL:", url);
+              return false;
+            },
+          },
+        },
       },
     },
   },
