@@ -91,23 +91,24 @@ const metaRight = "flex-shrink-0";
 
     <div :class="section">
       <div v-for="(role, i) in business" :key="role.stem" :class="grid">
-        <div :class="colsL" v-if="i < oldRoles">
+        <div v-if="i < oldRoles" :class="colsL">
           <template v-if="i === 0">
             <h2>Experience</h2>
           </template>
         </div>
-        <div :class="colsR" v-if="i < oldRoles && roles">
+        <div v-if="i < oldRoles && roles" :class="colsR">
           <h3 v-if="i === 0 || roles[i - 1]!.company !== role.company">{{ role.company }}</h3>
           <div :class="metaRow">
             <div :class="metaLeft">
               <NuxtLink v-if="(role.meta.projects as ProjectsCollectionItem[]).length" :to="role.stem">
-                <strong>{{ role.title }}</strong>
-              </NuxtLink><strong v-else>{{ role.title }}</strong>
+                <strong>{{ role.title }}</strong> </NuxtLink
+              ><strong v-else>{{ role.title }}</strong>
             </div>
             <div :class="metaRight">
               {{ role.location }}, {{ useDateFormat(role.date, "YYYY") }}-<template v-if="role.end">{{
                 useDateFormat(role.end, "YYYY")
-                }}</template><template v-else>present</template>
+              }}</template
+              ><template v-else>present</template>
             </div>
           </div>
 
@@ -118,18 +119,18 @@ const metaRight = "flex-shrink-0";
 
     <div :class="section">
       <div v-for="(role, i) in business" :key="role.stem" :class="grid">
-        <div :class="colsL" v-if="i >= oldRoles">
+        <div v-if="i >= oldRoles" :class="colsL">
           <template v-if="i === oldRoles">
             <h2>Additional Experience</h2>
           </template>
         </div>
-        <div :class="colsR" v-if="i >= oldRoles && roles">
+        <div v-if="i >= oldRoles && roles" :class="colsR">
           <h3 v-if="i === 0 || roles[i - 1]!.company !== role.company">{{ role.company }}</h3>
           <div :class="metaRow">
             <div :class="metaLeft">
               <NuxtLink v-if="(role.meta.projects as ProjectsCollectionItem[]).length" :to="role.stem">
-                <strong>{{ role.title }}</strong>
-              </NuxtLink><strong v-else>{{ role.title }}</strong>
+                <strong>{{ role.title }}</strong> </NuxtLink
+              ><strong v-else>{{ role.title }}</strong>
             </div>
             <div :class="metaRight">
               {{ role.location }}
@@ -190,7 +191,7 @@ const metaRight = "flex-shrink-0";
       </div>
       <div :class="colsR">
         <ul>
-          <li v-for="(award, i) in awards" :key="award.stem">
+          <li v-for="award in awards" :key="award.stem">
             <template v-if="award.link">
               <NuxtLink :to="award.link">{{ award.title }}</NuxtLink>
             </template>
@@ -200,7 +201,8 @@ const metaRight = "flex-shrink-0";
             - {{ award.company }},
             <NuxtLink :to="(award.meta.project as ProjectsCollectionItem).stem">{{
               (award.meta.project as ProjectsCollectionItem).title
-              }}</NuxtLink>, {{ useDateFormat(award.date, "YYYY") }}
+            }}</NuxtLink
+            >, {{ useDateFormat(award.date, "YYYY") }}
           </li>
         </ul>
       </div>

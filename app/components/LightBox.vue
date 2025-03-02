@@ -1,11 +1,8 @@
 <script setup lang="ts">
 import { onKeyStroke } from "@vueuse/core";
 import { ref } from "vue";
-import Image from "./Image.vue";
 
-const props = defineProps<{
-  images: string[];
-}>();
+const props = defineProps<{ images: string[] }>();
 
 const open = ref(false);
 const index = ref(0);
@@ -32,13 +29,13 @@ onKeyStroke("Escape", () => (open.value = false));
   <div v-if="images.length" class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
     <UModal v-model:open="open" fullscreen :close="false">
       <UButton
-        v-for="(image, index) in images"
+        v-for="(image, i) in images"
         :key="image"
         variant="ghost"
         class="p-0 hover:opacity-80"
-        @click="showImage(index)"
+        @click="showImage(i)"
       >
-        <Image
+        <SiteImage
           width="352"
           height="264"
           sizes="352px sm:272px md:219px lg:224px xl:288px 2xl:352px"
@@ -49,7 +46,7 @@ onKeyStroke("Escape", () => (open.value = false));
 
       <template #body>
         <div class="relative mx-auto flex h-full items-center">
-          <Image :src="images[index]" class="mx-auto my-auto h-full w-full rounded-lg object-contain" />
+          <SiteImage :src="images[index]" class="mx-auto my-auto h-full w-full rounded-lg object-contain" />
 
           <UButton icon="i-heroicons-x-mark" variant="solid" class="absolute top-4 right-4" @click="open = false" />
 

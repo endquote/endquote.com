@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import type { ProjectsCollectionItem } from "@nuxt/content";
 
-defineProps<{
-  projects?: ProjectsCollectionItem[] | null;
-}>();
+defineProps<{ projects?: ProjectsCollectionItem[] | null }>();
 </script>
 
 <template>

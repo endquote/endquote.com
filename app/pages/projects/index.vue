@@ -6,8 +6,10 @@ const { data: projects } = await useAsyncData(() => queryCollection("projects").
 </script>
 
 <template>
-  <div class="prose-custom">
-    <ContentRenderer v-if="page" :value="page" />
+  <div>
+    <div class="prose-custom">
+      <ContentRenderer v-if="page" :value="page" />
+    </div>
+    <ProjectGrid :projects="projects" />
   </div>
-  <ProjectGrid :projects="projects" />
 </template>

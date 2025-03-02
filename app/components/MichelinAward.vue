@@ -2,16 +2,16 @@
 import type { inferRouterOutputs } from "@trpc/server";
 import type { AppRouter } from "~~/server/api/trpc/[trpc]";
 
-type RouterOutput = inferRouterOutputs<AppRouter>
-type TripOutput = NonNullable<RouterOutput['trip']>
-type RestaurantOutput = TripOutput['checkins'][number]['venue']['restaurant']
+type RouterOutput = inferRouterOutputs<AppRouter>;
+type TripOutput = NonNullable<RouterOutput["trip"]>;
+type RestaurantOutput = TripOutput["checkins"][number]["venue"]["restaurant"];
 
-const props = defineProps<{ restaurant: RestaurantOutput | null }>();
-
+defineProps<{ restaurant: RestaurantOutput | null }>();
 </script>
 <template>
   <span v-if="restaurant && restaurant.award != 'selected'">
-    <span>&nbsp;
+    <span
+      >&nbsp;
       <NuxtLink :href="restaurant.url">
         <span v-if="restaurant.award == 'ONE_STAR'">
           <UIcon name="tabler:michelin-star" class="size-5" />

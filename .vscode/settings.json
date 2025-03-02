@@ -4,6 +4,9 @@
     "source.organizeImports": "explicit"
   },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[vue]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "file",
   "npm.packageManager": "npm",
