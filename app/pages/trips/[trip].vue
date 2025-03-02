@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useDateFormat } from "@vueuse/core";
+import FlightToFrom from "~/components/FlightToFrom.vue";
 
 // get page and 404 if not found
 const route = useRoute();
@@ -14,7 +15,7 @@ if (!page.value && !useDev()) {
 const date = route.params?.trip as string;
 
 const { $client } = useNuxtApp();
-const { data, error } = await useAsyncData(() => $client.trip.query({ date }));
+const { data } = await useAsyncData(() => $client.trip.query({ date }));
 
 const fmt = "YYYY-MM-DD";
 </script>
@@ -26,10 +27,10 @@ const fmt = "YYYY-MM-DD";
       <h2>Checkins</h2>
       <ul>
         <li v-for="checkin in data.checkins" :key="checkin.eqId">
-          {{ useDateFormat(checkin.date, fmt) }} - <NuxtLink :href="`https://foursquare.com/v/${checkin.venue.fsId}`">{{
-            checkin.venue.name }}</NuxtLink>
-          <Flight :airport="checkin.venue.airport" :flight="checkin.flight" />
-          <Michelin :restaurant="checkin.venue.restaurant" />
+          {{ useDateFormat(checkin.date, fmt) }} -
+          <NuxtLink :href="`https://foursquare.com/v/${checkin.venue.fsId}`">{{ checkin.venue.name }}</NuxtLink>
+          <FlightToFrom :airport="checkin.venue.airport" :flight="checkin.flight" />
+          <MichelinAward :restaurant="checkin.venue.restaurant" />
         </li>
       </ul>
     </div>

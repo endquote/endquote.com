@@ -192,7 +192,7 @@ export default cachedEventHandler(
         .order("date", "DESC")
         .first();
 
-      // @ts-ignore
+      // @ts-expect-error mtime is not in the type
       const mtime = val.mtime;
       const cached = new Date(mtime).toISOString();
       return lastDate.date > cached;

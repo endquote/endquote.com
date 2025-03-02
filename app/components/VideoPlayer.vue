@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import Hls from "hls.js";
 import { onMounted, ref, watch } from "vue";
-import Image from "./Image.vue";
 const img = useImage();
 
 const props = defineProps({
@@ -90,7 +89,7 @@ const posterLoaded = ref(false);
       class="h-auto w-full rounded-lg"
     />
     <div v-if="!playing" class="relative h-auto w-full" @click="playVideo">
-      <Image @load="posterLoaded = true" :src="poster" class="h-auto w-full rounded-lg" />
+      <SiteImage :src="poster" class="h-auto w-full rounded-lg" @load="posterLoaded = true" />
       <div
         class="invisible absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 drop-shadow-[0_0_4px_black]"
         :class="{ visible: posterLoaded }"

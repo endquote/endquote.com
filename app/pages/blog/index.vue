@@ -17,9 +17,13 @@ const { data: posts } = await useAsyncData(() => {
 <template>
   <div class="prose-custom">
     <ContentRenderer v-if="page" :value="page" />
-    <div v-for="post in posts" class="table-row w-full" :key="post.id"
-      :class="{ 'bg-amber-400': !post.robots || post.date > now }">
-      <div class="table-cell text-nowrap pr-7">{{ useDateFormat(post.date, "MMM D, YYYY") }}</div>
+    <div
+      v-for="post in posts"
+      :key="post.id"
+      class="table-row w-full"
+      :class="{ 'bg-amber-400': !post.robots || post.date > now }"
+    >
+      <div class="table-cell pr-7 text-nowrap">{{ useDateFormat(post.date, "MMM D, YYYY") }}</div>
       <div class="table-cell w-full">
         <a :href="post.path">
           <strong>{{ post.title }}</strong> - {{ post.subtitle }}

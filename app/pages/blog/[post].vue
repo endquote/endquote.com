@@ -23,8 +23,8 @@ useSiteHead(page.value, { image: page.value?.image });
 </script>
 
 <template>
-  <div class="prose-custom" v-if="page">
-    <div class="flex flex-col md:flex-row mb-2">
+  <div v-if="page" class="prose-custom">
+    <div class="mb-2 flex flex-col md:flex-row">
       <div class="flex-1">
         {{ useDateFormat(page.date, "MMM D, YYYY, h:mma") }}
       </div>
