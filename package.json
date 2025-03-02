@@ -65,7 +65,7 @@
   },
   "devDependencies": {
     "@types/luxon": "3.4.2",
-    "@types/node": "22.13.7",
+    "@types/node": "22.13.8",
     "nuxi": "3.22.2",
     "prettier": "3.5.2",
     "prettier-plugin-tailwindcss": "0.6.11",
