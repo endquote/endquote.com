@@ -57,7 +57,7 @@ export const appRouter = router({
             },
             orderBy: { date: "asc" },
           },
-          flights: { orderBy: { date: "asc" } },
+          flights: true,
         },
         orderBy: { start: "asc" },
         where: {

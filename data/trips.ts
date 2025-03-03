@@ -36,7 +36,7 @@ const main = async () => {
   checkinTrips = combineCheckinTrips(checkinTrips, allCheckins, homeAir);
   checkinTrips = extendCheckinTrips(checkinTrips, allCheckins, homeAir);
 
-  const allFlights = await db.flight.findMany({ orderBy: [{ date: "asc" }, { scheduledDeparture: "asc" }] });
+  const allFlights = await db.flight.findMany();
   const flightTrips = buildFlightTrips(allFlights, homeAir);
 
   const trips = buildTrips(checkinTrips, flightTrips);
