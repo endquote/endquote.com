@@ -1,3 +1,6 @@
+import type { Element } from "hast";
+import type { Options as RehypeExternalLinksOptions } from "rehype-external-links";
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: "2025-01-01",
@@ -32,12 +35,20 @@ export default defineNuxtConfig({
       markdown: {
         // https://content.nuxt.com/docs/getting-started/configuration#remarkplugins
         remarkPlugins: { "remark-smartypants": {} },
+        // https://content.nuxt.com/docs/getting-started/configuration#rehypeplugins
         rehypePlugins: {
           "rehype-external-links": {
-            test: (url: string) => {
-              console.log("Testing URL:", url);
-              return false;
-            },
+            options: {
+              test: (element: Element) => {
+                const href = element.properties?.href;
+                if (typeof href === "string" && href.startsWith("/source")) {
+                  // make shorter links to the source repo from content collections
+                  element.properties.href = href.replace("/source", "https://github.com/endquote/endquote.com/blob");
+                  return true;
+                }
+                return false;
+              },
+            } as RehypeExternalLinksOptions,
           },
         },
       },
