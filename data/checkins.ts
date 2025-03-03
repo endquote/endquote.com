@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 import dotenv from "dotenv";
 import { stdin as input, stdout as output } from "node:process";
 import readline from "readline/promises";
@@ -8,8 +8,7 @@ dotenv.config();
 
 const main = async () => {
   const token = await getToken();
-  const homes = await db.home.findMany();
-  await getCheckins(token, homes);
+  await getCheckins(token);
 };
 
 const getToken = async () => {
@@ -34,9 +33,8 @@ const getToken = async () => {
   process.exit(1);
 };
 
-const getCheckins = async (token: string, homes: Prisma.homeGetPayload<{}>[]): Promise<void> => {
+const getCheckins = async (token: string): Promise<void> => {
   let offset = 0;
-  let found = 0;
   const limit = 250;
 
   while (true) {
@@ -67,10 +65,6 @@ const getCheckins = async (token: string, homes: Prisma.homeGetPayload<{}>[]): P
         airport: airportCode ? airportCode : undefined,
       };
 
-      if (isAirport) {
-        const x = 1;
-      }
-
       const venue = await db.venue.upsert({
         where: { fsId: fsVenue.fsId },
         update: { ...fsVenue },
@@ -86,7 +80,6 @@ const getCheckins = async (token: string, homes: Prisma.homeGetPayload<{}>[]): P
             venue: { connect: { eqId: venue.eqId } },
           },
         });
-        found++;
       } catch (e: any) {
         if (e.code === "P2002" && e.meta?.target?.includes("fsId")) {
           // console.log(`Checkin with fsId ${item.id} already exists.`);
