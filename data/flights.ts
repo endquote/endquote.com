@@ -1,5 +1,5 @@
 import { GetObjectCommand } from "@aws-sdk/client-s3";
-import { Prisma } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 import { parse } from "csv-parse/sync";
 import { config } from "dotenv";
 import { DateTime } from "luxon";

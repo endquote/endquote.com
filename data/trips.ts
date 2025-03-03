@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 import { db, haversine } from "./shared";
 // trips break if there's this much time between checkins (ms)
 const maxTime = 48 * 60 * 60 * 1000;
@@ -159,6 +159,7 @@ const buildFlightTrips = (allFlights: Flight[], homeAir: HomeAir[]): Flight[][] 
 
     if (firstFlight.fromAirport === home.code) {
       const trip = [firstFlight];
+
       for (let j = i + 1; j < allFlights.length; j++) {
         const nextFlight = allFlights[j];
         if (nextFlight.fromAirport === home.code) {
@@ -299,6 +300,7 @@ const findClosestFlight = (flights: Flight[], date: Date, checkStart: boolean): 
       closestFlight = flight;
     }
   }
+
   const maxDiff = 12 * 60 * 60 * 1000;
   if (smallestDiff > maxDiff) {
     return null;
