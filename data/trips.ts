@@ -299,6 +299,10 @@ const findClosestFlight = (flights: Flight[], date: Date, checkStart: boolean): 
       closestFlight = flight;
     }
   }
+  const maxDiff = 12 * 60 * 60 * 1000;
+  if (smallestDiff > maxDiff) {
+    return null;
+  }
 
   return closestFlight;
 };
