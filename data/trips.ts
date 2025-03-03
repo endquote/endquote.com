@@ -1,5 +1,5 @@
 import { Prisma } from "@prisma/client";
-import { db, haversine, saveString } from "./shared";
+import { db, haversine } from "./shared";
 // trips break if there's this much time between checkins (ms)
 const maxTime = 48 * 60 * 60 * 1000;
 // trips break if there's this much distance between checkins (km)
@@ -231,30 +231,9 @@ const buildTrips = (checkinTrips: Checkin[][], flightTrips: Flight[][]): Trip[] 
 };
 
 const saveTrips = async (trips: Trip[]) => {
-  const formatDate = (date: Date) => date.toISOString();
-
   await db.trip.deleteMany();
 
-  const debug = [];
   for (const trip of trips) {
-    // write out the trips to a file for debugging
-    debug.push({
-      start: formatDate(trip.start),
-      end: formatDate(trip.end),
-      checkins: trip.checkins.map((c) => ({
-        eqId: c.eqId,
-        date: formatDate(c.date),
-        venue: c.venue.name,
-        city: c.venue.city,
-      })),
-      flights: trip.flights.map((f) => ({
-        eqId: f.eqId,
-        start: formatDate(flightStart(f)),
-        from: f.fromAirport,
-        to: f.toAirport,
-      })),
-    });
-
     // save the trip
     await db.trip.create({
       data: {
@@ -265,8 +244,6 @@ const saveTrips = async (trips: Trip[]) => {
       },
     });
   }
-
-  await saveString(JSON.stringify(debug, null, 2), "trips.json");
 
   // remove flights from all checkins
   await db.checkin.updateMany({ data: { flightId: null } });
