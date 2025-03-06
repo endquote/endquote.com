@@ -12,6 +12,7 @@ export default defineNuxtConfig({
     "@nuxtjs/robots",
     "@nuxtjs/sitemap",
     "@nuxt/content",
+    "nuxt-llms",
     "@prisma/nuxt",
   ],
   build: {
@@ -67,6 +68,12 @@ export default defineNuxtConfig({
   prisma: {
     // https://www.prisma.io/docs/orm/more/help-and-troubleshooting/prisma-nuxt-module#configuration
     runMigration: false,
+  },
+  llms: {
+    // https://content.nuxt.com/docs/advanced/llms#llms-integration
+    domain: "https://endquote.com",
+    title: "endquote",
+    description: "Josh Santangelo's personal site",
   },
   css: ["~/assets/css/main.css"],
   devtools: { enabled: true, disableAuthorization: true },
