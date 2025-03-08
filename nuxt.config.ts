@@ -74,6 +74,7 @@ export default defineNuxtConfig({
     domain: "https://endquote.com",
     title: "endquote",
     description: "Josh Santangelo's personal site",
+    full: { title: "endquote", description: "Josh Santangelo's personal site" },
   },
   css: ["~/assets/css/main.css"],
   devtools: { enabled: true, disableAuthorization: true },
