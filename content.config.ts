@@ -25,7 +25,7 @@ export const collections = {
   }),
   blog: commonCollection({
     type: "page",
-    source: "./blog/**/*.md",
+    source: "blog/**/*.md",
     schema: z.object({
       ...commonSchema,
       subtitle: z.string(),
@@ -35,7 +35,7 @@ export const collections = {
   }),
   projects: commonCollection({
     type: "page",
-    source: "./projects/**/*.md",
+    source: "projects/**/*.md",
     schema: z.object({
       ...commonSchema,
       subtitle: z.string().optional(),
@@ -54,7 +54,7 @@ export const collections = {
   }),
   roles: commonCollection({
     type: "page",
-    source: "./roles/**/*.md",
+    source: "roles/**/*.md",
     schema: z.object({
       ...commonSchema,
       company: z.string(),
@@ -66,7 +66,7 @@ export const collections = {
   }),
   honors: defineCollection({
     type: "page",
-    source: "./honors/**/*.md",
+    source: "honors/**/*.md",
     schema: z.object({
       ...commonSchema,
       role: z.string(),
@@ -75,7 +75,7 @@ export const collections = {
   }),
   awards: defineCollection({
     type: "data",
-    source: "./awards/**/*.yaml",
+    source: "awards/**/*.yaml",
     schema: z.object({
       ...commonSchema,
       company: z.string(),
@@ -85,7 +85,7 @@ export const collections = {
   }),
   trips: commonCollection({
     type: "page",
-    source: "./trips/**/*.md",
+    source: "trips/**/*.md",
     schema: z.object({
       ...commonSchema,
     }),

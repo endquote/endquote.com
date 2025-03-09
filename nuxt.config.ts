@@ -12,6 +12,7 @@ export default defineNuxtConfig({
     "@nuxtjs/robots",
     "@nuxtjs/sitemap",
     "@nuxt/content",
+    "nuxt-llms",
     "@prisma/nuxt",
   ],
   build: {
@@ -31,7 +32,19 @@ export default defineNuxtConfig({
     build: {
       markdown: {
         // https://content.nuxt.com/docs/getting-started/configuration#remarkplugins
-        remarkPlugins: { "remark-smartypants": {} },
+        remarkPlugins: {
+          "remark-smartypants": {},
+          "remark-link-rewrite": {
+            options: {
+              replacer: (url: string) => {
+                if (url.startsWith("/source")) {
+                  return url.replace("/source", "https://github.com/endquote/endquote.com/blob");
+                }
+                return url;
+              },
+            },
+          },
+        },
       },
     },
   },
@@ -55,6 +68,13 @@ export default defineNuxtConfig({
   prisma: {
     // https://www.prisma.io/docs/orm/more/help-and-troubleshooting/prisma-nuxt-module#configuration
     runMigration: false,
+  },
+  llms: {
+    // https://content.nuxt.com/docs/advanced/llms#llms-integration
+    domain: "https://endquote.com",
+    title: "endquote",
+    description: "Josh Santangelo's personal site",
+    full: { title: "endquote", description: "Josh Santangelo's personal site" },
   },
   css: ["~/assets/css/main.css"],
   devtools: { enabled: true, disableAuthorization: true },
