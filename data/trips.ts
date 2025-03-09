@@ -157,6 +157,11 @@ const buildFlightTrips = (allFlights: Flight[], homeAir: HomeAir[]): Flight[][] 
         flightEnd(firstFlight).getTime() <= h.home.end.getTime(),
     );
 
+    if (!home) {
+      // this happens on the one flight from one home to another
+      continue;
+    }
+
     if (firstFlight.fromAirport === home.code) {
       const trip = [firstFlight];
 
@@ -313,22 +318,14 @@ const flightStart = (flight: Flight): Date | null => {
   if (!flight) {
     return null;
   }
-  return (
-    flight.actualTakeoff ||
-    flight.actualDeparture ||
-    flight.scheduledTakeoff ||
-    flight.scheduledDeparture ||
-    flight.date
-  );
+  return flight.actualDeparture || flight.scheduledDeparture || flight.date;
 };
 
 const flightEnd = (flight: Flight): Date | null => {
   if (!flight) {
     return null;
   }
-  return (
-    flight.actualLanding || flight.actualArrival || flight.scheduledLanding || flight.scheduledArrival || flight.date
-  );
+  return flight.actualArrival || flight.scheduledArrival || flight.date;
 };
 
 if (import.meta.url === `file://${process.argv[1]}`) {
