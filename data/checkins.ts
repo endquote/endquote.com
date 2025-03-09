@@ -89,13 +89,13 @@ const getCheckins = async (token: string): Promise<void> => {
           throw e;
         }
       }
-
-      offset++;
     }
 
     if (done) {
       break;
     }
+
+    offset += items.length;
   }
 };
 
