@@ -63,6 +63,7 @@ export const appRouter = router({
         where: {
           start: {
             gte: new Date(input.date + "T00:00:00.000Z"),
+            lt: new Date(input.date + "T24:00:00.000Z"),
           },
         },
       });
