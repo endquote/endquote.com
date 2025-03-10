@@ -48,7 +48,13 @@ const getCheckins = async (token: string): Promise<void> => {
 
     for (const item of items) {
       const isAirport = item.venue.categories.some((c: any) => c.name.includes("Airport"));
-      const airportCode = isAirport ? item.venue.name.match(/\(([A-Z]{3})\)/)?.[1] : undefined;
+      let airportCode = isAirport ? item.venue.name.match(/\(([A-Z]{3})\)/)?.[1] : undefined;
+
+      // cheating on one because i checked in to the terminal, not the airport
+      if (isAirport && item.venue.name.includes("Ninoy") && !airportCode) {
+        airportCode = "MNL";
+      }
+
       const fsVenue: Prisma.venueCreateInput = {
         fsId: item.venue.id,
         name: item.venue.name,
