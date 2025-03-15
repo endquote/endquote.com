@@ -5,9 +5,7 @@ const isDev = useDev();
 
 // get page and 404 if not found
 const route = useRoute();
-const { data: page, refresh: refreshPage } = await useAsyncData(() =>
-  queryCollection("trips").path(route.path).first(),
-);
+const { data: page } = await useAsyncData(() => queryCollection("trips").path(route.path).first());
 useSiteHead(page.value);
 
 if (!page.value && !isDev) {
@@ -19,37 +17,10 @@ const date = page.value!.date;
 
 const { $client } = useNuxtApp();
 const { data } = await useAsyncData(() => $client.trip.query({ date }));
-
-// Simple handlers for dev mode
-async function createTrip() {
-  if (!isDev) return;
-  try {
-    await $fetch("/api/trip", { method: "POST", body: { date } });
-    await refreshPage();
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-async function deleteTrip() {
-  if (!isDev) return;
-  try {
-    console.log("Deleting trip file...");
-    await $fetch(`/api/trip?date=${date}`, { method: "DELETE" });
-    await refreshPage();
-  } catch (error) {
-    console.error(error);
-  }
-}
 </script>
 
 <template>
   <div class="prose-custom">
-    <div v-if="isDev">
-      <UButton v-if="page" @click="deleteTrip">delete</UButton>
-      <UButton v-if="!page" @click="createTrip">create</UButton>
-    </div>
-
     <ContentRenderer v-if="page" :value="page" />
     <div v-if="data && data.checkins.length">
       <h2>Checkins</h2>
