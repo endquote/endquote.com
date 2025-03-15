@@ -28,7 +28,7 @@ const trips = tripData.value?.map((data) => {
         <span v-if="trip.page">✅</span>
         <span v-else>❌</span>&nbsp;
       </span>
-      <NuxtLink :href="`/trips/${trip.start}`"
+      <NuxtLink :href="trip.page?.path"
         >{{ trip.start }} - {{ trip.end }} - {{ trip.data.flights.map((f) => f.toAirport).join(", ") }}</NuxtLink
       >
     </p>

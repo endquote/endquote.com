@@ -15,7 +15,7 @@ if (!page.value && !isDev) {
 }
 
 // merge with trip data
-const date = route.params?.trip as string;
+const date = page.value!.date;
 
 const { $client } = useNuxtApp();
 const { data } = await useAsyncData(() => $client.trip.query({ date }));
