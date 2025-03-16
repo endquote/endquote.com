@@ -1,7 +1,8 @@
 ---
-date: 2017-01-21
+date: 2017-01-21T00:00:00Z
+posted: 2025-03-16T22:00:00Z
 ---
 
-# Inst-Int
+# INST-INT
 
-[inst-int](https://inst-int.com/)
+Visited New Orleans for the first time to attend what turned out to be the final [INST-INT](https://inst-int.com/) conference which brings together creators of large scale and immersive experiences. I remember being awkward and not really talking to anyone, so nothing's changed there.
