@@ -1,23 +1,19 @@
 <script setup lang="ts">
-import { useDateFormat } from "@vueuse/core";
 import FlightToFrom from "~/components/FlightToFrom.vue";
 
-// get page and 404 if not found
+const isDev = useDev();
 const route = useRoute();
 const { data: page } = await useAsyncData(() => queryCollection("trips").path(route.path).first());
-useSiteHead(page.value);
+const date = page.value ? page.value.date.split("T")[0] : (route.params.trip as string);
 
-if (!page.value && !useDev()) {
+if ((!page.value && !isDev) || !date) {
   throw createError({ statusCode: 404 });
 }
-
-// merge with trip data
-const date = route.params?.trip as string;
 
 const { $client } = useNuxtApp();
 const { data } = await useAsyncData(() => $client.trip.query({ date }));
 
-const fmt = "YYYY-MM-DD";
+useSiteHead(page.value);
 </script>
 
 <template>
@@ -27,7 +23,7 @@ const fmt = "YYYY-MM-DD";
       <h2>Checkins</h2>
       <ul>
         <li v-for="checkin in data.checkins" :key="checkin.eqId">
-          {{ useDateFormat(checkin.date, fmt) }} -
+          {{ checkin.date.split("T")[0]! }} -
           <NuxtLink :href="`https://foursquare.com/v/${checkin.venue.fsId}`">{{ checkin.venue.name }}</NuxtLink>
           <FlightToFrom :airport="checkin.venue.airport" :flight="checkin.flight" />
           <MichelinAward :restaurant="checkin.venue.restaurant" />
@@ -38,7 +34,7 @@ const fmt = "YYYY-MM-DD";
       <h2>Flights</h2>
       <ul>
         <li v-for="flight in data?.flights" :key="flight.eqId" :class="{ 'line-through': flight.canceled }">
-          {{ useDateFormat(flight.date, fmt) }} - {{ flight.fromAirport }}-{{ flight.toAirport }}
+          {{ flight.date.split("T")[0]! }} - {{ flight.fromAirport }}-{{ flight.toAirport }}
         </li>
       </ul>
     </div>

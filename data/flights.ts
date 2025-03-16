@@ -10,6 +10,7 @@ config();
 const main = async () => {
   const tzMap = await getTzMap();
   const flightRows = await getFlightRows();
+  await db.flight.deleteMany();
   for (const row of flightRows) {
     const flight = parseFlight(row, tzMap);
     await db.flight.upsert({
