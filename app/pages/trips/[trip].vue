@@ -2,21 +2,18 @@
 import FlightToFrom from "~/components/FlightToFrom.vue";
 
 const isDev = useDev();
-
-// get page and 404 if not found
 const route = useRoute();
 const { data: page } = await useAsyncData(() => queryCollection("trips").path(route.path).first());
-useSiteHead(page.value);
+const date = page.value ? page.value.date.split("T")[0] : (route.params.trip as string);
 
-if (!page.value && !isDev) {
+if ((!page.value && !isDev) || !date) {
   throw createError({ statusCode: 404 });
 }
 
-// merge with trip data
-const date = page.value!.date;
-
 const { $client } = useNuxtApp();
 const { data } = await useAsyncData(() => $client.trip.query({ date }));
+
+useSiteHead(page.value);
 </script>
 
 <template>
