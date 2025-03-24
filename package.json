@@ -43,7 +43,7 @@
     "@prisma/client": "6.5.0",
     "@prisma/nuxt": "0.3.0",
     "@tailwindcss/typography": "0.5.16",
-    "@trpc/client": "10.45.2",
+    "@trpc/client": "11.0.0",
     "@trpc/server": "10.45.2",
     "@vueuse/core": "13.0.0",
     "axios": "1.8.4",
