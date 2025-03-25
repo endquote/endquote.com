@@ -28,7 +28,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "3.758.0",
+    "@aws-sdk/client-s3": "3.774.0",
     "@iconify-json/fa-regular": "1.2.1",
     "@iconify-json/fa6-brands": "1.2.5",
     "@iconify-json/heroicons": "1.2.2",
@@ -37,7 +37,7 @@
     "@nuxt/eslint": "1.2.0",
     "@nuxt/fonts": "0.11.0",
     "@nuxt/image": "1.10.0",
-    "@nuxt/ui": "3.0.0",
+    "@nuxt/ui": "3.0.1",
     "@nuxtjs/robots": "5.2.8",
     "@nuxtjs/sitemap": "7.2.9",
     "@prisma/client": "6.5.0",
@@ -54,7 +54,7 @@
     "hls.js": "1.5.20",
     "luxon": "3.5.0",
     "nuxt": "3.16.1",
-    "nuxt-llms": "0.1.0",
+    "nuxt-llms": "0.1.1",
     "prisma": "6.5.0",
     "rehype-sanitize": "6.0.0",
     "rehype-stringify": "10.0.1",
@@ -67,7 +67,7 @@
   },
   "devDependencies": {
     "@types/luxon": "3.4.2",
-    "@types/node": "22.13.10",
+    "@types/node": "22.13.13",
     "nuxi": "3.23.1",
     "prettier": "3.5.3",
     "prettier-plugin-tailwindcss": "0.6.11",
