@@ -72,7 +72,7 @@ export const appRouter = router({
     let where = {} satisfies Prisma.tripWhereInput;
     if (!useDev()) {
       const pages = await queryCollection(useEvent(), "trips").select("date").all();
-      const pageDates = pages.map((page) => page.date);
+      const pageDates = pages.map((page) => page.date.split("T")[0]);
       where = {
         OR: pageDates.map((date) => ({
           start: {
@@ -102,7 +102,7 @@ export const appRouter = router({
     .query(async ({ input }) => {
       // only return trips that have an associated page
       if (!useDev()) {
-        const page = await queryCollection(useEvent(), "trips").where("date", "=", input.date).first();
+        const page = await queryCollection(useEvent(), "trips").where("date", "LIKE", `${input.date}%`).first();
         if (!page) {
           return null;
         }

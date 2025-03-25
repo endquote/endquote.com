@@ -18,13 +18,15 @@ const trips = tripData.value?.map((data) => {
   const page = pages.value?.find((p) => p.date >= start && p.date <= end);
   return { data, page, start, end };
 });
+
+const isDev = useDev();
 </script>
 
 <template>
   <div class="prose-custom">
     <ContentRenderer v-if="page" :value="page" />
     <p v-for="trip in trips" :key="trip.data.eqId">
-      <span>
+      <span v-if="isDev">
         <span v-if="trip.page">✅</span>
         <span v-else>❌</span>&nbsp;
       </span>
