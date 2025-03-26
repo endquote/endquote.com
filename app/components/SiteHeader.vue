@@ -3,7 +3,7 @@ const route = useRoute();
 
 const items = computed(() => [
   { label: "About", to: "/about", active: route.path.startsWith("/about") },
-  { label: "Blog", to: "/blog", active: route.path.startsWith("/blog") },
+  // { label: "Blog", to: "/blog", active: route.path.startsWith("/blog") },
   { label: "Projects", to: "/projects", active: route.path.startsWith("/projects") },
 ]);
 </script>
