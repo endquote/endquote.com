@@ -83,7 +83,10 @@ export default defineNuxtConfig({
     "/roles": { redirect: "/about" },
     "/stats/**": { proxy: "https://stats.endquote.com/**" },
     "/do/**": { proxy: "https://endquote.objects-us-east-1.dream.io/**" },
+
+    // sort of hide WIP features
     "/trips/**": { robots: false },
+    "/blog/**": { robots: false },
   },
   runtimeConfig: {
     // https://nuxt.com/docs/guide/going-further/runtime-config#environment-variables
