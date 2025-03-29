@@ -1,3 +1,9 @@
 <template>
-  <NuxtImg format="webp" loading="lazy" />
+  <NuxtPicture
+    format="webp"
+    loading="lazy"
+    :img-attrs="{
+      class: $attrs.class,
+    }"
+  />
 </template>

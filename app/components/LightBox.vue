@@ -46,7 +46,10 @@ onKeyStroke("Escape", () => (open.value = false));
 
       <template #body>
         <div class="relative mx-auto flex h-full items-center">
-          <SiteImage :src="images[index]" class="mx-auto my-auto h-full w-full rounded-lg object-contain" />
+          <SiteImage
+            :src="images[index]"
+            class="mx-auto my-auto h-full max-h-max w-full max-w-max rounded-lg object-contain"
+          />
 
           <UButton icon="i-heroicons-x-mark" variant="solid" class="absolute top-4 right-4" @click="open = false" />
 
