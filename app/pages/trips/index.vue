@@ -5,8 +5,8 @@ const { data: page } = await useAsyncData(() => queryCollection("content").path(
 useSiteHead(page.value);
 
 // get trip data
-const { $client } = useNuxtApp();
-const { data: tripData } = await useAsyncData(() => $client.trips.query());
+const { $trpc } = useNuxtApp();
+const { data: tripData } = await useAsyncData(() => $trpc.trips.trips.query());
 
 // get trip pages
 const { data: pages } = await useAsyncData(() => queryCollection("trips").all());
@@ -30,7 +30,7 @@ const isDev = useDev();
         <span v-if="trip.page">✅</span>
         <span v-else>❌</span>&nbsp;
       </span>
-      <NuxtLink :href="trip.page?.path || `trips/${trip.start}`"
+      <NuxtLink :href="trip.page?.path || trip.start"
         >{{ trip.start }} - {{ trip.end
         }}<span v-if="trip.data.flights.length"> - {{ trip.data.flights.map((f) => f.toAirport).join(", ") }}</span
         ><span v-if="trip.page"> - {{ trip.page.title }}</span></NuxtLink

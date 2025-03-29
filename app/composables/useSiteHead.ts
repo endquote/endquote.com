@@ -6,7 +6,7 @@ interface HeadProps {
   image?: string;
 }
 
-export default function (content?: ContentCollectionItem | undefined, props?: HeadProps) {
+export default function (content?: ContentCollectionItem | null | undefined, props?: HeadProps) {
   // tracking
   if (!useDev()) {
     const umami = "bf393154-3d37-487c-8e86-d011b69fa26a";

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import FlightToFrom from "~/components/FlightToFrom.vue";
+const { $trpc } = useNuxtApp();
 
 const isDev = useDev();
 const route = useRoute();
@@ -10,8 +11,7 @@ if ((!page.value && !isDev) || !date) {
   throw createError({ statusCode: 404 });
 }
 
-const { $client } = useNuxtApp();
-const { data } = await useAsyncData(() => $client.trip.query({ date }));
+const { data } = await useAsyncData(() => $trpc.trips.trip.query({ date }));
 
 useSiteHead(page.value);
 </script>
