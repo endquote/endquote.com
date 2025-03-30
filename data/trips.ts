@@ -1,12 +1,10 @@
 import type { Prisma } from "@prisma/client";
+import { HOME_DISTANCE } from "../app/utils/constants";
 import { db, haversine } from "./shared";
 // trips break if there's this much time between checkins (ms)
 const maxTime = 48 * 60 * 60 * 1000;
 // trips break if there's this much distance between checkins (km)
 const tripDist = 40;
-// checkins within this distance of home are considered home (km)
-const homeDist = 120; // about 75mi
-
 type Checkin = Prisma.checkinGetPayload<{ include: { venue: true } }>;
 type Flight = Prisma.flightGetPayload<{}>;
 type HomeAir = { venue: Prisma.venueGetPayload<{}>; home: Prisma.homeGetPayload<{}>; code: string };
@@ -21,7 +19,7 @@ const main = async () => {
   // just the ones that are not at home
   const tripCheckins = allCheckins.filter((c) =>
     homes.some(
-      (h) => c.date >= h.start && c.date <= h.end && haversine(h.lat, h.lng, c.venue.lat, c.venue.lng) > homeDist,
+      (h) => c.date >= h.start && c.date <= h.end && haversine(h.lat, h.lng, c.venue.lat, c.venue.lng) > HOME_DISTANCE,
     ),
   );
 

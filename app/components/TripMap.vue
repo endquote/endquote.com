@@ -1,26 +1,27 @@
 <script setup lang="ts">
 import { useMap } from "@indoorequal/vue-maplibre-gl";
 import type { inferRouterOutputs } from "@trpc/server";
-import type { LngLatBoundsLike } from "maplibre-gl";
+import type { LngLatBoundsLike, LngLatLike } from "maplibre-gl";
 import type { AppRouter } from "~~/server/trpc/routers";
 
-/*
+import { HOMES, HOME_DISTANCE } from "~/utils/constants";
+import { haversine } from "~/utils/math";
 
+/*
 - use 4sq icons for markers
 - marker popups
 - visualize flights
 - proxy tile requests
-
 */
 
+// props setup
 type RouterOutput = inferRouterOutputs<AppRouter>;
 type TripOutput = NonNullable<RouterOutput["trips"]["trip"]>;
-
 const props = defineProps<{ trip: TripOutput | undefined | null }>();
 
+// map setup
 const maptilerKey = useRuntimeConfig().public.maptilerKey;
 const style = `https://api.maptiler.com/maps/streets/style.json?key=${maptilerKey}`;
-
 const mapKey = `trip-${props.trip?.eqId}`;
 const map = useMap(mapKey);
 
@@ -41,18 +42,30 @@ const filteredTrip = computed(() => {
 
 // compute map bounds based on the filtered checkins list
 const bounds = computed<LngLatBoundsLike | undefined>(() => {
-  if (!filteredTrip.value?.checkins?.length) return undefined;
+  let checkins = filteredTrip.value?.checkins;
 
-  const firstCheckin = filteredTrip.value.checkins[0]!;
-  const sw = [firstCheckin.venue.lng, firstCheckin.venue.lat];
-  const ne = [firstCheckin.venue.lng, firstCheckin.venue.lat];
+  if (!checkins?.length) return undefined;
 
-  filteredTrip.value.checkins.forEach((checkin) => {
+  // ignore anything close to home
+  checkins = checkins.filter((c) =>
+    HOMES.some(
+      (h) =>
+        new Date(c.date) >= h.start &&
+        new Date(c.date) <= h.end &&
+        haversine(h.lat, h.lng, c.venue.lat, c.venue.lng) > HOME_DISTANCE,
+    ),
+  );
+
+  const firstCheckin = checkins[0]!;
+  const sw: LngLatLike = [firstCheckin.venue.lng, firstCheckin.venue.lat];
+  const ne: LngLatLike = [firstCheckin.venue.lng, firstCheckin.venue.lat];
+
+  checkins.forEach((checkin) => {
     const { lng, lat } = checkin.venue;
-    sw[0] = Math.min(sw[0] as number, lng);
-    sw[1] = Math.min(sw[1] as number, lat);
-    ne[0] = Math.max(ne[0] as number, lng);
-    ne[1] = Math.max(ne[1] as number, lat);
+    sw[0] = Math.min(sw[0], lng);
+    sw[1] = Math.min(sw[1], lat);
+    ne[0] = Math.max(ne[0], lng);
+    ne[1] = Math.max(ne[1], lat);
   });
 
   return [sw, ne] as LngLatBoundsLike;
@@ -63,7 +76,7 @@ watch(
   [() => map.isLoaded, () => bounds.value],
   ([isLoaded, currentBounds]) => {
     if (isLoaded && currentBounds && map.map) {
-      map.map.fitBounds(currentBounds, { padding: 50, maxZoom: 15 });
+      map.map.fitBounds(currentBounds, { padding: 50, maxZoom: 15, duration: 0 });
     }
   },
   { immediate: true },
