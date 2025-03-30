@@ -30,12 +30,12 @@ export default cachedEventHandler(
     const hostname = useRuntimeConfig(event).public.hostname;
 
     // get the date of the most recent post
-    const lastDate = await queryCollection(event, collection)
+    const lastDate = (await queryCollection(event, collection)
       .select("date")
       .where("robots", "=", true)
       .where("date", "<", now)
       .order("date", "DESC")
-      .first();
+      .first()) || { date: now };
 
     // get posts going three months back
     const firstDate = new Date(lastDate.date);
@@ -185,12 +185,12 @@ export default cachedEventHandler(
       }
 
       const now = new Date().toISOString();
-      const lastDate = await queryCollection(event, collection)
+      const lastDate = (await queryCollection(event, collection)
         .select("date")
         .where("robots", "=", true)
         .where("date", "<", now)
         .order("date", "DESC")
-        .first();
+        .first()) || { date: now };
 
       // @ts-expect-error mtime is not in the type
       const mtime = val.mtime;
