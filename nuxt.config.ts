@@ -90,7 +90,9 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     // https://nuxt.com/docs/guide/going-further/runtime-config#environment-variables
-    hostname: "localhost",
+    public: {
+      hostname: "localhost",
+    },
     s3: {
       region: "",
       bucket: "",
