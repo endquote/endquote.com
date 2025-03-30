@@ -14,8 +14,6 @@ if ((!page.value && !isDev) || !date) {
 const { data } = await useAsyncData(() => $trpc.trips.trip.query({ date }));
 
 useSiteHead(page.value);
-
-const { data: images } = await useAsyncData(() => $trpc.s3.listFiles.query({ path: `trips/${date}/` }));
 </script>
 
 <template>
@@ -40,10 +38,10 @@ const { data: images } = await useAsyncData(() => $trpc.s3.listFiles.query({ pat
         </li>
       </ul>
     </div>
-    <div v-if="images?.files.length">
+    <div v-if="data && data.images.length">
       <h2>Images</h2>
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <div v-for="image in images.files" :key="image.key">
+        <div v-for="image in data.images" :key="image.key">
           <SiteImage :src="`/do/${image.key}`" />
         </div>
       </div>

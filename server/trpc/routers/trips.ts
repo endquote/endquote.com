@@ -3,6 +3,7 @@ import { z } from "zod";
 import useDev from "~/composables/useDev";
 import prisma from "~~/lib/prisma";
 import { baseProcedure, createTRPCRouter } from "~~/server/trpc/init";
+import { s3Router } from "~~/server/trpc/routers/s3";
 
 // use the same select query for both trips queries
 const tripSelect = {
@@ -54,6 +55,7 @@ const processTrip = (trip: Prisma.tripGetPayload<{ select: typeof tripSelect }>)
   return {
     ...trip,
     flights: trip.flights.map((flight) => ({
+      // removing some fields that wouldn't be useful in the client
       eqId: flight.eqId,
       canceled: flight.canceled,
       fromAirport: flight.fromAirport,
@@ -122,7 +124,12 @@ export const tripsRouter = createTRPCRouter({
         return null;
       }
 
-      return processTrip(trip);
+      // get any associated images
+      // console.time("s3-listFiles-operation");
+      const images = await s3Router.createCaller({}).listFiles({ path: `trips/${input.date}/` });
+      // console.timeEnd("s3-listFiles-operation");
+
+      return { ...processTrip(trip), images: images.files };
     }),
 });
 
