@@ -114,6 +114,21 @@ export default cachedEventHandler(
             const url = new URL(node.url, `${base}${post.path}`).toString();
             node.url = url;
           });
+
+          // convert MDC image component to an image tag
+          visit(tree, "text", (node) => {
+            const match = node.value.match(/::blog-image\{src="([^"]+)"\}\n::/);
+            if (match) {
+              const src = match[1];
+              Object.assign(node, {
+                type: "image",
+                url: `${base}/_ipx/f_webp${src}`,
+                alt: "",
+                title: null,
+                value: undefined,
+              });
+            }
+          });
         })
 
         // make nice typography
