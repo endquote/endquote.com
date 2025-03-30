@@ -27,7 +27,7 @@ export default cachedEventHandler(
     }
 
     const now = new Date().toISOString();
-    const hostname = useRuntimeConfig(event).public.hostname;
+    const hostname = useRuntimeConfig(event).hostname;
 
     // get the date of the most recent post
     const lastDate = (await queryCollection(event, collection)
