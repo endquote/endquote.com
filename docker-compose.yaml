@@ -8,7 +8,7 @@ services:
       dockerfile: Dockerfile
       args:
         - DATABASE_URL=${DATABASE_URL}
-        - NUXT_HOSTNAME=${NUXT_HOSTNAME}
+        - NUXT_PUBLIC_HOSTNAME=${HOSTNAME}
     healthcheck:
       test: ["CMD", "wget", "--spider", "http://localhost:3000"]
       interval: 30s
