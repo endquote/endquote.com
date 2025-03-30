@@ -38,5 +38,13 @@ useSiteHead(page.value);
         </li>
       </ul>
     </div>
+    <div v-if="data && data.images.length">
+      <h2>Images</h2>
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div v-for="image in data.images" :key="image.key">
+          <SiteImage :src="`/do/${image.key}`" />
+        </div>
+      </div>
+    </div>
   </div>
 </template>

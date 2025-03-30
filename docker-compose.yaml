@@ -8,7 +8,7 @@ services:
       dockerfile: Dockerfile
       args:
         - DATABASE_URL=${DATABASE_URL}
-        - NUXT_PUBLIC_HOSTNAME=${NUXT_PUBLIC_HOSTNAME}
+        - NUXT_HOSTNAME=${NUXT_HOSTNAME}
     healthcheck:
       test: ["CMD", "wget", "--spider", "http://localhost:3000"]
       interval: 30s
@@ -20,6 +20,11 @@ services:
     #   - "5555:5555"
     environment:
       - DATABASE_URL=${DATABASE_URL}
+      - NUXT_S3_REGION=${S3_REGION}
+      - NUXT_S3_BUCKET=endquote
+      - NUXT_S3_TOKEN=${S3_TOKEN}
+      - NUXT_S3_SECRET=${S3_SECRET}
+      - NUXT_S3_ENDPOINT=${S3_ENDPOINT}
 
   # redirects from www.endquote.com to endquote.com
   front-redirect:
