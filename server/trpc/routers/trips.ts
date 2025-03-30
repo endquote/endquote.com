@@ -28,6 +28,7 @@ const tripSelect = {
           airport: true,
           lat: true,
           lng: true,
+          city: true,
           restaurant: {
             select: {
               award: true,

@@ -31,11 +31,14 @@ const filteredTrip = computed(() => {
   if (!trip) return null;
   const copy = { ...trip, checkins: [...trip.checkins], flights: [...trip.flights] };
 
-  // remove consecutive duplicate checkins
-  copy.checkins = copy.checkins.filter((checkin, index, array) => {
-    if (index === 0) return true;
-    return checkin.venue.fsId !== array[index - 1]!.venue.fsId;
-  });
+  copy.checkins = copy.checkins
+    // remove consecutive duplicate checkins
+    .filter((c, i, array) => {
+      if (i === 0) return true;
+      return c.venue.fsId !== array[i - 1]!.venue.fsId;
+    })
+    // remove checkins without a city (like "mexico")
+    .filter((c) => c.venue.city);
 
   return copy;
 });
@@ -91,7 +94,7 @@ const handleMarkerClick = (e: MouseEvent, checkin: TripOutput["checkins"][number
 <template>
   <div v-if="filteredTrip" class="h-96 w-full">
     <ClientOnly>
-      <MglMap :map-style="style" :map-key="mapKey">
+      <MglMap :map-style="style" :map-key="mapKey" :attribution-control="false">
         <MglNavigationControl />
         <MglMarker
           v-for="checkin in filteredTrip.checkins"
