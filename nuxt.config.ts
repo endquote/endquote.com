@@ -92,6 +92,13 @@ export default defineNuxtConfig({
     public: {
       hostname: "localhost",
     },
+    s3: {
+      region: "",
+      bucket: "",
+      token: "",
+      secret: "",
+      endpoint: "",
+    },
   },
   nitro: {
     experimental: {
