@@ -19,6 +19,7 @@ useSiteHead(page.value);
 <template>
   <div class="prose-custom">
     <ContentRenderer v-if="page" :value="page" />
+    <TripMap :trip="data" />
     <div v-if="data && data.checkins.length">
       <h2>Checkins</h2>
       <ul>

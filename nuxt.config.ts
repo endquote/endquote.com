@@ -14,6 +14,7 @@ export default defineNuxtConfig({
     "@nuxt/content",
     "nuxt-llms",
     "@prisma/nuxt",
+    "nuxt-maplibre",
   ],
   build: {
     // https://trpc-nuxt.vercel.app/get-started/installation
@@ -91,6 +92,7 @@ export default defineNuxtConfig({
     // https://nuxt.com/docs/guide/going-further/runtime-config#environment-variables
     public: {
       hostname: "localhost",
+      maptilerKey: "",
     },
     s3: {
       region: "",
