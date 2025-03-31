@@ -11,6 +11,13 @@ const tripSelect = {
   start: true,
   end: true,
   checkins: {
+    where: {
+      venue: {
+        NOT: {
+          category: { in: ["Country", "City"] },
+        },
+      },
+    },
     select: {
       eqId: true,
       date: true,
@@ -28,7 +35,8 @@ const tripSelect = {
           airport: true,
           lat: true,
           lng: true,
-          city: true,
+          category: true,
+          icon: true,
           restaurant: {
             select: {
               award: true,
@@ -128,9 +136,7 @@ export const tripsRouter = createTRPCRouter({
       }
 
       // get any associated images
-      // console.time("s3-listFiles-operation");
       const images = await s3Router.createCaller({}).listFiles({ path: `trips/${input.date}/` });
-      // console.timeEnd("s3-listFiles-operation");
 
       return { ...processTrip(trip), images: images.files };
     }),

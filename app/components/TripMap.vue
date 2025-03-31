@@ -28,19 +28,18 @@ const map = useMap(mapKey);
 // don't render the trip directly, remove some checkins first
 const filteredTrip = computed(() => {
   const { trip } = props;
+
   if (!trip) return null;
-  const copy = { ...trip, checkins: [...trip.checkins], flights: [...trip.flights] };
 
-  copy.checkins = copy.checkins
-    // remove consecutive duplicate checkins
-    .filter((c, i, array) => {
-      if (i === 0) return true;
-      return c.venue.fsId !== array[i - 1]!.venue.fsId;
-    })
-    // remove checkins without a city (like "mexico")
-    .filter((c) => c.venue.city);
-
-  return copy;
+  return {
+    ...trip,
+    checkins: trip.checkins
+      // remove consecutive duplicate checkins
+      .filter((c, i, array) => {
+        if (i === 0) return true;
+        return c.venue.fsId !== array[i - 1]!.venue.fsId;
+      }),
+  };
 });
 
 // compute map bounds based on the filtered checkins list
