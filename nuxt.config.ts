@@ -92,7 +92,6 @@ export default defineNuxtConfig({
     // https://nuxt.com/docs/guide/going-further/runtime-config#environment-variables
     public: {
       hostname: "localhost",
-      maptilerKey: "",
     },
     s3: {
       region: "",

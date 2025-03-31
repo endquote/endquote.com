@@ -20,8 +20,7 @@ type TripOutput = NonNullable<RouterOutput["trips"]["trip"]>;
 const props = defineProps<{ trip: TripOutput | undefined | null }>();
 
 // map setup
-const maptilerKey = useRuntimeConfig().public.maptilerKey;
-const style = `https://api.maptiler.com/maps/streets/style.json?key=${maptilerKey}`;
+const style = `https://tiles.stadiamaps.com/styles/stamen_toner_lite.json`;
 const mapKey = `trip-${props.trip?.eqId}`;
 const map = useMap(mapKey);
 
