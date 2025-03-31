@@ -11,13 +11,6 @@ const tripSelect = {
   start: true,
   end: true,
   checkins: {
-    where: {
-      venue: {
-        NOT: {
-          category: { in: ["Country", "City"] },
-        },
-      },
-    },
     select: {
       eqId: true,
       date: true,

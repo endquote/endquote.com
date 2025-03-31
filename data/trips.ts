@@ -14,7 +14,17 @@ const main = async () => {
   const homes = await db.home.findMany();
 
   // all checkins, including venues
-  const allCheckins = await db.checkin.findMany({ orderBy: { date: "asc" }, include: { venue: true } });
+  const allCheckins = await db.checkin.findMany({
+    orderBy: { date: "asc" },
+    include: { venue: true },
+    where: {
+      venue: {
+        NOT: {
+          category: { in: ["Country", "City"] },
+        },
+      },
+    },
+  });
 
   // just the ones that are not at home
   const tripCheckins = allCheckins.filter((c) =>
