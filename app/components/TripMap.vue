@@ -9,6 +9,9 @@ import { haversine } from "~/utils/math";
 
 /*
 - use 4sq icons for markers
+  - store/parse icon urls for venues
+  - make new api method that returns material icons for a set of those using an LLM call
+  - cache in the db
 - marker popups
 - visualize flights
 - proxy tile requests
