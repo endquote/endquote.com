@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { inferRouterOutputs } from "@trpc/server";
-import type { AppRouter } from "~~/server/api/trpc/[trpc]";
+import type { AppRouter } from "~~/server/trpc/routers";
 
 type RouterOutput = inferRouterOutputs<AppRouter>;
-type TripOutput = NonNullable<RouterOutput["trip"]>;
+type TripOutput = NonNullable<RouterOutput["trips"]["trip"]>;
 type CheckinOutput = TripOutput["checkins"][number];
 
 defineProps<{

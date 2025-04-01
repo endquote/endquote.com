@@ -83,7 +83,7 @@ const getCheckins = async (token: string): Promise<void> => {
             fsId: item.id,
             date: new Date(item.createdAt * 1000),
             tz: item.timeZoneOffset,
-            venue: { connect: { eqId: venue.eqId } },
+            venue: { connect: { fsId: venue.fsId } },
           },
         });
       } catch (e: any) {

@@ -81,7 +81,7 @@ const combineCheckinTrips = (checkinTrips: Checkin[][], allCheckins: Checkin[], 
     const time = firstCheckin.date.getTime() - lastCheckin.date.getTime();
     const home = homeAir.find((h) => thisTrip[0].date >= h.home.start && thisTrip[0].date <= h.home.end);
     const airBreak = allCheckins.find(
-      (c) => c.venue.eqId == home.venue.eqId && c.date < firstCheckin.date && c.date > lastCheckin.date,
+      (c) => c.venue.fsId == home.venue.fsId && c.date < firstCheckin.date && c.date > lastCheckin.date,
     );
 
     if (time <= maxTime * 2 && !airBreak) {
@@ -116,7 +116,7 @@ const extendCheckinTrips = (checkinTrips: Checkin[][], allCheckins: Checkin[], h
 
     for (let c = tripStart - 1; c >= Math.max(0, prevTripEnd, tripStart - search); c--) {
       const checkin = allCheckins[c];
-      if (home.venue.eqId === checkin.venue.eqId) {
+      if (home.venue.fsId === checkin.venue.fsId) {
         const time = trip[0].date.getTime() - checkin.date.getTime();
         if (time <= maxTime) {
           trip.unshift(...allCheckins.slice(c, tripStart));
@@ -133,7 +133,7 @@ const extendCheckinTrips = (checkinTrips: Checkin[][], allCheckins: Checkin[], h
 
     for (let c = tripEnd + 1; c <= Math.min(allCheckins.length - 1, nextTripStart, tripEnd + search); c++) {
       const checkin = allCheckins[c];
-      if (home.venue.eqId === checkin.venue.eqId) {
+      if (home.venue.fsId === checkin.venue.fsId) {
         const time = checkin.date.getTime() - trip[trip.length - 1].date.getTime();
         if (time <= maxTime) {
           trip.push(...allCheckins.slice(tripEnd + 1, c + 1));
@@ -245,8 +245,8 @@ const saveTrips = async (trips: Trip[]) => {
       data: {
         start: trip.start,
         end: trip.end,
-        checkins: { connect: trip.checkins.map((c) => ({ eqId: c.eqId })) },
-        flights: { connect: trip.flights.map((f) => ({ eqId: f.eqId })) },
+        checkins: { connect: trip.checkins.map((c) => ({ fsId: c.fsId })) },
+        flights: { connect: trip.flights.map((f) => ({ flightyId: f.flightyId })) },
       },
     });
   }
@@ -282,8 +282,8 @@ const saveTrips = async (trips: Trip[]) => {
 
       if (foundFlight) {
         await db.checkin.update({
-          where: { eqId: checkin.eqId },
-          data: { flight: { connect: { eqId: foundFlight.eqId } } },
+          where: { fsId: checkin.fsId },
+          data: { flight: { connect: { flightyId: foundFlight.flightyId } } },
         });
       }
     }
