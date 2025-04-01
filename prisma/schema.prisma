@@ -36,6 +36,7 @@ model venue {
   category          String?
   mapIcon           String?
   icon              String?
+  llmIcon           String?
   airport           String?
   checkins          checkin[]
   hotelChecked      Boolean     @default(false)

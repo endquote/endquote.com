@@ -1,4 +1,6 @@
 import type { Prisma } from "@prisma/client";
+import fs from "fs";
+import { fileURLToPath } from "url";
 import { z } from "zod";
 import useDev from "~/composables/useDev";
 import prisma from "~~/lib/prisma";
@@ -26,6 +28,7 @@ const tripSelect = {
           fsId: true,
           name: true,
           airport: true,
+          llmIcon: true,
           restaurant: {
             select: {
               award: true,
@@ -65,6 +68,19 @@ const processTrip = (trip: Prisma.tripGetPayload<{ select: typeof tripSelect }>)
     })),
   };
 };
+
+// get the possible checkin icons
+const iconMetaPath = fileURLToPath(import.meta.resolve("@iconify-json/material-symbols/metadata.json"));
+const iconMetaText = fs.readFileSync(iconMetaPath, "utf-8");
+const iconMetaData = JSON.parse(iconMetaText);
+const categories = ["Activities", "Business", "Maps", "Transit", "Travel"];
+const suffixes = Object.keys(iconMetaData.suffixes).filter((s) => s);
+const icons: Record<string, string[]> = {};
+for (const category of categories) {
+  icons[category] = iconMetaData.categories[category].filter(
+    (i: string) => !suffixes.some((suffix) => i.endsWith(suffix)),
+  );
+}
 
 export const tripsRouter = createTRPCRouter({
   // return all trips that have an associated page
@@ -109,7 +125,7 @@ export const tripsRouter = createTRPCRouter({
         }
       }
 
-      const trip = await prisma.trip.findFirst({
+      let trip = await prisma.trip.findFirst({
         select: tripSelect,
         orderBy: { start: "asc" },
         where: {
@@ -125,9 +141,22 @@ export const tripsRouter = createTRPCRouter({
       }
 
       // get any associated images
-      // console.time("s3-listFiles-operation");
       const images = await s3Router.createCaller({}).listFiles({ path: `trips/${input.date}/` });
-      // console.timeEnd("s3-listFiles-operation");
+
+      // find venues with no llmIcon
+      const venues = trip.checkins.map((c) => c.venue).filter((v) => !v.llmIcon);
+      if (!venues.length) {
+        return { ...processTrip(trip), images: images.files };
+      }
+
+      // make llm call
+      // update venues with llmIcon
+
+      // select trip again
+      trip = await prisma.trip.findFirstOrThrow({
+        select: tripSelect,
+        where: { eqId: trip.eqId },
+      });
 
       return { ...processTrip(trip), images: images.files };
     }),
