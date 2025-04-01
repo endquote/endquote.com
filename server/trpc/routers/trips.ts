@@ -12,7 +12,7 @@ const tripSelect = {
   end: true,
   checkins: {
     select: {
-      eqId: true,
+      fsId: true,
       date: true,
       flight: {
         select: {
@@ -43,7 +43,7 @@ const tripSelect = {
   },
   flights: {
     select: {
-      eqId: true,
+      flightyId: true,
       canceled: true,
       date: true,
       fromAirport: true,
@@ -60,7 +60,7 @@ const processTrip = (trip: Prisma.tripGetPayload<{ select: typeof tripSelect }>)
     ...trip,
     flights: trip.flights.map((flight) => ({
       // removing some fields that wouldn't be useful in the client
-      eqId: flight.eqId,
+      eqId: flight.flightyId,
       canceled: flight.canceled,
       fromAirport: flight.fromAirport,
       toAirport: flight.toAirport,

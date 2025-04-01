@@ -6,7 +6,7 @@ dotenv.config();
 const main = async () => {
   const venues = await db.venue.findMany({
     where: { icon: "fsq-lodging", hotelChecked: false },
-    select: { name: true, eqId: true, lat: true, lng: true },
+    select: { name: true, fsId: true, lat: true, lng: true },
     distinct: ["fsId"],
   });
 
@@ -45,7 +45,7 @@ const main = async () => {
     );
 
     await db.venue.update({
-      where: { eqId: venue.eqId },
+      where: { fsId: venue.fsId },
       data: { hotelChecked: true },
     });
 
@@ -63,7 +63,7 @@ const main = async () => {
         country: hit.country.name,
         award: hit.distinction.name,
         url: hit.michelin_guide_url,
-        venue: { connect: { eqId: venue.eqId } },
+        venue: { connect: { fsId: venue.fsId } },
       },
     });
   }

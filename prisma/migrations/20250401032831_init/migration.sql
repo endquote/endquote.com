@@ -1,18 +1,17 @@
 -- CreateTable
 CREATE TABLE "checkin" (
-    "eqId" SERIAL NOT NULL,
     "fsId" TEXT NOT NULL,
     "date" TIMESTAMP(3) NOT NULL,
     "tz" INTEGER NOT NULL,
-    "venueId" INTEGER NOT NULL,
+    "venueId" TEXT NOT NULL,
     "tripId" INTEGER,
+    "flightId" TEXT,
 
-    CONSTRAINT "checkin_pkey" PRIMARY KEY ("eqId")
+    CONSTRAINT "checkin_pkey" PRIMARY KEY ("fsId")
 );
 
 -- CreateTable
 CREATE TABLE "venue" (
-    "eqId" SERIAL NOT NULL,
     "fsId" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "address" TEXT,
@@ -25,15 +24,15 @@ CREATE TABLE "venue" (
     "country" TEXT NOT NULL,
     "category" TEXT,
     "icon" TEXT,
+    "airport" TEXT,
     "hotelChecked" BOOLEAN NOT NULL DEFAULT false,
     "restaurantChecked" BOOLEAN NOT NULL DEFAULT false,
 
-    CONSTRAINT "venue_pkey" PRIMARY KEY ("eqId")
+    CONSTRAINT "venue_pkey" PRIMARY KEY ("fsId")
 );
 
 -- CreateTable
 CREATE TABLE "hotel" (
-    "eqId" SERIAL NOT NULL,
     "michelinId" INTEGER NOT NULL,
     "lat" DOUBLE PRECISION NOT NULL,
     "lng" DOUBLE PRECISION NOT NULL,
@@ -42,14 +41,13 @@ CREATE TABLE "hotel" (
     "country" TEXT NOT NULL,
     "award" TEXT NOT NULL,
     "url" TEXT NOT NULL,
-    "venueId" INTEGER NOT NULL,
+    "venueId" TEXT NOT NULL,
 
-    CONSTRAINT "hotel_pkey" PRIMARY KEY ("eqId")
+    CONSTRAINT "hotel_pkey" PRIMARY KEY ("michelinId")
 );
 
 -- CreateTable
 CREATE TABLE "restaurant" (
-    "eqId" SERIAL NOT NULL,
     "michelinId" INTEGER NOT NULL,
     "lat" DOUBLE PRECISION NOT NULL,
     "lng" DOUBLE PRECISION NOT NULL,
@@ -60,9 +58,9 @@ CREATE TABLE "restaurant" (
     "award" TEXT NOT NULL,
     "url" TEXT NOT NULL,
     "website" TEXT NOT NULL,
-    "venueId" INTEGER NOT NULL,
+    "venueId" TEXT NOT NULL,
 
-    CONSTRAINT "restaurant_pkey" PRIMARY KEY ("eqId")
+    CONSTRAINT "restaurant_pkey" PRIMARY KEY ("michelinId")
 );
 
 -- CreateTable
@@ -76,7 +74,6 @@ CREATE TABLE "trip" (
 
 -- CreateTable
 CREATE TABLE "flight" (
-    "eqId" SERIAL NOT NULL,
     "flightyId" TEXT NOT NULL,
     "date" TIMESTAMP(3) NOT NULL,
     "airline" TEXT NOT NULL,
@@ -111,7 +108,7 @@ CREATE TABLE "flight" (
     "divAirportFlightyId" TEXT,
     "aircraftFlightyId" TEXT,
 
-    CONSTRAINT "flight_pkey" PRIMARY KEY ("eqId")
+    CONSTRAINT "flight_pkey" PRIMARY KEY ("flightyId")
 );
 
 -- CreateTable
@@ -129,32 +126,17 @@ CREATE TABLE "home" (
 
 -- CreateTable
 CREATE TABLE "_flightTotrip" (
-    "A" INTEGER NOT NULL,
+    "A" TEXT NOT NULL,
     "B" INTEGER NOT NULL,
 
     CONSTRAINT "_flightTotrip_AB_pkey" PRIMARY KEY ("A","B")
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "checkin_fsId_key" ON "checkin"("fsId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "venue_fsId_key" ON "venue"("fsId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "hotel_michelinId_key" ON "hotel"("michelinId");
-
--- CreateIndex
 CREATE UNIQUE INDEX "hotel_venueId_key" ON "hotel"("venueId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "restaurant_michelinId_key" ON "restaurant"("michelinId");
-
--- CreateIndex
 CREATE UNIQUE INDEX "restaurant_venueId_key" ON "restaurant"("venueId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "flight_flightyId_key" ON "flight"("flightyId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "home_name_key" ON "home"("name");
@@ -163,19 +145,22 @@ CREATE UNIQUE INDEX "home_name_key" ON "home"("name");
 CREATE INDEX "_flightTotrip_B_index" ON "_flightTotrip"("B");
 
 -- AddForeignKey
-ALTER TABLE "checkin" ADD CONSTRAINT "checkin_venueId_fkey" FOREIGN KEY ("venueId") REFERENCES "venue"("eqId") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "checkin" ADD CONSTRAINT "checkin_venueId_fkey" FOREIGN KEY ("venueId") REFERENCES "venue"("fsId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "checkin" ADD CONSTRAINT "checkin_tripId_fkey" FOREIGN KEY ("tripId") REFERENCES "trip"("eqId") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "hotel" ADD CONSTRAINT "hotel_venueId_fkey" FOREIGN KEY ("venueId") REFERENCES "venue"("eqId") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "checkin" ADD CONSTRAINT "checkin_flightId_fkey" FOREIGN KEY ("flightId") REFERENCES "flight"("flightyId") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "restaurant" ADD CONSTRAINT "restaurant_venueId_fkey" FOREIGN KEY ("venueId") REFERENCES "venue"("eqId") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "hotel" ADD CONSTRAINT "hotel_venueId_fkey" FOREIGN KEY ("venueId") REFERENCES "venue"("fsId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_flightTotrip" ADD CONSTRAINT "_flightTotrip_A_fkey" FOREIGN KEY ("A") REFERENCES "flight"("eqId") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "restaurant" ADD CONSTRAINT "restaurant_venueId_fkey" FOREIGN KEY ("venueId") REFERENCES "venue"("fsId") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_flightTotrip" ADD CONSTRAINT "_flightTotrip_A_fkey" FOREIGN KEY ("A") REFERENCES "flight"("flightyId") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_flightTotrip" ADD CONSTRAINT "_flightTotrip_B_fkey" FOREIGN KEY ("B") REFERENCES "trip"("eqId") ON DELETE CASCADE ON UPDATE CASCADE;

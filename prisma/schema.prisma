@@ -11,21 +11,19 @@ datasource db {
 }
 
 model checkin {
-  eqId     Int      @id @default(autoincrement())
-  fsId     String   @unique
+  fsId     String   @id
   date     DateTime
   tz       Int
-  venue    venue    @relation(fields: [venueId], references: [eqId])
-  venueId  Int
+  venue    venue    @relation(fields: [venueId], references: [fsId])
+  venueId  String
   Trip     trip?    @relation(fields: [tripId], references: [eqId])
   tripId   Int?
-  flightId Int?
-  flight   flight?  @relation(fields: [flightId], references: [eqId])
+  flightId String?
+  flight   flight?  @relation(fields: [flightId], references: [flightyId])
 }
 
 model venue {
-  eqId              Int         @id @default(autoincrement())
-  fsId              String      @unique
+  fsId              String      @id
   name              String
   address           String?
   lat               Float
@@ -46,8 +44,7 @@ model venue {
 }
 
 model hotel {
-  eqId       Int    @id @default(autoincrement())
-  michelinId Int    @unique
+  michelinId Int    @id
   lat        Float
   lng        Float
   name       String
@@ -55,13 +52,12 @@ model hotel {
   country    String
   award      String
   url        String
-  venue      venue  @relation(fields: [venueId], references: [eqId])
-  venueId    Int    @unique
+  venue      venue  @relation(fields: [venueId], references: [fsId])
+  venueId    String @unique
 }
 
 model restaurant {
-  eqId       Int    @id @default(autoincrement())
-  michelinId Int    @unique
+  michelinId Int    @id
   lat        Float
   lng        Float
   name       String
@@ -71,8 +67,8 @@ model restaurant {
   award      String
   url        String
   website    String
-  venue      venue  @relation(fields: [venueId], references: [eqId])
-  venueId    Int    @unique
+  venue      venue  @relation(fields: [venueId], references: [fsId])
+  venueId    String @unique
 }
 
 model trip {
@@ -84,8 +80,7 @@ model trip {
 }
 
 model flight {
-  eqId                Int       @id @default(autoincrement())
-  flightyId           String    @unique
+  flightyId           String    @id
   date                DateTime
   airline             String
   flightNumber        String
