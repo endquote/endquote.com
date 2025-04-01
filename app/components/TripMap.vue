@@ -93,13 +93,13 @@ const handleMarkerClick = (e: MouseEvent, checkin: TripOutput["checkins"][number
 </script>
 
 <template>
-  <div v-if="filteredTrip" class="h-96 w-full">
+  <div v-if="filteredTrip && (filteredTrip.checkins || filteredTrip.flights)" class="h-96 w-full">
     <ClientOnly>
       <MglMap :map-style="style" :map-key="mapKey" :attribution-control="false">
         <MglNavigationControl />
         <MglMarker
           v-for="checkin in filteredTrip.checkins"
-          :key="checkin.eqId"
+          :key="checkin.fsId"
           :coordinates="[checkin.venue.lng, checkin.venue.lat]"
         >
           <template #marker><div @click="(e) => handleMarkerClick(e, checkin)">📍</div></template>
