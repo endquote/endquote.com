@@ -13,7 +13,7 @@ http.interceptors.request.use((config) => {
 });
 
 export const db = new PrismaClient({
-  log: process.env.COOLIFY_FQDN ? [] : ["query", "info", "warn", "error"],
+  // log: process.env.COOLIFY_FQDN ? [] : ["query", "info", "warn", "error"],
 });
 
 export const s3 = new S3Client({

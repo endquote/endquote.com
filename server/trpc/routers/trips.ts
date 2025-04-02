@@ -1,6 +1,4 @@
 import type { Prisma } from "@prisma/client";
-import fs from "fs";
-import { fileURLToPath } from "url";
 import { z } from "zod";
 import useDev from "~/composables/useDev";
 import prisma from "~~/lib/prisma";
@@ -53,34 +51,27 @@ const tripSelect = {
   },
 } satisfies Prisma.tripSelect;
 
-// process the trip result before returning
+// before returning to the client, remove fields that were only used on the server
 const processTrip = (trip: Prisma.tripGetPayload<{ select: typeof tripSelect }>) => {
   return {
     ...trip,
-    flights: trip.flights.map((flight) => ({
-      // removing some fields that wouldn't be useful in the client
-      eqId: flight.flightyId,
-      canceled: flight.canceled,
-      fromAirport: flight.fromAirport,
-      toAirport: flight.toAirport,
-      // make a canonical date for display
-      date: (flight.actualDeparture || flight.scheduledDeparture || flight.date).toISOString(),
-    })),
+    checkins: trip.checkins.map((checkin) => {
+      const { llmIcon, ...rest } = checkin.venue;
+      return {
+        ...checkin,
+        venue: { ...rest, icon: llmIcon },
+      };
+    }),
+    flights: trip.flights.map((flight) => {
+      const { actualDeparture, scheduledDeparture, flightyId, ...rest } = flight;
+      return {
+        ...rest,
+        eqId: flightyId,
+        date: (actualDeparture || scheduledDeparture || flight.date).toISOString(),
+      };
+    }),
   };
 };
-
-// get the possible checkin icons
-const iconMetaPath = fileURLToPath(import.meta.resolve("@iconify-json/material-symbols/metadata.json"));
-const iconMetaText = fs.readFileSync(iconMetaPath, "utf-8");
-const iconMetaData = JSON.parse(iconMetaText);
-const categories = ["Activities", "Business", "Maps", "Transit", "Travel"];
-const suffixes = Object.keys(iconMetaData.suffixes).filter((s) => s);
-const icons: Record<string, string[]> = {};
-for (const category of categories) {
-  icons[category] = iconMetaData.categories[category].filter(
-    (i: string) => !suffixes.some((suffix) => i.endsWith(suffix)),
-  );
-}
 
 export const tripsRouter = createTRPCRouter({
   // return all trips that have an associated page
@@ -125,7 +116,7 @@ export const tripsRouter = createTRPCRouter({
         }
       }
 
-      let trip = await prisma.trip.findFirst({
+      const trip = await prisma.trip.findFirst({
         select: tripSelect,
         orderBy: { start: "asc" },
         where: {
@@ -140,23 +131,8 @@ export const tripsRouter = createTRPCRouter({
         return null;
       }
 
-      // get any associated images
+      // get any associated images from s3
       const images = await s3Router.createCaller({}).listFiles({ path: `trips/${input.date}/` });
-
-      // find venues with no llmIcon
-      const venues = trip.checkins.map((c) => c.venue).filter((v) => !v.llmIcon);
-      if (!venues.length) {
-        return { ...processTrip(trip), images: images.files };
-      }
-
-      // make llm call
-      // update venues with llmIcon
-
-      // select trip again
-      trip = await prisma.trip.findFirstOrThrow({
-        select: tripSelect,
-        where: { eqId: trip.eqId },
-      });
 
       return { ...processTrip(trip), images: images.files };
     }),
