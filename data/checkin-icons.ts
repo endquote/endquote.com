@@ -3,6 +3,10 @@ import { createRequire } from "module";
 import OpenAI from "openai";
 import { db, saveString } from "./shared";
 
+const API_KEY = process.env.OPENAI_KEY;
+const MAX_RETRIES = 3;
+const BATCH_SIZE = 50;
+
 export async function main() {
   // get the possible checkin icons
   const iconMetaPath = createRequire(import.meta.url).resolve("@iconify-json/fluent-emoji-high-contrast/metadata.json");
@@ -17,48 +21,101 @@ export async function main() {
   // save for debugging
   await saveString(JSON.stringify(newIcons), "icons.json");
 
-  // get the icons that need to be replaced
-  const venues = await db.venue.findMany({
-    where: {
-      llmIcon: null,
-      OR: [{ category: { not: null } }, { icon: { not: null } }],
-    },
-    // take: 10,
-  });
-  const oldIcons = Array.from(
-    new Map(venues.map((v) => [v.icon, { placeType: v.category, oldIcon: v.icon }])).values(),
-  );
+  const client = new OpenAI({ apiKey: API_KEY });
 
-  const apiKey = process.env.OPENAI_KEY;
-  const client = new OpenAI({ apiKey });
+  let retryCounter = MAX_RETRIES;
+  let batchNumber = 0;
+
+  while (true) {
+    // get all icons that need processing
+    const venues = await db.venue.findMany({
+      where: {
+        llmIcon: null,
+        OR: [{ category: { not: null } }, { icon: { not: null } }],
+      },
+    });
+
+    // Group venues by icon first
+    const uniqueIconsMap = new Map();
+    for (const venue of venues) {
+      if (!uniqueIconsMap.has(venue.icon)) {
+        uniqueIconsMap.set(venue.icon, { placeType: venue.category, oldIcon: venue.icon });
+      }
+    }
+
+    // convert map to array for shuffling
+    const uniqueIcons = Array.from(uniqueIconsMap.values());
+    console.log(`Found ${venues.length} venues with ${uniqueIcons.length} unique icons`);
+
+    // if no venues left to process, we're done
+    if (!uniqueIcons.length) {
+      console.log("No venues to process, finishing");
+      break;
+    }
+
+    // shuffle the array using Fisher-Yates algorithm
+    for (let i = uniqueIcons.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [uniqueIcons[i], uniqueIcons[j]] = [uniqueIcons[j], uniqueIcons[i]];
+    }
+
+    // grab one batch
+    const oldIcons = uniqueIcons.slice(0, BATCH_SIZE);
+
+    batchNumber++;
+    console.log(
+      `Processing batch ${batchNumber}, processing ${oldIcons.length} icons from ${uniqueIcons.length} total unique icons`,
+    );
+
+    await processIconBatch(oldIcons, newIcons, client);
+
+    // if there's less than a full batch left, we'll retry any failures
+    if (oldIcons.length < BATCH_SIZE) {
+      retryCounter--;
+      console.log(`Found less than a full batch (${oldIcons.length}), retry count: ${retryCounter}`);
+
+      if (retryCounter <= 0) {
+        console.log("Max retry count reached, finishing");
+        break;
+      }
+    }
+  }
+}
+
+async function processIconBatch(
+  oldIcons: { placeType: string; oldIcon: string }[],
+  newIcons: Record<string, string[]>,
+  client: OpenAI,
+) {
+  const success = new Map();
+
   try {
     // call the LLM
     const response = await client.responses.create({
       model: "o3-mini",
-      reasoning: { effort: "medium" },
+      // reasoning: { effort: "medium" },
       input: [
         {
           role: "developer",
           content: `
-          You're helping to make a map with markers on it for points of interest. We need to pick an icon
-          for each point of interest. Following is a list of new icons grouped by category.
-          
-          ${JSON.stringify(newIcons)}
+            You're helping to make a map with markers on it for points of interest. We need to pick an icon
+            for each point of interest. Following is a list of new icons grouped by category.
+            
+            ${JSON.stringify(newIcons)}
 
-          The user will provide a list of points of interest. Each includes a type and a previously-chosen
-          icon called oldIcon. Use that to suggest a new icon from the previous list provided.
+            The user will provide a list of points of interest. Each includes a type (placeType) and a
+            previously-chosen icon (oldIcon). For each item, select the most appropriate new icon from the
+            provided categories list.
 
-          It's very important to not suggest any icons that do not exist in the previous list.
+            REQUIREMENTS:
+            1. Only suggest icons that exist in the provided categories list above
+            2. Match each oldIcon with a new icon based on semantic similarity 
+            3. Consider the placeType when making your selection
+            4. Provide a brief reason for each selection (1-2 sentences)
+            5. Include ALL items from the input list in your output
 
-          It's very important to find a new icon for each old icon, even if the match isn't perfect. Look
-          for the closest conceptual match.
-          
-          Also include a brief reason for your choice.
-          
-          Each item in the user's list should be included in the output, don't skip any.
-          
-          If you really can't find a good replacement icon return an empty string, but this should almost
-          never happen.`,
+            IMPORTANT: Double-check that every suggested icon exists in the provided categories list.
+          `,
         },
         { role: "user", content: JSON.stringify(oldIcons) },
       ],
@@ -90,37 +147,37 @@ export async function main() {
       },
     });
 
-    // parse the response
     const { icons: replacements } = JSON.parse(response.output_text) as {
       icons: Array<{ oldIcon: string; newIcon: string; reason: string }>;
     };
 
-    // create a mapping for quick lookup
-    const iconMapping = new Map(replacements.map((icon) => [icon.oldIcon, icon.newIcon]));
+    // validate output
+    for (const replacement of replacements) {
+      // it's not an empty string and it exists in the icons list
+      const isValid = Object.values(newIcons).some(
+        (category) => replacement.newIcon && category.includes(replacement.newIcon),
+      );
 
-    // process the replacements
-    for (const oldIcon of oldIcons) {
-      const newIcon = iconMapping.get(oldIcon.oldIcon);
-
-      if (!newIcon) {
-        console.warn("no new icon for", oldIcon.oldIcon);
-        continue;
+      if (isValid) {
+        success.set(replacement.oldIcon, replacement.newIcon);
+      } else {
+        console.warn(`Invalid icon suggested: ${replacement.newIcon} for ${replacement.oldIcon}, skipping`);
       }
-
-      if (!Object.values(newIcons).some((iconsArray) => iconsArray.includes(newIcon))) {
-        console.warn("new icon not in list", oldIcon.oldIcon, newIcon);
-        continue;
-      }
-
-      console.info("icon replacement", oldIcon.oldIcon, newIcon);
-
-      await db.venue.updateMany({
-        where: { icon: oldIcon.oldIcon },
-        data: { llmIcon: newIcon },
-      });
     }
   } catch (e) {
-    console.error(e);
+    console.error(`API call failed: ${e.message}`);
+    return;
+  }
+
+  // save new icons
+  for (const oldIcon of oldIcons) {
+    const newIcon = success.get(oldIcon.oldIcon);
+    console.log(`Updating icon: ${oldIcon.oldIcon} → ${newIcon}`);
+
+    await db.venue.updateMany({
+      where: { icon: oldIcon.oldIcon },
+      data: { llmIcon: newIcon },
+    });
   }
 }
 
