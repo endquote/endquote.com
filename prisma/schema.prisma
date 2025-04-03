@@ -34,13 +34,21 @@ model venue {
   state             String?
   country           String
   category          String?
-  icon              String?
+  fsIcon            String?    
+  mapIcon           String?    
   airport           String?
   checkins          checkin[]
   hotelChecked      Boolean     @default(false)
   hotel             hotel?
   restaurantChecked Boolean     @default(false)
   restaurant        restaurant?
+  venueIcon         venueIcon?  @relation(fields: [fsIcon], references: [fsIcon])
+}
+
+model venueIcon {
+  fsIcon String  @id
+  eqIcon String?
+  venues venue[]
 }
 
 model hotel {
