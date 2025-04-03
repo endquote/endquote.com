@@ -23,12 +23,20 @@ CREATE TABLE "venue" (
     "state" TEXT,
     "country" TEXT NOT NULL,
     "category" TEXT,
-    "icon" TEXT,
+    "fsIcon" TEXT,
     "airport" TEXT,
     "hotelChecked" BOOLEAN NOT NULL DEFAULT false,
     "restaurantChecked" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "venue_pkey" PRIMARY KEY ("fsId")
+);
+
+-- CreateTable
+CREATE TABLE "venueIcon" (
+    "fsIcon" TEXT NOT NULL,
+    "eqIcon" TEXT,
+
+    CONSTRAINT "venueIcon_pkey" PRIMARY KEY ("fsIcon")
 );
 
 -- CreateTable
@@ -152,6 +160,9 @@ ALTER TABLE "checkin" ADD CONSTRAINT "checkin_tripId_fkey" FOREIGN KEY ("tripId"
 
 -- AddForeignKey
 ALTER TABLE "checkin" ADD CONSTRAINT "checkin_flightId_fkey" FOREIGN KEY ("flightId") REFERENCES "flight"("flightyId") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "venue" ADD CONSTRAINT "venue_fsIcon_fkey" FOREIGN KEY ("fsIcon") REFERENCES "venueIcon"("fsIcon") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "hotel" ADD CONSTRAINT "hotel_venueId_fkey" FOREIGN KEY ("venueId") REFERENCES "venue"("fsId") ON DELETE RESTRICT ON UPDATE CASCADE;

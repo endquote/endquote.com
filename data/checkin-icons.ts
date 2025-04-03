@@ -1,3 +1,4 @@
+import type { Prisma } from "@prisma/client";
 import fs from "fs";
 import { createRequire } from "module";
 import OpenAI from "openai";
@@ -27,19 +28,21 @@ export async function main() {
   let batchNumber = 0;
 
   while (true) {
-    // get all icons that need processing
+    // get venues with category and null eqIcon in their venueIcon relation
     const venues = await db.venue.findMany({
       where: {
-        llmIcon: null,
-        OR: [{ category: { not: null } }, { icon: { not: null } }],
+        fsIcon: { not: null },
+        category: { not: null },
+        venueIcon: { eqIcon: null },
       },
+      select: { category: true, fsIcon: true, venueIcon: true },
     });
 
-    // Group venues by icon first
-    const uniqueIconsMap = new Map();
+    // group venues by fsIcon
+    const uniqueIconsMap: Map<string, { placeType: string; oldIcon: string }> = new Map();
     for (const venue of venues) {
-      if (!uniqueIconsMap.has(venue.icon)) {
-        uniqueIconsMap.set(venue.icon, { placeType: venue.category, oldIcon: venue.icon });
+      if (!uniqueIconsMap.has(venue.fsIcon)) {
+        uniqueIconsMap.set(venue.fsIcon, { placeType: venue.category, oldIcon: venue.fsIcon });
       }
     }
 
@@ -53,19 +56,11 @@ export async function main() {
       break;
     }
 
-    // shuffle the array using Fisher-Yates algorithm
-    for (let i = uniqueIcons.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [uniqueIcons[i], uniqueIcons[j]] = [uniqueIcons[j], uniqueIcons[i]];
-    }
-
     // grab one batch
     const oldIcons = uniqueIcons.slice(0, BATCH_SIZE);
 
     batchNumber++;
-    console.log(
-      `Processing batch ${batchNumber}, processing ${oldIcons.length} icons from ${uniqueIcons.length} total unique icons`,
-    );
+    console.log(`Processing batch ${batchNumber}, ${oldIcons.length} icons`);
 
     await processIconBatch(oldIcons, newIcons, client);
 
@@ -172,12 +167,26 @@ async function processIconBatch(
   // save new icons
   for (const oldIcon of oldIcons) {
     const newIcon = success.get(oldIcon.oldIcon);
-    console.log(`Updating icon: ${oldIcon.oldIcon} → ${newIcon}`);
 
-    await db.venue.updateMany({
-      where: { icon: oldIcon.oldIcon },
-      data: { llmIcon: newIcon },
+    // find all venues with this icon
+    const venues = await db.venue.findMany({
+      where: { fsIcon: oldIcon.oldIcon },
+      select: { fsId: true },
     });
+
+    // create venueIcon and link venues in one go
+    const venueIcon: Prisma.venueIconCreateInput = {
+      fsIcon: oldIcon.oldIcon,
+      eqIcon: newIcon,
+      venues: { connect: venues.map((v) => ({ fsId: v.fsId })) },
+    };
+    await db.venueIcon.upsert({
+      where: { fsIcon: oldIcon.oldIcon },
+      create: venueIcon,
+      update: venueIcon,
+    });
+
+    console.log(`updated ${venues.length} venues with icon: ${oldIcon.oldIcon} → ${newIcon}`);
   }
 }
 

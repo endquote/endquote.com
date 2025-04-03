@@ -58,6 +58,7 @@ const getCheckins = async (token: string): Promise<void> => {
       const loc = item.venue.location;
       const cat = item.venue.categories[0];
 
+      const fsIcon = cat?.icon.prefix.match(/(\w+\/\w+)_$/)?.[1];
       const fsVenue: Prisma.venueCreateInput = {
         fsId: item.venue.id,
         name: item.venue.name,
@@ -70,9 +71,15 @@ const getCheckins = async (token: string): Promise<void> => {
         state: loc.state,
         country: loc.country,
         category: cat?.name,
-        mapIcon: cat?.mapIcon,
-        icon: cat?.icon.prefix.match(/(\w+\/\w+)_$/)[1],
         airport: airportCode ? airportCode : undefined,
+        venueIcon: fsIcon
+          ? {
+              connectOrCreate: {
+                where: { fsIcon },
+                create: { fsIcon },
+              },
+            }
+          : undefined,
       };
 
       const venue = await db.venue.upsert({
