@@ -93,6 +93,7 @@ export default defineNuxtConfig({
     public: {
       hostname: "localhost",
     },
+    openaiKey: "",
     s3: {
       region: "",
       bucket: "",

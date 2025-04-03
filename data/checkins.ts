@@ -55,20 +55,32 @@ const getCheckins = async (token: string): Promise<void> => {
         airportCode = "MNL";
       }
 
+      const loc = item.venue.location;
+      const cat = item.venue.categories[0];
+
+      const fsIcon = cat?.icon.prefix.match(/(\w+\/\w+)_$/)?.[1];
       const fsVenue: Prisma.venueCreateInput = {
         fsId: item.venue.id,
         name: item.venue.name,
-        address: item.venue.location.address,
-        lat: item.venue.location.lat,
-        lng: item.venue.location.lng,
-        postalCode: item.venue.location.postalCode,
-        cc: item.venue.location.cc,
-        city: item.venue.location.city,
-        state: item.venue.location.state,
-        country: item.venue.location.country,
-        category: item.venue.categories[0]?.name,
-        icon: item.venue.categories[0]?.mapIcon,
+        address: loc.address,
+        lat: loc.lat,
+        lng: loc.lng,
+        postalCode: loc.postalCode,
+        cc: loc.cc,
+        city: loc.city,
+        state: loc.state,
+        country: loc.country,
+        category: cat?.name,
+        mapIcon: cat?.mapIcon,
         airport: airportCode ? airportCode : undefined,
+        venueIcon: fsIcon
+          ? {
+              connectOrCreate: {
+                where: { fsIcon },
+                create: { fsIcon },
+              },
+            }
+          : undefined,
       };
 
       const venue = await db.venue.upsert({
@@ -77,24 +89,22 @@ const getCheckins = async (token: string): Promise<void> => {
         create: { ...fsVenue },
       });
 
-      try {
-        await db.checkin.create({
-          data: {
-            fsId: item.id,
-            date: new Date(item.createdAt * 1000),
-            tz: item.timeZoneOffset,
-            venue: { connect: { fsId: venue.fsId } },
-          },
-        });
-      } catch (e: any) {
-        if (e.code === "P2002" && e.meta?.target?.includes("fsId")) {
-          // console.log(`Checkin with fsId ${item.id} already exists.`);
-          done = true;
-          break;
-        } else {
-          throw e;
-        }
+      if (await db.checkin.findFirst({ where: { fsId: item.id } })) {
+        done = true;
+        break;
       }
+
+      const checkin: Prisma.checkinCreateInput = {
+        fsId: item.id,
+        date: new Date(item.createdAt * 1000),
+        tz: item.timeZoneOffset,
+        venue: { connect: { fsId: venue.fsId } },
+      };
+      await db.checkin.upsert({
+        where: { fsId: checkin.fsId },
+        update: { ...checkin },
+        create: { ...checkin },
+      });
     }
 
     if (done) {

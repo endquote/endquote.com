@@ -14,13 +14,7 @@ const tripSelect = {
     select: {
       fsId: true,
       date: true,
-      flight: {
-        select: {
-          fromAirport: true,
-          toAirport: true,
-          canceled: true,
-        },
-      },
+      flight: { select: { fromAirport: true, toAirport: true, canceled: true } },
       venue: {
         select: {
           fsId: true,
@@ -29,13 +23,8 @@ const tripSelect = {
           lat: true,
           lng: true,
           category: true,
-          icon: true,
-          restaurant: {
-            select: {
-              award: true,
-              url: true,
-            },
-          },
+          venueIcon: { select: { eqIcon: true } },
+          restaurant: { select: { award: true, url: true } },
         },
       },
     },
@@ -54,19 +43,18 @@ const tripSelect = {
   },
 } satisfies Prisma.tripSelect;
 
-// process the trip result before returning
+// before returning to the client, remove fields that were only used on the server
 const processTrip = (trip: Prisma.tripGetPayload<{ select: typeof tripSelect }>) => {
   return {
     ...trip,
-    flights: trip.flights.map((flight) => ({
-      // removing some fields that wouldn't be useful in the client
-      eqId: flight.flightyId,
-      canceled: flight.canceled,
-      fromAirport: flight.fromAirport,
-      toAirport: flight.toAirport,
-      // make a canonical date for display
-      date: (flight.actualDeparture || flight.scheduledDeparture || flight.date).toISOString(),
-    })),
+    flights: trip.flights.map((flight) => {
+      const { actualDeparture, scheduledDeparture, flightyId, ...rest } = flight;
+      return {
+        ...rest,
+        eqId: flightyId,
+        date: (actualDeparture || scheduledDeparture || flight.date).toISOString(),
+      };
+    }),
   };
 };
 
