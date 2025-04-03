@@ -25,6 +25,7 @@ services:
       - NUXT_S3_TOKEN=${S3_TOKEN}
       - NUXT_S3_SECRET=${S3_SECRET}
       - NUXT_S3_ENDPOINT=${S3_ENDPOINT}
+      - NUXT_OPENAI_KEY=${OPENAI_KEY}
 
   # redirects from www.endquote.com to endquote.com
   front-redirect:
