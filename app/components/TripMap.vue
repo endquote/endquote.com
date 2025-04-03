@@ -7,23 +7,37 @@ import type { AppRouter } from "~~/server/trpc/routers";
 import { HOMES, HOME_DISTANCE } from "~/utils/constants";
 import { haversine } from "~/utils/math";
 
-/*
-- use 4sq icons for markers
-  - store/parse icon urls for venues
-  - make new api method that returns material icons for a set of those using an LLM call
-  - cache in the db
-- marker popups
-- visualize flights
-- proxy tile requests
-*/
-
 // props setup
 type RouterOutput = inferRouterOutputs<AppRouter>;
 type TripOutput = NonNullable<RouterOutput["trips"]["trip"]>;
 const props = defineProps<{ trip: TripOutput | undefined | null }>();
 
-// map setup
-const style = `https://tiles.stadiamaps.com/styles/stamen_toner_lite.json`;
+const isDarkMode = ref(false);
+
+// check initial dark mode preference
+onMounted(() => {
+  isDarkMode.value = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+  // add listener for scheme changes
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
+    isDarkMode.value = e.matches;
+  });
+});
+
+// clean up listener when component is destroyed
+onUnmounted(() => {
+  window.matchMedia("(prefers-color-scheme: dark)").removeEventListener("change", (e) => {
+    isDarkMode.value = e.matches;
+  });
+});
+
+// update map style to match dark mode
+const mapStyle = computed(() =>
+  isDarkMode.value
+    ? "https://tiles.stadiamaps.com/styles/stamen_toner.json"
+    : "https://tiles.stadiamaps.com/styles/stamen_toner_lite.json",
+);
+
 const mapKey = `trip-${props.trip?.eqId}`;
 const map = useMap(mapKey);
 
@@ -95,14 +109,21 @@ const handleMarkerClick = (e: MouseEvent, checkin: TripOutput["checkins"][number
 <template>
   <div v-if="filteredTrip && (filteredTrip.checkins || filteredTrip.flights)" class="h-96 w-full">
     <ClientOnly>
-      <MglMap :map-style="style" :map-key="mapKey" :attribution-control="false">
+      <MglMap :map-style="mapStyle" :map-key="mapKey" :attribution-control="false">
         <MglNavigationControl />
         <MglMarker
           v-for="checkin in filteredTrip.checkins"
           :key="checkin.fsId"
           :coordinates="[checkin.venue.lng, checkin.venue.lat]"
+          anchor="center"
         >
-          <template #marker><div @click="(e) => handleMarkerClick(e, checkin)">📍</div></template>
+          <template #marker
+            ><div class="bg-white text-black" @click="(e) => handleMarkerClick(e, checkin)">
+              <UIcon
+                :name="`fluent-emoji-high-contrast-${checkin.venue.venueIcon?.eqIcon || 'round-pushpin'}`"
+                class="size-8"
+              /></div
+          ></template>
         </MglMarker>
       </MglMap>
     </ClientOnly>

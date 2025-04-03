@@ -22,7 +22,6 @@ const tripSelect = {
           airport: true,
           lat: true,
           lng: true,
-          category: true,
           venueIcon: { select: { eqIcon: true } },
           restaurant: { select: { award: true, url: true } },
         },
