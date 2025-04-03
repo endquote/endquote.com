@@ -71,6 +71,7 @@ const getCheckins = async (token: string): Promise<void> => {
         state: loc.state,
         country: loc.country,
         category: cat?.name,
+        mapIcon: cat?.mapIcon,
         airport: airportCode ? airportCode : undefined,
         venueIcon: fsIcon
           ? {

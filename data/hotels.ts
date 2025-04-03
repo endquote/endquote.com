@@ -5,7 +5,7 @@ dotenv.config();
 
 const main = async () => {
   const venues = await db.venue.findMany({
-    where: { icon: "fsq-lodging", hotelChecked: false },
+    where: { mapIcon: "fsq-lodging", hotelChecked: false },
     select: { name: true, fsId: true, lat: true, lng: true },
     distinct: ["fsId"],
   });

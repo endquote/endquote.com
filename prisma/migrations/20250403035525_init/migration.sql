@@ -24,6 +24,7 @@ CREATE TABLE "venue" (
     "country" TEXT NOT NULL,
     "category" TEXT,
     "fsIcon" TEXT,
+    "mapIcon" TEXT,
     "airport" TEXT,
     "hotelChecked" BOOLEAN NOT NULL DEFAULT false,
     "restaurantChecked" BOOLEAN NOT NULL DEFAULT false,
