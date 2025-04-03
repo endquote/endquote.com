@@ -14,25 +14,14 @@ const tripSelect = {
     select: {
       fsId: true,
       date: true,
-      flight: {
-        select: {
-          fromAirport: true,
-          toAirport: true,
-          canceled: true,
-        },
-      },
+      flight: { select: { fromAirport: true, toAirport: true, canceled: true } },
       venue: {
         select: {
           fsId: true,
           name: true,
           airport: true,
-          llmIcon: true,
-          restaurant: {
-            select: {
-              award: true,
-              url: true,
-            },
-          },
+          venueIcon: { select: { eqIcon: true } },
+          restaurant: { select: { award: true, url: true } },
         },
       },
     },
@@ -55,13 +44,6 @@ const tripSelect = {
 const processTrip = (trip: Prisma.tripGetPayload<{ select: typeof tripSelect }>) => {
   return {
     ...trip,
-    checkins: trip.checkins.map((checkin) => {
-      const { llmIcon, ...rest } = checkin.venue;
-      return {
-        ...checkin,
-        venue: { ...rest, icon: llmIcon },
-      };
-    }),
     flights: trip.flights.map((flight) => {
       const { actualDeparture, scheduledDeparture, flightyId, ...rest } = flight;
       return {
