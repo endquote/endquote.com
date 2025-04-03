@@ -3,8 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "data:all": "npm run data:homes && npm run data:checkins && npm run data:restaurants && npm run data:restaurants-visited && npm run data:hotels && npm run data:hotels-visited && npm run data:flights && npm run data:trips",
+    "data:all": "npm run data:homes && npm run data:checkins && npm run data:restaurants && npm run data:restaurants-visited && npm run data:hotels && npm run data:hotels-visited && npm run data:flights && npm run data:trips && npm run data:checkin-icons",
     "data:checkins": "tsx ./data/checkins.ts",
+    "data:checkin-icons": "tsx ./data/checkin-icons.ts",
     "data:flights": "tsx ./data/flights.ts",
     "data:homes": "tsx ./data/homes.ts",
     "data:hotels-visited": "tsx ./data/hotels-visited.ts",
