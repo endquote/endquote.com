@@ -14,21 +14,19 @@ const props = defineProps<{ trip: TripOutput | undefined | null }>();
 
 const isDarkMode = ref(false);
 
-// check initial dark mode preference
-onMounted(() => {
-  isDarkMode.value = window.matchMedia("(prefers-color-scheme: dark)").matches;
+// store the handler so we can reference it for cleanup
+const darkModeHandler = (e: MediaQueryListEvent) => (isDarkMode.value = e.matches);
 
-  // add listener for scheme changes
-  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
-    isDarkMode.value = e.matches;
-  });
+// check initial dark mode preference and set up listener
+onMounted(() => {
+  const mq = window.matchMedia("(prefers-color-scheme: dark)");
+  isDarkMode.value = mq.matches;
+  mq.addEventListener("change", darkModeHandler);
 });
 
 // clean up listener when component is destroyed
 onUnmounted(() => {
-  window.matchMedia("(prefers-color-scheme: dark)").removeEventListener("change", (e) => {
-    isDarkMode.value = e.matches;
-  });
+  window.matchMedia("(prefers-color-scheme: dark)").removeEventListener("change", darkModeHandler);
 });
 
 // update map style to match dark mode
