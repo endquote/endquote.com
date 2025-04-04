@@ -57,6 +57,7 @@
     "luxon": "3.6.0",
     "nuxt": "3.16.1",
     "nuxt-llms": "0.1.2",
+    "nuxt-maplibre": "1.1.1",
     "openai": "4.91.1",
     "prisma": "6.5.0",
     "rehype-sanitize": "6.0.0",
