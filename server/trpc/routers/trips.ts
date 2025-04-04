@@ -20,6 +20,8 @@ const tripSelect = {
           fsId: true,
           name: true,
           airport: true,
+          lat: true,
+          lng: true,
           venueIcon: { select: { eqIcon: true } },
           restaurant: { select: { award: true, url: true } },
         },
@@ -113,7 +115,7 @@ export const tripsRouter = createTRPCRouter({
         return null;
       }
 
-      // get any associated images from s3
+      // get any associated images
       const images = await s3Router.createCaller({}).listFiles({ path: `trips/${input.date}/` });
 
       return { ...processTrip(trip), images: images.files };

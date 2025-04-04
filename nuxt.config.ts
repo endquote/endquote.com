@@ -14,6 +14,7 @@ export default defineNuxtConfig({
     "@nuxt/content",
     "nuxt-llms",
     "@prisma/nuxt",
+    "nuxt-maplibre",
   ],
   build: {
     // https://trpc-nuxt.vercel.app/get-started/installation

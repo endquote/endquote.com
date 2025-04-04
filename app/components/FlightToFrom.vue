@@ -5,10 +5,11 @@ import type { AppRouter } from "~~/server/trpc/routers";
 type RouterOutput = inferRouterOutputs<AppRouter>;
 type TripOutput = NonNullable<RouterOutput["trips"]["trip"]>;
 type CheckinOutput = TripOutput["checkins"][number];
+type FlightOutput = NonNullable<CheckinOutput["flight"]>;
 
 defineProps<{
   airport: string | null;
-  flight: CheckinOutput["flight"] | null;
+  flight: FlightOutput | null;
 }>();
 </script>
 <template>
