@@ -137,8 +137,6 @@ CREATE TABLE "airport" (
     "code" TEXT NOT NULL,
     "icao" TEXT,
     "name" TEXT NOT NULL,
-    "latitude" DOUBLE PRECISION NOT NULL,
-    "longitude" DOUBLE PRECISION NOT NULL,
     "elevation" INTEGER,
     "url" TEXT,
     "timezone" TEXT,
@@ -146,6 +144,8 @@ CREATE TABLE "airport" (
     "country" TEXT NOT NULL,
     "state" TEXT,
     "county" TEXT,
+    "lat" DOUBLE PRECISION NOT NULL,
+    "lng" DOUBLE PRECISION NOT NULL,
 
     CONSTRAINT "airport_pkey" PRIMARY KEY ("code")
 );
@@ -182,13 +182,13 @@ CREATE INDEX "_flightTotrip_B_index" ON "_flightTotrip"("B");
 CREATE INDEX "_airportTohome_B_index" ON "_airportTohome"("B");
 
 -- AddForeignKey
-ALTER TABLE "checkin" ADD CONSTRAINT "checkin_venueId_fkey" FOREIGN KEY ("venueId") REFERENCES "venue"("fsId") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "checkin" ADD CONSTRAINT "checkin_flightId_fkey" FOREIGN KEY ("flightId") REFERENCES "flight"("flightyId") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "checkin" ADD CONSTRAINT "checkin_tripId_fkey" FOREIGN KEY ("tripId") REFERENCES "trip"("eqId") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "checkin" ADD CONSTRAINT "checkin_flightId_fkey" FOREIGN KEY ("flightId") REFERENCES "flight"("flightyId") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "checkin" ADD CONSTRAINT "checkin_venueId_fkey" FOREIGN KEY ("venueId") REFERENCES "venue"("fsId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "venue" ADD CONSTRAINT "venue_airportCode_fkey" FOREIGN KEY ("airportCode") REFERENCES "airport"("code") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -203,13 +203,13 @@ ALTER TABLE "hotel" ADD CONSTRAINT "hotel_venueId_fkey" FOREIGN KEY ("venueId") 
 ALTER TABLE "restaurant" ADD CONSTRAINT "restaurant_venueId_fkey" FOREIGN KEY ("venueId") REFERENCES "venue"("fsId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "flight" ADD CONSTRAINT "flight_divertedToCode_fkey" FOREIGN KEY ("divertedToCode") REFERENCES "airport"("code") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "flight" ADD CONSTRAINT "flight_fromAirportCode_fkey" FOREIGN KEY ("fromAirportCode") REFERENCES "airport"("code") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "flight" ADD CONSTRAINT "flight_toAirportCode_fkey" FOREIGN KEY ("toAirportCode") REFERENCES "airport"("code") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "flight" ADD CONSTRAINT "flight_divertedToCode_fkey" FOREIGN KEY ("divertedToCode") REFERENCES "airport"("code") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_flightTotrip" ADD CONSTRAINT "_flightTotrip_A_fkey" FOREIGN KEY ("A") REFERENCES "flight"("flightyId") ON DELETE CASCADE ON UPDATE CASCADE;

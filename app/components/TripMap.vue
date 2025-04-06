@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useMap } from "@indoorequal/vue-maplibre-gl";
 import type { inferRouterOutputs } from "@trpc/server";
+import { greatCircle } from "@turf/great-circle";
 import type { LngLatBoundsLike, LngLatLike } from "maplibre-gl";
 import type { AppRouter } from "~~/server/trpc/routers";
 
@@ -83,12 +84,38 @@ const bounds = computed<LngLatBoundsLike | undefined>(() => {
   return [sw, ne] as LngLatBoundsLike;
 });
 
+const flightPaths = computed(() => {
+  const flights = filteredTrip.value?.flights || [];
+  const processedPairs = new Set<string>();
+
+  return flights
+    .filter((flight) => {
+      // remove flights that are the same, just different directions
+      const fromTo = `${flight.fromAirport.code}-${flight.toAirport.code}`;
+      const toFrom = `${flight.toAirport.code}-${flight.fromAirport.code}`;
+      if (processedPairs.has(fromTo) || processedPairs.has(toFrom)) return false;
+      processedPairs.add(fromTo);
+      return true;
+    })
+    .map((flight) => {
+      // generate flight paths using turf greatCircle
+      const from = [flight.fromAirport.lng, flight.fromAirport.lat];
+      const to = [flight.toAirport.lng, flight.toAirport.lat];
+      const options = { npoints: 100 };
+      const arc = greatCircle(from, to, options);
+      return {
+        id: `${flight.fromAirport.code}-${flight.toAirport.code}-${flight.date.split("T")[0]}`,
+        geometry: arc.geometry,
+      };
+    });
+});
+
 // if the map is loaded and the bounds are computed, fit the map to the bounds
 watch(
   [() => map.isLoaded, () => bounds.value],
-  ([isLoaded, currentBounds]) => {
-    if (isLoaded && currentBounds && map.map) {
-      map.map.fitBounds(currentBounds, { padding: 50, maxZoom: 15, duration: 0 });
+  ([loaded, bounds]) => {
+    if (loaded && bounds && map.map) {
+      map.map.fitBounds(bounds, { padding: 50, maxZoom: 15, duration: 0 });
     }
   },
   { immediate: true },
@@ -105,19 +132,39 @@ const handleMarkerClick = (e: MouseEvent, checkin: TripOutput["checkins"][number
     <ClientOnly>
       <MglMap :map-style="mapStyle" :map-key="mapKey" :attribution-control="false">
         <MglNavigationControl />
+
+        <!-- flight paths -->
+        <template v-if="flightPaths.length">
+          <MglGeoJsonSource
+            source-id="flight-paths-source"
+            :data="{
+              type: 'FeatureCollection',
+              features: flightPaths.map((p) => ({ type: 'Feature', geometry: p.geometry, properties: {} })),
+            }"
+          >
+            <MglLineLayer
+              layer-id="flight-paths-layer"
+              :paint="{
+                'line-color': isDarkMode ? '#6fa8dc' : '#2986cc',
+                'line-width': 2,
+                'line-dasharray': [2, 1],
+              }"
+            />
+          </MglGeoJsonSource>
+        </template>
+
+        <!-- checkin markers -->
         <MglMarker
           v-for="checkin in filteredTrip.checkins"
           :key="checkin.fsId"
           :coordinates="[checkin.venue.lng, checkin.venue.lat]"
           anchor="center"
         >
-          <template #marker
-            ><div class="bg-white text-black" @click="(e) => handleMarkerClick(e, checkin)">
-              <UIcon
-                :name="`fluent-emoji-high-contrast-${checkin.venue.venueIcon?.eqIcon || 'round-pushpin'}`"
-                class="size-8"
-              /></div
-          ></template>
+          <template #marker>
+            <div class="text-2xl" @click="(e) => handleMarkerClick(e, checkin)">
+              {{ checkin.venue.venueIcon?.eqIcon || "📍" }}
+            </div>
+          </template>
         </MglMarker>
       </MglMap>
     </ClientOnly>

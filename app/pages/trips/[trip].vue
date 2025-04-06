@@ -26,10 +26,7 @@ useSiteHead(page.value);
       <h2>Checkins</h2>
       <ul>
         <li v-for="checkin in data.checkins" :key="checkin.fsId">
-          <UIcon
-            :name="`fluent-emoji-high-contrast-${checkin.venue.venueIcon?.eqIcon || 'round-pushpin'}`"
-            class="size-5"
-          />
+          {{ checkin.venue.venueIcon?.eqIcon || "📍" }}
           {{ checkin.date.split("T")[0]! }} -
           <NuxtLink :href="`https://foursquare.com/v/${checkin.venue.fsId}`">{{ checkin.venue.name }}</NuxtLink>
           <FlightToFrom :airport="checkin.venue.airport" :flight="checkin.flight" />
