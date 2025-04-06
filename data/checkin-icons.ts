@@ -1,4 +1,5 @@
 import type { Prisma } from "@prisma/client";
+import emojiRegex from "emoji-regex";
 import OpenAI from "openai";
 import { db } from "./shared";
 
@@ -125,8 +126,10 @@ async function processIconBatch(oldIcons: { placeType: string; oldIcon: string }
 
     // validate output - check for valid single emoji
     for (const r of replacements) {
-      // check if it's a single emoji character
-      const isEmoji = r.newIcon && /^\p{Extended_Pictographic}$/u.test(r.newIcon);
+      // check if it's a single emoji character using emoji-regex
+      const regex = emojiRegex();
+      const matches = [...r.newIcon.matchAll(regex)];
+      const isEmoji = r.newIcon && matches.length === 1 && matches[0][0] === r.newIcon;
 
       if (isEmoji) {
         success.set(r.oldIcon, r.newIcon);
