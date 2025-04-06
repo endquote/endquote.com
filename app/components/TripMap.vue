@@ -151,11 +151,8 @@ const handleMarkerClick = (e: MouseEvent, checkin: TripOutput["checkins"][number
           anchor="center"
         >
           <template #marker>
-            <div class="bg-white text-black" @click="(e) => handleMarkerClick(e, checkin)">
-              <UIcon
-                :name="`fluent-emoji-high-contrast-${checkin.venue.venueIcon?.eqIcon || 'round-pushpin'}`"
-                class="size-8"
-              />
+            <div class="text-2xl" @click="(e) => handleMarkerClick(e, checkin)">
+              {{ checkin.venue.venueIcon?.eqIcon || "📍" }}
             </div>
           </template>
         </MglMarker>

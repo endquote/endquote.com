@@ -12,5 +12,6 @@
     "esModuleInterop": true,
     // Disallow features that require cross-file awareness
     "isolatedModules": true,
+    "target": "ES6"
   },
 }

@@ -1,27 +1,12 @@
 import type { Prisma } from "@prisma/client";
-import fs from "fs";
-import { createRequire } from "module";
 import OpenAI from "openai";
-import { db, saveString } from "./shared";
+import { db } from "./shared";
 
 const API_KEY = process.env.OPENAI_KEY;
 const MAX_RETRIES = 3;
 const BATCH_SIZE = 50;
 
 export async function main() {
-  // get the possible checkin icons
-  const iconMetaPath = createRequire(import.meta.url).resolve("@iconify-json/fluent-emoji-high-contrast/metadata.json");
-  const iconMetaText = fs.readFileSync(iconMetaPath, "utf-8");
-  const iconMetaData = JSON.parse(iconMetaText);
-  const categories = ["Activities", "Animals & Nature", "Food & Drink", "Objects", "Travel & Places"];
-  const newIcons: Record<string, string[]> = {};
-  for (const category of categories) {
-    newIcons[category] = iconMetaData.categories[category];
-  }
-
-  // save for debugging
-  await saveString(JSON.stringify(newIcons), "icons.json");
-
   const client = new OpenAI({ apiKey: API_KEY });
 
   let retryCounter = MAX_RETRIES;
@@ -62,7 +47,7 @@ export async function main() {
     batchNumber++;
     console.log(`Processing batch ${batchNumber}, ${oldIcons.length} icons`);
 
-    await processIconBatch(oldIcons, newIcons, client);
+    await processIconBatch(oldIcons, client);
 
     // if there's less than a full batch left, we'll retry any failures
     if (oldIcons.length < BATCH_SIZE) {
@@ -77,11 +62,7 @@ export async function main() {
   }
 }
 
-async function processIconBatch(
-  oldIcons: { placeType: string; oldIcon: string }[],
-  newIcons: Record<string, string[]>,
-  client: OpenAI,
-) {
+async function processIconBatch(oldIcons: { placeType: string; oldIcon: string }[], client: OpenAI) {
   const success = new Map();
 
   try {
@@ -93,23 +74,19 @@ async function processIconBatch(
         {
           role: "developer",
           content: `
-            You're helping to make a map with markers on it for points of interest. We need to pick an icon
-            for each point of interest. Following is a list of new icons grouped by category.
+            You're helping to make a map with markers on it for points of interest. We need to select a suitable emoji
+            for each point of interest to use as a map marker.
             
-            ${JSON.stringify(newIcons)}
-
             The user will provide a list of points of interest. Each includes a type (placeType) and a
-            previously-chosen icon (oldIcon). For each item, select the most appropriate new icon from the
-            provided categories list.
+            previously-chosen icon (oldIcon). For each item, select the most appropriate emoji character.
 
             REQUIREMENTS:
-            1. Only suggest icons that exist in the provided categories list above
-            2. Match each oldIcon with a new icon based on semantic similarity 
-            3. Consider the placeType when making your selection
-            4. Provide a brief reason for each selection (1-2 sentences)
-            5. Include ALL items from the input list in your output
+            1. Return a single Unicode emoji character for each item (not an emoji sequence)
+            2. Choose an emoji that represents the place type semantically
+            3. Provide a brief reason for each selection (1-2 sentences)
+            4. Include ALL items from the input list in your output
 
-            IMPORTANT: Double-check that every suggested icon exists in the provided categories list.
+            IMPORTANT: Only return single Unicode emoji characters that will display well at small sizes on a map.
           `,
         },
         { role: "user", content: JSON.stringify(oldIcons) },
@@ -117,7 +94,7 @@ async function processIconBatch(
       text: {
         format: {
           type: "json_schema",
-          name: "poi_icons",
+          name: "poi_emojis",
           schema: {
             type: "object",
             properties: {
@@ -127,7 +104,7 @@ async function processIconBatch(
                   type: "object",
                   properties: {
                     oldIcon: { type: "string", description: "The user-provided old icon" },
-                    newIcon: { type: "string", description: "Your selection from the provided list of new icons" },
+                    newIcon: { type: "string", description: "A suitable Unicode emoji character" },
                     reason: { type: "string", description: "Reason for the choice" },
                   },
                   required: ["oldIcon", "newIcon", "reason"],
@@ -146,17 +123,15 @@ async function processIconBatch(
       icons: Array<{ oldIcon: string; newIcon: string; reason: string }>;
     };
 
-    // validate output
-    for (const replacement of replacements) {
-      // it's not an empty string and it exists in the icons list
-      const isValid = Object.values(newIcons).some(
-        (category) => replacement.newIcon && category.includes(replacement.newIcon),
-      );
+    // validate output - check for valid single emoji
+    for (const r of replacements) {
+      // check if it's a single emoji character
+      const isEmoji = r.newIcon && /^\p{Extended_Pictographic}$/u.test(r.newIcon) && r.newIcon.length <= 4;
 
-      if (isValid) {
-        success.set(replacement.oldIcon, replacement.newIcon);
+      if (isEmoji) {
+        success.set(r.oldIcon, r.newIcon);
       } else {
-        console.warn(`Invalid icon suggested: ${replacement.newIcon} for ${replacement.oldIcon}, skipping`);
+        console.warn(`invalid emoji suggested: ${r.newIcon} for ${r.oldIcon}, skipping`);
       }
     }
   } catch (e) {
@@ -167,6 +142,8 @@ async function processIconBatch(
   // save new icons
   for (const oldIcon of oldIcons) {
     const newIcon = success.get(oldIcon.oldIcon);
+
+    if (!newIcon) continue;
 
     // find all venues with this icon
     const venues = await db.venue.findMany({
