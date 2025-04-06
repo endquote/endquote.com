@@ -83,7 +83,12 @@ export default defineNuxtConfig({
     "/": { prerender: true },
     "/roles": { redirect: "/about" },
     "/stats/**": { proxy: "https://stats.endquote.com/**" },
+
+    // proxy files in dreamobjects
     "/do/**": { proxy: "https://endquote.objects-us-east-1.dream.io/**" },
+
+    // proxy maplibre tiles - see also server/api/mapstyle/[...style].ts
+    "/maps/**": { proxy: "https://tiles.stadiamaps.com/**" },
 
     // sort of hide WIP features
     "/trips/**": { robots: false },
