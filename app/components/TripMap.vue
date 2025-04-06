@@ -30,11 +30,7 @@ onUnmounted(() => {
 });
 
 // update map style to match dark mode
-const mapStyle = computed(() =>
-  isDarkMode.value
-    ? "https://tiles.stadiamaps.com/styles/stamen_toner.json"
-    : "https://tiles.stadiamaps.com/styles/stamen_toner_lite.json",
-);
+const mapStyle = computed(() => `/api/mapstyle/styles/${isDarkMode.value ? "stamen_toner" : "stamen_toner_lite"}.json`);
 
 const mapKey = `trip-${props.trip?.eqId}`;
 const map = useMap(mapKey);
