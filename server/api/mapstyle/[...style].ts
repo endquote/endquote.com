@@ -5,10 +5,7 @@ export default defineEventHandler(async (event) => {
   // get style param from url
   const style = getRouterParam(event, "style");
   if (!style) {
-    throw createError({
-      statusCode: 400,
-      message: "Missing style parameter",
-    });
+    throw createError({ statusCode: 400, message: "Missing style parameter" });
   }
 
   const tilesDomain = "https://tiles.stadiamaps.com";
@@ -18,10 +15,7 @@ export default defineEventHandler(async (event) => {
     const response = await fetch(`${tilesDomain}/${style}`);
 
     if (!response.ok) {
-      throw createError({
-        statusCode: response.status,
-        message: `Failed to fetch style: ${response.statusText}`,
-      });
+      throw createError({ statusCode: response.status, message: `Failed to fetch style: ${response.statusText}` });
     }
 
     // get text content
@@ -43,11 +37,7 @@ export default defineEventHandler(async (event) => {
     setResponseHeader(event, "Content-Type", "application/json");
 
     return modifiedStyle;
-  } catch (error) {
-    console.error("proxy error:", error);
-    throw createError({
-      statusCode: 500,
-      message: "Failed to proxy style",
-    });
+  } catch {
+    throw createError({ statusCode: 500, message: "Failed to proxy style" });
   }
 });
