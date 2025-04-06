@@ -88,16 +88,34 @@ const bounds = computed<LngLatBoundsLike | undefined>(() => {
 const flightPaths = computed(() => {
   const flights = filteredTrip.value?.flights || [];
 
-  return flights.map((flight) => {
-    const from = [flight.fromAirport.lng, flight.fromAirport.lat];
-    const to = [flight.toAirport.lng, flight.toAirport.lat];
-    const options = { npoints: 100 };
-    const arc = greatCircle(from, to, options);
-    return {
-      id: `${flight.fromAirport.code}-${flight.toAirport.code}-${flight.date.split("T")[0]}`,
-      geometry: arc.geometry,
-    };
-  });
+  // track already processed airport pairs
+  const processedPairs = new Set<string>();
+
+  return flights
+    .filter((flight) => {
+      // create keys for both directions
+      const fromTo = `${flight.fromAirport.code}-${flight.toAirport.code}`;
+      const toFrom = `${flight.toAirport.code}-${flight.fromAirport.code}`;
+
+      // if we've already seen this pair in either direction, skip it
+      if (processedPairs.has(fromTo) || processedPairs.has(toFrom)) {
+        return false;
+      }
+
+      // mark this pair as processed
+      processedPairs.add(fromTo);
+      return true;
+    })
+    .map((flight) => {
+      const from = [flight.fromAirport.lng, flight.fromAirport.lat];
+      const to = [flight.toAirport.lng, flight.toAirport.lat];
+      const options = { npoints: 100 };
+      const arc = greatCircle(from, to, options);
+      return {
+        id: `${flight.fromAirport.code}-${flight.toAirport.code}-${flight.date.split("T")[0]}`,
+        geometry: arc.geometry,
+      };
+    });
 });
 
 // if the map is loaded and the bounds are computed, fit the map to the bounds
