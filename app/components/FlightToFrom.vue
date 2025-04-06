@@ -4,11 +4,11 @@ import type { AppRouter } from "~~/server/trpc/routers";
 
 type RouterOutput = inferRouterOutputs<AppRouter>;
 type TripOutput = NonNullable<RouterOutput["trips"]["trip"]>;
-type CheckinOutput = TripOutput["checkins"][number];
-type FlightOutput = NonNullable<CheckinOutput["flight"]>;
+type FlightOutput = TripOutput["checkins"][number]["flight"];
+type AirportOutput = TripOutput["flights"][number]["fromAirport"];
 
 defineProps<{
-  airport: string | null;
+  airport: AirportOutput | null;
   flight: FlightOutput | null;
 }>();
 </script>
@@ -16,8 +16,8 @@ defineProps<{
   <span v-if="airport && flight">
     &nbsp;
     <span :class="{ 'line-through': flight.canceled }">
-      <span v-if="airport === flight.fromAirport">🛬 {{ flight.toAirport }}</span>
-      <span v-if="airport === flight.toAirport">🛫 {{ flight.fromAirport }}</span>
+      <span v-if="airport.code === flight.fromAirport.code">🛬 {{ flight.toAirport.code }}</span>
+      <span v-if="airport.code === flight.toAirport.code">🛫 {{ flight.fromAirport.code }}</span>
     </span>
   </span>
 </template>

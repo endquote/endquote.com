@@ -1,7 +1,9 @@
+import { main as airports } from "./airports";
 import { main as homes } from "./homes";
 import { db } from "./shared";
 
 async function main() {
+  await airports();
   await homes();
 }
 

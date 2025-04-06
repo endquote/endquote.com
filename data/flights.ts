@@ -3,16 +3,17 @@ import type { Prisma } from "@prisma/client";
 import { parse } from "csv-parse/sync";
 import { config } from "dotenv";
 import { DateTime } from "luxon";
-import { cacheUrl, db, readString, s3 } from "./shared";
+import { db, s3 } from "./shared";
 
 config();
 
 const main = async () => {
-  const tzMap = await getTzMap();
+  const airportTzs = await getAirportTimezones();
   const flightRows = await getFlightRows();
   await db.flight.deleteMany();
+
   for (const row of flightRows) {
-    const flight = parseFlight(row, tzMap);
+    const flight = parseFlight(row, airportTzs);
     await db.flight.upsert({
       where: { flightyId: flight.flightyId },
       update: flight,
@@ -21,20 +22,19 @@ const main = async () => {
   }
 };
 
-// download a mapping of airport codes to time zones
-// https://www.fresse.org/dateutils/tzmaps.html
-const getTzMap = async () => {
-  const tzmapUrl = "https://raw.githubusercontent.com/hroptatyr/dateutils/tzmaps/iata.tzmap";
-  await cacheUrl(tzmapUrl, "iata.tsv");
+// get airport timezones from database
+const getAirportTimezones = async (): Promise<Record<string, string>> => {
+  const airports = await db.airport.findMany({
+    select: { code: true, timezone: true },
+  });
 
-  const tzmapContents = await readString("iata.tsv");
-  return tzmapContents
-    .split("\n")
-    .map((line) => line.split("\t"))
-    .reduce((acc, [code, zone]) => {
-      acc[code] = zone;
+  return airports.reduce(
+    (acc, airport) => {
+      acc[airport.code] = airport.timezone || "UTC";
       return acc;
-    }, {});
+    },
+    {} as Record<string, string>,
+  );
 };
 
 // download the export from flighty
@@ -54,14 +54,11 @@ const parseFlight = (row: any, tzMap: Record<string, string>): Prisma.flightCrea
     date: row["Date"],
     airline: row["Airline"],
     flightNumber: row["Flight"],
-    fromAirport: row["From"],
-    toAirport: row["To"],
     departureTerminal: row["Dep Terminal"] || null,
     departureGate: row["Dep Gate"] || null,
     arrivalTerminal: row["Arr Terminal"] || null,
     arrivalGate: row["Arr Gate"] || null,
     canceled: row["Canceled"] === "true",
-    divertedTo: row["Diverted To"] || null,
     scheduledDeparture: row["Gate Departure (Scheduled)"],
     actualDeparture: row["Gate Departure (Actual)"],
     scheduledTakeoff: row["Take off (Scheduled)"],
@@ -83,6 +80,11 @@ const parseFlight = (row: any, tzMap: Record<string, string>): Prisma.flightCrea
     arrAirportFlightyId: row["Arrival Airport Flighty ID"] || null,
     divAirportFlightyId: row["Diverted To Airport Flighty ID"] || null,
     aircraftFlightyId: row["Aircraft Type Flighty ID"] || null,
+
+    // connect to airport models
+    fromAirport: { connect: { code: row["From"] } },
+    toAirport: { connect: { code: row["To"] } },
+    divertedToAirport: row["Diverted To"] ? { connect: { code: row["Diverted To"] } } : undefined,
   };
 
   // the dates are in the local time of the airport, convert them to unix timestamps
@@ -93,15 +95,15 @@ const parseFlight = (row: any, tzMap: Record<string, string>): Prisma.flightCrea
     return DateTime.fromISO(date, { zone: tz }).toUTC().toJSDate();
   };
 
-  obj.date = timestamp(obj.date, tzMap[obj.fromAirport]);
-  obj.scheduledDeparture = timestamp(obj.scheduledDeparture, tzMap[obj.fromAirport]);
-  obj.actualDeparture = timestamp(obj.actualDeparture, tzMap[obj.fromAirport]);
-  obj.scheduledTakeoff = timestamp(obj.scheduledTakeoff, tzMap[obj.fromAirport]);
-  obj.actualTakeoff = timestamp(obj.actualTakeoff, tzMap[obj.fromAirport]);
-  obj.scheduledLanding = timestamp(obj.scheduledLanding, tzMap[obj.toAirport]);
-  obj.actualLanding = timestamp(obj.actualLanding, tzMap[obj.toAirport]);
-  obj.scheduledArrival = timestamp(obj.scheduledArrival, tzMap[obj.toAirport]);
-  obj.actualArrival = timestamp(obj.actualArrival, tzMap[obj.toAirport]);
+  obj.date = timestamp(obj.date, tzMap[row["From"]]);
+  obj.scheduledDeparture = timestamp(obj.scheduledDeparture, tzMap[row["From"]]);
+  obj.actualDeparture = timestamp(obj.actualDeparture, tzMap[row["From"]]);
+  obj.scheduledTakeoff = timestamp(obj.scheduledTakeoff, tzMap[row["From"]]);
+  obj.actualTakeoff = timestamp(obj.actualTakeoff, tzMap[row["From"]]);
+  obj.scheduledLanding = timestamp(obj.scheduledLanding, tzMap[row["To"]]);
+  obj.actualLanding = timestamp(obj.actualLanding, tzMap[row["To"]]);
+  obj.scheduledArrival = timestamp(obj.scheduledArrival, tzMap[row["To"]]);
+  obj.actualArrival = timestamp(obj.actualArrival, tzMap[row["To"]]);
 
   return obj;
 };

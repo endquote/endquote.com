@@ -34,9 +34,10 @@ model venue {
   state             String?
   country           String
   category          String?
-  fsIcon            String?    
-  mapIcon           String?    
-  airport           String?
+  fsIcon            String?
+  mapIcon           String?
+  airportCode       String?
+  airport           airport?    @relation(fields: [airportCode], references: [code])
   checkins          checkin[]
   hotelChecked      Boolean     @default(false)
   hotel             hotel?
@@ -92,14 +93,14 @@ model flight {
   date                DateTime
   airline             String
   flightNumber        String
-  fromAirport         String
-  toAirport           String
+  fromAirportCode     String
+  toAirportCode       String
   departureTerminal   String?
   departureGate       String?
   arrivalTerminal     String?
   arrivalGate         String?
   canceled            Boolean   @default(false)
-  divertedTo          String?
+  divertedToCode      String?
   scheduledDeparture  DateTime?
   actualDeparture     DateTime?
   scheduledTakeoff    DateTime?
@@ -123,14 +124,37 @@ model flight {
   aircraftFlightyId   String?
   trips               trip[]
   checkins            checkin[]
+  fromAirport         airport   @relation("fromAirport", fields: [fromAirportCode], references: [code])
+  toAirport           airport   @relation("toAirport", fields: [toAirportCode], references: [code])
+  divertedToAirport   airport?  @relation("divertedToAirport", fields: [divertedToCode], references: [code])
 }
 
 model home {
-  eqId     Int      @id @default(autoincrement())
-  name     String   @unique
+  eqId     Int       @id @default(autoincrement())
+  name     String    @unique
   lat      Float
   lng      Float
   start    DateTime
   end      DateTime
-  airports String[]
+  airports airport[]
+}
+
+model airport {
+  code            String   @id
+  icao            String?
+  name            String
+  latitude        Float
+  longitude       Float
+  elevation       Int?
+  url             String?
+  timezone        String?
+  city            String?
+  country         String
+  state           String?
+  county          String?
+  venues          venue[]
+  homes           home[]
+  fromFlights     flight[] @relation("fromAirport")
+  toFlights       flight[] @relation("toAirport")
+  divertedFlights flight[] @relation("divertedToAirport")
 }

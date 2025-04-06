@@ -41,7 +41,7 @@ useSiteHead(page.value);
       <h2>Flights</h2>
       <ul>
         <li v-for="flight in data?.flights" :key="flight.eqId" :class="{ 'line-through': flight.canceled }">
-          {{ flight.date.split("T")[0]! }} - {{ flight.fromAirport }}-{{ flight.toAirport }}
+          {{ flight.date.split("T")[0]! }} - {{ flight.fromAirport.code }}-{{ flight.toAirport.code }}
         </li>
       </ul>
     </div>

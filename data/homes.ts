@@ -3,12 +3,20 @@ import { HOMES } from "../app/utils/constants";
 import { db } from "./shared";
 
 export async function main() {
-  const homes: Array<Prisma.homeCreateInput> = HOMES;
-  for (const home of homes) {
+  for (const home of HOMES) {
+    const { airports, ...homeData } = home;
+
+    const homeInput: Prisma.homeCreateInput = {
+      ...homeData,
+      airports: {
+        connect: airports.map((code) => ({ code })),
+      },
+    };
+
     await db.home.upsert({
-      where: { name: home.name },
-      update: home,
-      create: home,
+      where: { name: homeData.name },
+      update: homeInput,
+      create: homeInput,
     });
   }
 }
