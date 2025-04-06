@@ -6,12 +6,16 @@ const maxTime = 48 * 60 * 60 * 1000;
 // trips break if there's this much distance between checkins (km)
 const tripDist = 40;
 type Checkin = Prisma.checkinGetPayload<{ include: { venue: true } }>;
-type Flight = Prisma.flightGetPayload<{}>;
-type HomeAir = { venue: Prisma.venueGetPayload<{}>; home: Prisma.homeGetPayload<{}>; code: string };
+type Flight = Prisma.flightGetPayload<{ include: { fromAirport: true; toAirport: true } }>;
+type HomeAir = {
+  venue: Prisma.venueGetPayload<{}>;
+  home: Prisma.homeGetPayload<{ include: { airports: true } }>;
+  code: string;
+};
 type Trip = { checkins: Checkin[]; flights: Flight[]; start: Date; end: Date };
 
 const main = async () => {
-  const homes = await db.home.findMany();
+  const homes = await db.home.findMany({ include: { airports: true } });
 
   // all checkins, including venues
   const allCheckins = await db.checkin.findMany({
@@ -33,18 +37,21 @@ const main = async () => {
     ),
   );
 
-  // airports in the home regions
-  const homeAir: HomeAir[] = (await db.venue.findMany({ where: { category: { contains: "Airport" } } }))
-    .map((v) => ({ venue: v, code: v.name.match(/\(([A-Z]{3})\)/)?.[1] }))
-    .filter((v) => v.code)
-    .filter((v) => homes.some((h) => h.airports.includes(v.code)))
-    .map((v) => ({ venue: v.venue, code: v.code, home: homes.find((h) => h.airports.includes(v.code)) }));
+  const homeAir: HomeAir[] = [];
+  for (const home of homes) {
+    for (const airport of home.airports) {
+      const venue = await db.venue.findFirst({ where: { airportCode: airport.code } });
+      if (venue) {
+        homeAir.push({ venue, home, code: airport.code });
+      }
+    }
+  }
 
   let checkinTrips = buildCheckinTrips(tripCheckins);
   checkinTrips = combineCheckinTrips(checkinTrips, allCheckins, homeAir);
   checkinTrips = extendCheckinTrips(checkinTrips, allCheckins, homeAir);
 
-  const allFlights = await db.flight.findMany();
+  const allFlights = await db.flight.findMany({ include: { fromAirport: true, toAirport: true } });
   const flightTrips = buildFlightTrips(allFlights, homeAir);
 
   const trips = buildTrips(checkinTrips, flightTrips);
@@ -108,7 +115,7 @@ const combineCheckinTrips = (checkinTrips: Checkin[][], allCheckins: Checkin[], 
 const extendCheckinTrips = (checkinTrips: Checkin[][], allCheckins: Checkin[], homeAir: HomeAir[]) => {
   for (let t = 0; t < checkinTrips.length - 1; t++) {
     const trip = checkinTrips[t];
-    const hasAirports = trip.some((c) => c.venue.airport);
+    const hasAirports = trip.some((c) => c.venue.airportCode);
     if (!hasAirports) {
       continue;
     }
@@ -170,12 +177,12 @@ const buildFlightTrips = (allFlights: Flight[], homeAir: HomeAir[]): Flight[][] 
       continue;
     }
 
-    if (firstFlight.fromAirport === home.code) {
+    if (firstFlight.fromAirportCode === home.code) {
       const trip = [firstFlight];
 
       for (let j = i + 1; j < allFlights.length; j++) {
         const nextFlight = allFlights[j];
-        if (nextFlight.fromAirport === home.code) {
+        if (nextFlight.fromAirportCode === home.code) {
           // left from home twice, broken trip
           i = j - 1;
           break;
@@ -184,7 +191,7 @@ const buildFlightTrips = (allFlights: Flight[], homeAir: HomeAir[]): Flight[][] 
         // add flight
         trip.push(nextFlight);
 
-        if (nextFlight.toAirport === home.code && !nextFlight.canceled) {
+        if (nextFlight.toAirportCode === home.code && !nextFlight.canceled) {
           // returned home
           i = j;
           break;
@@ -265,25 +272,25 @@ const saveTrips = async (trips: Trip[]) => {
 
   // link checkins to flights
   for (const trip of trips) {
-    for (const checkin of trip.checkins.filter((c) => c.venue.airport)) {
-      const code = checkin.venue.airport;
+    for (const checkin of trip.checkins.filter((c) => c.venue.airportCode)) {
+      const code = checkin.venue.airportCode;
       if (!code) continue;
 
       // see if there are more airports in the near future
       const moreAirports = trip.checkins
         .slice(trip.checkins.indexOf(checkin) + 1, trip.checkins.indexOf(checkin) + (airportSearch + 1))
-        .some((c) => c.venue.airport);
+        .some((c) => c.venue.airportCode);
 
       const foundFlight = moreAirports
         ? // if there are more airports, we are flying away from this checkin
           findClosestFlight(
-            trip.flights.filter((f) => f.fromAirport === code),
+            trip.flights.filter((f) => f.fromAirportCode === code),
             checkin.date,
             true,
           )
         : // if there are no more airports, we are flying toward this checkin
           findClosestFlight(
-            trip.flights.filter((f) => f.toAirport === code),
+            trip.flights.filter((f) => f.toAirportCode === code),
             checkin.date,
             false,
           );

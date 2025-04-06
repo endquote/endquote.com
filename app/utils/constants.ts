@@ -4,7 +4,16 @@ export const BASE_HLS = `${BASE_OBJECTS}/endquote`;
 // checkins within this distance of home are considered home (km)
 export const HOME_DISTANCE = 120; // about 75mi
 
-export const HOMES = [
+type HomeConstant = {
+  name: string;
+  lat: number;
+  lng: number;
+  start: Date;
+  end: Date;
+  airports: string[];
+};
+
+export const HOMES: HomeConstant[] = [
   {
     name: "Seattle",
     lat: 47.61683256703408,

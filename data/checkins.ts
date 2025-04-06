@@ -59,7 +59,8 @@ const getCheckins = async (token: string): Promise<void> => {
       const cat = item.venue.categories[0];
 
       const fsIcon = cat?.icon.prefix.match(/(\w+\/\w+)_$/)?.[1];
-      const fsVenue: Prisma.venueCreateInput = {
+
+      const venueData: Prisma.venueCreateInput = {
         fsId: item.venue.id,
         name: item.venue.name,
         address: loc.address,
@@ -72,7 +73,7 @@ const getCheckins = async (token: string): Promise<void> => {
         country: loc.country,
         category: cat?.name,
         mapIcon: cat?.mapIcon,
-        airport: airportCode ? airportCode : undefined,
+        airport: airportCode ? { connect: { code: airportCode } } : undefined,
         venueIcon: fsIcon
           ? {
               connectOrCreate: {
@@ -83,10 +84,12 @@ const getCheckins = async (token: string): Promise<void> => {
           : undefined,
       };
 
-      const venue = await db.venue.upsert({
-        where: { fsId: fsVenue.fsId },
-        update: { ...fsVenue },
-        create: { ...fsVenue },
+      // create venue
+      await db.venue.upsert({
+        where: { fsId: item.venue.id },
+        update: { ...venueData },
+        create: { ...venueData },
+        include: { airport: true, venueIcon: true },
       });
 
       if (await db.checkin.findFirst({ where: { fsId: item.id } })) {
@@ -94,12 +97,14 @@ const getCheckins = async (token: string): Promise<void> => {
         break;
       }
 
+      // create checkin
       const checkin: Prisma.checkinCreateInput = {
         fsId: item.id,
         date: new Date(item.createdAt * 1000),
         tz: item.timeZoneOffset,
-        venue: { connect: { fsId: venue.fsId } },
+        venue: { connect: { fsId: item.venue.id } },
       };
+
       await db.checkin.upsert({
         where: { fsId: checkin.fsId },
         update: { ...checkin },
