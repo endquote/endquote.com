@@ -89,8 +89,8 @@ const flightPaths = computed(() => {
   const flights = filteredTrip.value?.flights || [];
 
   return flights.map((flight) => {
-    const from = [flight.fromAirport.longitude, flight.fromAirport.latitude];
-    const to = [flight.toAirport.longitude, flight.toAirport.latitude];
+    const from = [flight.fromAirport.lng, flight.fromAirport.lat];
+    const to = [flight.toAirport.lng, flight.toAirport.lat];
     const options = { npoints: 100 };
     const arc = greatCircle(from, to, options);
     return {

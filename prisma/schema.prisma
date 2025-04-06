@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,12 +11,12 @@ model checkin {
   fsId     String   @id
   date     DateTime
   tz       Int
-  venue    venue    @relation(fields: [venueId], references: [fsId])
   venueId  String
-  Trip     trip?    @relation(fields: [tripId], references: [eqId])
   tripId   Int?
   flightId String?
   flight   flight?  @relation(fields: [flightId], references: [flightyId])
+  trip     trip?    @relation(fields: [tripId], references: [eqId])
+  venue    venue    @relation(fields: [venueId], references: [fsId])
 }
 
 model venue {
@@ -37,12 +34,12 @@ model venue {
   fsIcon            String?
   mapIcon           String?
   airportCode       String?
-  airport           airport?    @relation(fields: [airportCode], references: [code])
-  checkins          checkin[]
   hotelChecked      Boolean     @default(false)
-  hotel             hotel?
   restaurantChecked Boolean     @default(false)
+  checkins          checkin[]
+  hotel             hotel?
   restaurant        restaurant?
+  airport           airport?    @relation(fields: [airportCode], references: [code])
   venueIcon         venueIcon?  @relation(fields: [fsIcon], references: [fsIcon])
 }
 
@@ -61,8 +58,8 @@ model hotel {
   country    String
   award      String
   url        String
-  venue      venue  @relation(fields: [venueId], references: [fsId])
   venueId    String @unique
+  venue      venue  @relation(fields: [venueId], references: [fsId])
 }
 
 model restaurant {
@@ -76,8 +73,8 @@ model restaurant {
   award      String
   url        String
   website    String
-  venue      venue  @relation(fields: [venueId], references: [fsId])
   venueId    String @unique
+  venue      venue  @relation(fields: [venueId], references: [fsId])
 }
 
 model trip {
@@ -85,7 +82,7 @@ model trip {
   start    DateTime
   end      DateTime
   checkins checkin[]
-  flights  flight[]
+  flights  flight[]  @relation("flightTotrip")
 }
 
 model flight {
@@ -122,11 +119,11 @@ model flight {
   arrAirportFlightyId String?
   divAirportFlightyId String?
   aircraftFlightyId   String?
-  trips               trip[]
   checkins            checkin[]
+  divertedToAirport   airport?  @relation("divertedToAirport", fields: [divertedToCode], references: [code])
   fromAirport         airport   @relation("fromAirport", fields: [fromAirportCode], references: [code])
   toAirport           airport   @relation("toAirport", fields: [toAirportCode], references: [code])
-  divertedToAirport   airport?  @relation("divertedToAirport", fields: [divertedToCode], references: [code])
+  trips               trip[]    @relation("flightTotrip")
 }
 
 model home {
@@ -136,15 +133,13 @@ model home {
   lng      Float
   start    DateTime
   end      DateTime
-  airports airport[]
+  airports airport[] @relation("airportTohome")
 }
 
 model airport {
   code            String   @id
   icao            String?
   name            String
-  latitude        Float
-  longitude       Float
   elevation       Int?
   url             String?
   timezone        String?
@@ -152,9 +147,11 @@ model airport {
   country         String
   state           String?
   county          String?
-  venues          venue[]
-  homes           home[]
+  lat             Float
+  lng             Float
+  divertedFlights flight[] @relation("divertedToAirport")
   fromFlights     flight[] @relation("fromAirport")
   toFlights       flight[] @relation("toAirport")
-  divertedFlights flight[] @relation("divertedToAirport")
+  venues          venue[]
+  homes           home[]   @relation("airportTohome")
 }

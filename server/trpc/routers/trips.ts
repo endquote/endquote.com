@@ -8,8 +8,8 @@ import { s3Router } from "~~/server/trpc/routers/s3";
 // use the same select query for both trips queries
 const airportSelect: Prisma.airportSelect = {
   name: true,
-  latitude: true,
-  longitude: true,
+  lat: true,
+  lng: true,
   code: true,
 };
 
