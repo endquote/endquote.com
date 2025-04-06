@@ -84,29 +84,21 @@ const bounds = computed<LngLatBoundsLike | undefined>(() => {
   return [sw, ne] as LngLatBoundsLike;
 });
 
-// generate flight paths using turf greatCircle
 const flightPaths = computed(() => {
   const flights = filteredTrip.value?.flights || [];
-
-  // track already processed airport pairs
   const processedPairs = new Set<string>();
 
   return flights
     .filter((flight) => {
-      // create keys for both directions
+      // remove flights that are the same, just different directions
       const fromTo = `${flight.fromAirport.code}-${flight.toAirport.code}`;
       const toFrom = `${flight.toAirport.code}-${flight.fromAirport.code}`;
-
-      // if we've already seen this pair in either direction, skip it
-      if (processedPairs.has(fromTo) || processedPairs.has(toFrom)) {
-        return false;
-      }
-
-      // mark this pair as processed
+      if (processedPairs.has(fromTo) || processedPairs.has(toFrom)) return false;
       processedPairs.add(fromTo);
       return true;
     })
     .map((flight) => {
+      // generate flight paths using turf greatCircle
       const from = [flight.fromAirport.lng, flight.fromAirport.lat];
       const to = [flight.toAirport.lng, flight.toAirport.lat];
       const options = { npoints: 100 };
@@ -121,9 +113,9 @@ const flightPaths = computed(() => {
 // if the map is loaded and the bounds are computed, fit the map to the bounds
 watch(
   [() => map.isLoaded, () => bounds.value],
-  ([isLoaded, currentBounds]) => {
-    if (isLoaded && currentBounds && map.map) {
-      map.map.fitBounds(currentBounds, { padding: 50, maxZoom: 15, duration: 0 });
+  ([loaded, bounds]) => {
+    if (loaded && bounds && map.map) {
+      map.map.fitBounds(bounds, { padding: 50, maxZoom: 15, duration: 0 });
     }
   },
   { immediate: true },
