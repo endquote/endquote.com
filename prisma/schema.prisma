@@ -124,8 +124,8 @@ model flight {
   aircraftFlightyId   String?
   trips               trip[]
   checkins            checkin[]
-  fromAirport         airport?  @relation("fromAirport", fields: [fromAirportCode], references: [code])
-  toAirport           airport?  @relation("toAirport", fields: [toAirportCode], references: [code])
+  fromAirport         airport   @relation("fromAirport", fields: [fromAirportCode], references: [code])
+  toAirport           airport   @relation("toAirport", fields: [toAirportCode], references: [code])
   divertedToAirport   airport?  @relation("divertedToAirport", fields: [divertedToCode], references: [code])
 }
 

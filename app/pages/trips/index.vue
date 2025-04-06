@@ -32,7 +32,7 @@ const isDev = useDev();
       </span>
       <NuxtLink :href="trip.page?.path || `/trips/${trip.start}`"
         >{{ trip.start }} - {{ trip.end
-        }}<span v-if="trip.data.flights.length"> - {{ trip.data.flights.map((f) => f.toAirport).join(", ") }}</span
+        }}<span v-if="trip.data.flights.length"> - {{ trip.data.flights.map((f) => f.toAirport.code).join(", ") }}</span
         ><span v-if="trip.page"> - {{ trip.page.title }}</span></NuxtLink
       >
     </p>

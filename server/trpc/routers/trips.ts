@@ -6,6 +6,13 @@ import { baseProcedure, createTRPCRouter } from "~~/server/trpc/init";
 import { s3Router } from "~~/server/trpc/routers/s3";
 
 // use the same select query for both trips queries
+const airportSelect: Prisma.airportSelect = {
+  name: true,
+  latitude: true,
+  longitude: true,
+  code: true,
+};
+
 const tripSelect = {
   eqId: true,
   start: true,
@@ -14,12 +21,18 @@ const tripSelect = {
     select: {
       fsId: true,
       date: true,
-      flight: { select: { fromAirport: true, toAirport: true, canceled: true } },
+      flight: {
+        select: {
+          fromAirport: { select: airportSelect },
+          toAirport: { select: airportSelect },
+          canceled: true,
+        },
+      },
       venue: {
         select: {
           fsId: true,
           name: true,
-          airport: true,
+          airport: { select: airportSelect },
           lat: true,
           lng: true,
           venueIcon: { select: { eqIcon: true } },
@@ -34,8 +47,9 @@ const tripSelect = {
       flightyId: true,
       canceled: true,
       date: true,
-      fromAirport: true,
-      toAirport: true,
+      fromAirport: { select: airportSelect },
+      toAirport: { select: airportSelect },
+      divertedToAirport: { select: airportSelect },
       actualDeparture: true,
       scheduledDeparture: true,
     },
